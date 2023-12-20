@@ -1,13 +1,12 @@
 # Challenge
-- What is the problem that you are addressing?  Who is it a problem for?
+- The primary challenge is the difficulty in tracking and analyzing real-time on-chain data for cryptocurrencies, which is crucial for making informed trading decisions. Crypto traders, both novice and experienced, often struggle to keep up with the rapid changes in the market due to the sheer volume of data and the technical complexities involved in its interpretation. This makes it challenging to identify timely trading opportunities or threats.
 
 # Solution
-- What would an ideal solution look like? 
+- An ideal solution would be a Telegram bot, specifically designed to monitor on-chain activities and market trends in the crypto space. This bot would provide real-time alerts and analyses, tailored to the individual's trading strategies and preferences. Features could include tracking wallet transactions, significant trades, liquidity shifts, and other key indicators. The bot would offer customizable alerts, enabling traders to respond swiftly to market changes.
 
 # Why it Matters
-- How does your solution impact your target audience?  Does it save time, make money, save money?
+- This solution empowers traders by providing them with timely and relevant on-chain data, directly impacting their trading strategies. It saves time by automating the data collection and analysis process, which otherwise is time-consuming and technically demanding. By offering insights into market trends and potential trading signals, the bot aids in making more informed decisions, potentially leading to more profitable trades and avoidance of losses.
 
-## Examples
-- Homechain https://github.com/0xBcamp/March-2023-Lima
-- SmartVault https://github.com/0xBcamp/March-2023-Sierra
-- Blockbadge https://github.com/0xBcamp/Sept23_Apprenticeship_Certification
+# Examples
+- Unibot https://t.me/unibotscanner
+- Crypto Signal Scanner https://cryptosignalscanner.com
