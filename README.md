@@ -1,3 +1,5 @@
+![cover](https://files.oaiusercontent.com/file-rBh6VaUZsxPxl5C8oe1R5iNT?se=2023-12-20T19%3A04%3A39Z&sp=r&sv=2021-08-06&sr=b&rscc=max-age%3D31536000%2C%20immutable&rscd=attachment%3B%20filename%3D71052be4-2545-4420-86d6-cb26e2eef758.webp&sig=1fRwPtXk%2BOG1bLqisCqPq84HYWqsmOUGOxFpEMZhD8A%3D)
+
 # Challenge
 - The primary challenge is the difficulty in tracking and analyzing real-time on-chain data for cryptocurrencies, which is crucial for making informed trading decisions. Crypto traders, both novice and experienced, often struggle to keep up with the rapid changes in the market due to the sheer volume of data and the technical complexities involved in its interpretation. This makes it challenging to identify timely trading opportunities or threats.
 
