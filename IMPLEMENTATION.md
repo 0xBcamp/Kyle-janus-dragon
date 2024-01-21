@@ -3,11 +3,11 @@
 Team Kyle Jan 2024
 
 ## Project Architecture Diagram:
-> Full Architecture of project 
+> **Figure 1:** Full Architecture of project 
 
 ![full_proj_arch_v 1](https://github.com/adam-gill/tg_trading_bot/assets/81604772/15105e87-8949-4c2e-b315-5a15ac33b2bf)
 
-> More detailed diagram of back-end architecture
+> **Figure 2:** More detailed diagram of back-end architecture
 
 ![proj_arch_backend_v 1](https://github.com/adam-gill/tg_trading_bot/assets/81604772/f50cc265-209e-4388-b86c-fcdeb3fdaac2)
 
