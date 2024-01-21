@@ -30,6 +30,27 @@
 
 ## Summary of our product:
 Our product is a chatbot that users can interact with to easily access and utilize [Dune](https://dune.com/)’s sophisticated and large query system. It is not just a chatbot to access Dune, but a means for users to specify query-based "events," which, if triggered will notify the user.
-### Example usage:
-The user specifies an "event" which triggers if the number of Bitcoin transactions per 24 hours exceeds 100,000.<br/>
-When the event "triggers", the Telegram chatbot will notify the user.
+
+## User interactions:
+Utilizing built-in functionality from the [Telegram Bot API](https://core.telegram.org/bots/api), our chatbot will allow users to interact with it using commands in the basic format:
+```
+/command {parameter}
+```
+
+## Basic Chatbot Functionality:
+Our chatbot's main functionality is to allow users to create custom notifications from data pulled from existing Dune queries. These notifications will be _threshold-based_, meaning users will be notified if a metric (specified by the user) passes a user specified threshhold. <br/><br/>
+**Example use:** <br/>
+Say a user wanted to be notified when the number of holders of more than $1 million in Ethereum surpasses 160. <br/>
+They would: <br/>
+1. Choose an existing query for the job by searching on Dune.com and note its "query id." In this case, they would use [this query](https://dune.com/queries/3220196) which has a query id of **3220196** (which you can spot in the url of the query).
+2. Specify the query parameters that they would like (in this case, **minimum_token_balance_large_holders = 1,000,000**).
+3. Specify the column name, value, and condition that they would like to be notified on (in this case, column name = **total_holders**, value = **160**, condition = **>** (greater than).
+With this information, the user will send a command to the chatbot. 
+> Idea of how we might ask our users to format their commands: <br/>
+
+``` /notify query_id={the query id} params=[{parameter_A=A, parameter_B=B,...}] when {conditions} ```<br/>
+
+> Example use of fake command format:<br/>
+
+``` /notify query_id=3220196 params=[minimum_token_balance_large_holders=1000000] when total_holders>160 ```<br/>
+
