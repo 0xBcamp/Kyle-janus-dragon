@@ -17,7 +17,7 @@ They would: <br/>
 With this information, the user will send a command to the chatbot. 
 > Fake example command format: <br/>
 
-``` /notify query_id={the query id} params=[{list of parameters and values}] when {conditions} ```<br/>
+``` /notify query_id={the query id} params=[{parameter_A=A, parameter_B=B,...}] when {conditions} ```<br/>
 
 > Example use of fake command format:<br/>
 
