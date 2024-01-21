@@ -15,7 +15,7 @@ They would: <br/>
 2. Specify the query parameters that they would like (in this case, **minimum_token_balance_large_holders = 1,000,000**).
 3. Specify the column name, value, and condition that they would like to be notified on (in this case, column name = **total_holders**, value = **160**, condition = **>** (greater than).
 With this information, the user will send a command to the chatbot. 
-> Fake example command format: <br/>
+> Idea of how we might ask our users to format their commands: <br/>
 
 ``` /notify query_id={the query id} params=[{parameter_A=A, parameter_B=B,...}] when {conditions} ```<br/>
 
