@@ -16,9 +16,12 @@ They would: <br/>
 3. Specify the column name, value, and condition that they would like to be notified on (in this case, column name = **total_holders**, value = **160**, condition = **>** (greater than).
 With this information, the user will send a command to the chatbot. 
 > Fake example command format: <br/>
-``` /notify query_id={the query id} params=[{list of parameters and values}] when {conditions} ```
+
+``` /notify query_id={the query id} params=[{list of parameters and values}] when {conditions} ```<br/>
+
 > Example use of fake command format:<br/>
-``` /notify query_id=3220196 params=[minimum_token_balance_large_holders=1000000] when total_holders>160 ```
+
+``` /notify query_id=3220196 params=[minimum_token_balance_large_holders=1000000] when total_holders>160 ```<br/>
 
 ## Chatbot Query Capabilities:
 Since the free tier for the DuneAPI does not allow the use of CRUD operations (Create, Read, Update, Delete), our chatbot will be restricted to allowing users to query existing,
