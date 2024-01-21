@@ -7,7 +7,7 @@ Utilizing built-in functionality from the [Telegram Bot API](https://core.telegr
 /command {parameter}
 ```
 ## Basic Chatbot Functionality:
-Our chatbot's main functionality is to allow users to create custom notifications from data pulled from existing Dune queries. These notifications will be _threshold-based_, meaning users will be notified if a metric (specified by the user) passes a user specified threshhold. <br/>
+Our chatbot's main functionality is to allow users to create custom notifications from data pulled from existing Dune queries. These notifications will be _threshold-based_, meaning users will be notified if a metric (specified by the user) passes a user specified threshhold. <br/><br/>
 **Example use:** <br/>
 Say a user wanted to be notified when the number of holders of more than $1 million in Ethereum surpasses 160. <br/>
 They would: <br/>
