@@ -27,7 +27,7 @@
     Or simply follow this link: <a href="https://t.me/b97cfb452bebb5efbot">Telegram Trading Bot</a>
   </h4>
   <p>
-    Supported Commands: <br/>
+    ** Supported Commands:** <br/>
     /greet -> says whats up to user <br/>
     /gm -> says good morning <br/>
     /gn -> says good night <br/>
