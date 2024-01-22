@@ -1,5 +1,6 @@
+# Design Specifications
 ### Telegram Trading Bot
-## Design Specifications
+Team Kyle Jan 2024
 
 ## Chatbot Query Capabilities:
 Since the free tier for the DuneAPI does not allow the use of CRUD operations (Create, Read, Update, Delete), our chatbot will be restricted to allowing users to query existing,
