@@ -21,7 +21,7 @@ Team Kyle Jan 2024
 ### Logic Gate:
 ### Querier:
 
-## Database:
+### Database:
 This project uses a relational database. It will be organized into three tables: **users**, **events**, and **queries**.
 
 A rough outline of the database structure is shown below:
