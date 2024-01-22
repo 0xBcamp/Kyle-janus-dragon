@@ -12,7 +12,7 @@ Team Kyle Jan 2024
 
 ## Back-end:
 
-> **Figure 2:** More detailed diagram of back-end architecture
+> **Figure 2:** A more detailed diagram of back-end architecture
 
 ![proj_arch_backend_v 1](https://github.com/adam-gill/tg_trading_bot/assets/81604772/f50cc265-209e-4388-b86c-fcdeb3fdaac2)
 
