@@ -2,6 +2,7 @@
 
 ## Try our Telegram trading bot now!
 
+- Live from our Ubuntu Server
 - Bot Handle: @b97cfb452bebb5efbot
 - <a href="https://t.me/b97cfb452bebb5efbot">Telegram Link</a>
 
