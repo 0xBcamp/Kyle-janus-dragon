@@ -12,6 +12,13 @@
     </a>
   </div>
   <h3>Download Telegram to try it out!:</h3>
+  <p>
+    Supported Commands:
+    /greet -> says whats up to user
+    /gm -> says good morning
+    /gn -> says good night
+    /btc -> fetches the current price of bitcoin
+  </p>
 </div>
 
 <div align="center">
