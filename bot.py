@@ -38,6 +38,17 @@ def get_bitcoin_price():
 def create_bot():
     bot = telebot.TeleBot(TG_API_KEY)
 
+    @bot.message_handler(commands=['help'])
+    def help(message):
+        bot.reply_to(message, """
+        Available Commands:\n
+        /gm --> Says good morning\n
+        /gn --> Says goodnight\n
+        /btc --> Returns the current price of bitcoin in USD\n
+        /send --> Records your user_id in our database\n
+        /help --> send this same message to see available commands
+                     """)
+
     @bot.message_handler(commands=['greet'])
     def greet(message):
         bot.reply_to(message, "Hey whats up?")
