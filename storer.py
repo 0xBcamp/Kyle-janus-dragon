@@ -2,6 +2,8 @@ import mysql.connector
 import os
 from dotenv import load_dotenv
 
+######## MAIN FUNCTION TO CALL FROM BOT.PY ########
+
 #main function to store everything!
 def store_stuff(notif_info):
     user_id, first_name = notif_info[0][0], notif_info[0][1]
@@ -19,7 +21,7 @@ def store_stuff(notif_info):
         finally:
             cnx.close()
 
-####### STORING FUNCTIONS ###########
+####### STORAGE HELPER FUNCTIONS ###########
 
 #function to store a new user to the database
 def add_user(cnx, user_id, user_first_name):
