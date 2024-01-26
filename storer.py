@@ -2,6 +2,10 @@ import mysql.connector
 import os
 from dotenv import load_dotenv
 
+def store_stuff(notif_info):
+    user_id, first_name = notif_info[0][0], notif_info[0][1]
+    add_user(user_id, first_name)
+
 def connect_to_db():
     load_dotenv()
     DB_USER = os.getenv('DB_USER')
