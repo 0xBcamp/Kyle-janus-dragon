@@ -2,7 +2,7 @@ import os
 import requests
 import telebot
 from dotenv import load_dotenv
-from storer import add_user
+from storer import store_stuff
 # Load environment variables
 load_dotenv()
 TG_API_KEY = os.getenv('TG_API_KEY')
@@ -79,7 +79,6 @@ def create_bot():
             print(user_message)
             bot.reply_to(message, user_message)
             bot.reply_to(message, f"Hello, {user_info[1]}! Your user ID is {user_info[0]}")
-            add_user(user_id, first_name)
         else:
             bot.reply_to(message, "Please provide a message to send.")
 
