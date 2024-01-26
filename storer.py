@@ -12,14 +12,15 @@ from dotenv import load_dotenv
 def store_stuff(notif_info):
     user_info, query_id, parameters, condition_info = extract_notif_info(notif_info)
     print(user_info, query_id, parameters, condition_info)
+    print(query_id)
 
     cnx = connect_to_db()
     if cnx is not None:
         try:
             # STEP 1: Checks if user already exists, if they don't store them in the database!
-            handle_user(cnx, user_info)
+            check_user(cnx, user_info)
             # STEP 2: add the notification to the database!
-
+            add_notif(cnx, user_info, query_id, parameters, condition_info)
         except mysql.connector.Error as err:
             print(f"Error: {err}")
         finally:
@@ -28,15 +29,18 @@ def store_stuff(notif_info):
 ######## STORAGE FUNCTIONS ############
 
 # checks if a user is new or not and acts accordingly
-def handle_user(cnx, user_info):
+def check_user(cnx, user_info):
     if not does_user_already_exist(cnx, user_info[0]):
         add_user(cnx, user_info[0], user_info[1])
-
+    
 # adds notification and all its data to the database
-def add_notif(cnx, conditions):
+def add_notif(cnx, user_info, query_id, parameters, condition):
+    user_id = user_info[0]
     #Step 1: store condition and get its id
-    condition_id = store_condition_and_return_id(conditions)
-    #Step 2: 
+    condition_id = store_condition_and_return_id(cnx, condition)
+    #Step 2: create a new notification
+    notif_id = store_notif_and_return_id(cnx, user_id, query_id, condition_id)
+
 
 ####### STORAGE HELPER FUNCTIONS ###########
 
@@ -53,11 +57,11 @@ def add_user(cnx, user_id, user_first_name):
         print(f"User added with user_id: {user_id}")
 
     except mysql.connector.Error as err:
-        print(f"Error: {err}")
+        print(f"add_user error: {err}")
     finally:
         cursor.close()
 
-#function to store conditions
+#function to store conditions and return its id
 def store_condition_and_return_id(cnx, conditions):
     try:
         cursor = cnx.cursor()
@@ -67,12 +71,33 @@ def store_condition_and_return_id(cnx, conditions):
         """
         column_name, comparator, threshold = conditions
         cursor.execute(add_condition_query, (column_name, comparator, threshold))
-        print(f"condition added")
+        cnx.commit()
+        # Get the last inserted id
+        condition_id = cursor.lastrowid
+        print(f"condition added with id: {condition_id}")
+        return condition_id
     except mysql.connector.Error as err:
-        print(f"Error:{err}")
+        print(f"store_condition error:{err}")
     finally:
         cursor.close()
 
+#function to store notif in notif table and return its id
+def store_notif_and_return_id(cnx, user_id, query_id, condition_id):
+    try:
+        cursor = cnx.cursor()
+        add_notif_query = """
+        INSERT INTO notifs (user_id, query_id, condition_id)
+        VALUES (%s, %s, %s);
+        """
+        cursor.execute(add_notif_query, (user_id, query_id, condition_id ))
+        cnx.commit()
+        notif_id = cursor.lastrowid
+        print(f"notif added with notif_id: {notif_id}")
+
+    except mysql.connector.Error as err:
+        print(f"store_notif_error: {err}")
+    finally:
+        cursor.close()
 #######    HELPER FUNCTIONS      ###########
 
 #function to check if the user already exists in the database!
