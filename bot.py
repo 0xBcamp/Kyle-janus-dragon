@@ -35,6 +35,12 @@ def get_bitcoin_price():
         print(f"Error fetching Bitcoin price: {e}")
         return None
 
+#function to get user info
+def get_user_info(message):
+    user_id = message.from_user.id
+    first_name = message.from_user.first_name
+    return [user_id, first_name]
+
 def create_bot():
     bot = telebot.TeleBot(TG_API_KEY)
 
@@ -65,17 +71,14 @@ def create_bot():
     def send(message):
         # Extract the message text following the /send command
         msg_text = message.text.split(' ', 1)
-        #get the user_id
-        user_id = message.from_user.id
-        #and first name
-        first_name = message.from_user.first_name
-        
+        user_info = get_user_info(message)
+        store_stuff([user_info])
         print(msg_text)
         if len(msg_text) > 1:
             user_message = msg_text[1:]
             print(user_message)
             bot.reply_to(message, user_message)
-            bot.reply_to(message, f"Hello, {first_name}! Your user ID is {user_id}")
+            bot.reply_to(message, f"Hello, {user_info[1]}! Your user ID is {user_info[0]}")
             add_user(user_id, first_name)
         else:
             bot.reply_to(message, "Please provide a message to send.")
