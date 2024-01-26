@@ -41,6 +41,14 @@ def get_user_info(message):
     first_name = message.from_user.first_name
     return [user_id, first_name]
 
+#function to extract message text from message
+def extract_msg_text(message):
+    msg_text = message.text.split(' ', 1)
+    if len(msg_text) > 1:
+        return msg_text[1:]
+    else:
+        return False
+
 def create_bot():
     bot = telebot.TeleBot(TG_API_KEY)
 
@@ -70,11 +78,10 @@ def create_bot():
     @bot.message_handler(commands=['send'])
     def send(message):
         # Extract the message text following the /send command
-        msg_text = message.text.split(' ', 1)
         user_info = get_user_info(message)
         store_stuff([user_info])
-        if len(msg_text) > 1:
-            user_message = msg_text[1:]
+        user_message = extract_msg_text(message)
+        if user_message:
             print(user_message)
             bot.reply_to(message, user_message)
             bot.reply_to(message, f"Hello, {user_info[1]}! Your user ID is {user_info[0]}")
@@ -85,4 +92,6 @@ def create_bot():
     def num_large_erc20_holders(message):
         #get user info:
         user_info = get_user_info(message)
+
+    
     return bot
