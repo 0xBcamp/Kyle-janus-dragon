@@ -76,18 +76,6 @@ def create_bot():
 
         bot.reply_to(message, btc_price)
     
-    @bot.message_handler(commands=['send'])
-    def send(message):
-        # Extract the message text following the /send command
-        user_info = get_user_info(message)
-        store_stuff([user_info])
-        user_message = extract_msg_text(message)
-        if user_message:
-            print(user_message)
-            bot.reply_to(message, f"Hello, {user_info[1]}! Your user ID is {user_info[0]}")
-        else:
-            bot.reply_to(message, "Please provide a message to send.")
-
     @bot.message_handler(commands=['num-large-erc20-holders'])
     def num_large_erc20_holders(message):
         #get user info:
