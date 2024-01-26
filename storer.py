@@ -37,8 +37,8 @@ def add_notif(cnx, user_info, query_id, parameters, condition):
     condition_id = store_condition_and_return_id(cnx, condition)
     #Step 2: store a new notification in notifs table
     notif_id = store_notif_and_return_id(cnx, user_id, query_id, condition_id)
-    #step 3: store parameters in notifs table if new
-    store_new_parameters(cnx, parameters)
+    #step 3: store parameters in notifs
+    store_parameters(cnx, parameters)
 
 
 ####### STORAGE HELPER FUNCTIONS ###########
@@ -100,7 +100,7 @@ def store_notif_and_return_id(cnx, user_id, query_id, condition_id):
 
 
 #function to add parameters
-def store_new_parameters(cnx, parameters):
+def store_parameters(cnx, parameters):
     for parameter in parameters:
         parameter_name = parameter[0]
         if not parameters_already_stored(cnx, parameter_name):
@@ -116,7 +116,7 @@ def store_new_parameters(cnx, parameters):
                     print(f"Parameter added to table with notif_id: {notif_id}")
 
                 except mysql.connector.Error as err:
-                    print(f"store_new_parameters error: {err}")
+                    print(f"store_parameters error: {err}")
                 finally:
                     cursor.close()
 
