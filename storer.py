@@ -11,15 +11,24 @@ def store_stuff(notif_info):
     cnx = connect_to_db()
     if cnx is not None:
         try:
-            # STEP 1: Check if user already exists, if they don't store them in the database!
-            if not does_user_already_exist(cnx, user_id):
-                add_user(cnx, user_id, first_name)
+            # STEP 1: Checks if user already exists, if they don't store them in the database!
+            handle_user(cnx, user_id, first_name)
             # STEP 2: add the notification to the database!
 
         except mysql.connector.Error as err:
             print(f"Error: {err}")
         finally:
             cnx.close()
+
+######## STORAGE FUNCTIONS ############
+
+# checks if a user is new or not and acts accordingly
+def handle_user(cnx, user_id, first_name):
+    if not does_user_already_exist(cnx, user_id):
+        add_user(cnx, user_id, first_name)
+
+
+
 
 ####### STORAGE HELPER FUNCTIONS ###########
 
