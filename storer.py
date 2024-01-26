@@ -26,6 +26,17 @@ def store_stuff(notif_info):
             cursor.close()
             cnx.close()
 
+def check_if_user_already_exists(cnx, user_id):
+    try:
+        cursor = cnx.cursor()
+        # Check if user already exists
+        check_user_query = "SELECT user_id FROM users WHERE user_id = %s"
+        cursor.execute(check_user_query, (user_id,))
+        user_exists = cursor.fetchone()
+    except mysql.connector.Error as err:
+            print(f"Error when checking if user already exists: {err}")
+
+
 def connect_to_db():
     load_dotenv()
     DB_USER = os.getenv('DB_USER')
@@ -65,5 +76,16 @@ def add_user(cnx, user_id, user_first_name):
     finally:
         cursor.close()
 
-# Example usage
-# store_stuff([(12345, 'John')])
+def store_condition_and_return_id(cnx, column_name, comparator, threshold):
+    try:
+        cursor = cnx.cursor()
+        add_condition_query="""
+        INSERT INTO conditions (column_name, comparator, threshold)
+        values (%s, %s, %s);
+        """
+        cursor.execute(add_condition_query, (column_name, comparator, threshold))
+        print(f"condition added")
+    except mysql.connector.Error as err:
+        print(f"Error:{err}")
+    finally:
+        cursor.close()
