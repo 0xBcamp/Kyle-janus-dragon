@@ -143,6 +143,7 @@ def extract_parameters_from_msg_array(msg_array):
     else:
         return False
 
+#function to get condition from message array
 def extract_condition_from_msg_array(msg_array):
     raw_condition = ''.join(msg_array[len(msg_array) - 1:])  # Join the last element of the array into a single string
     condition = re.split(r'(<=|>=|<|>|=)', raw_condition)  # Split using regular expression
