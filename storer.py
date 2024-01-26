@@ -5,14 +5,19 @@ from dotenv import load_dotenv
 ######## MAIN FUNCTION TO CALL FROM BOT.PY ########
 
 #main function to store everything!
+
+# notif_info should be an array in the following form:
+# notif_info = [[user_id, first_name], query id, [['parameter name', parameter value], ['parameter name', parameter value], …], [column_name, comparator, threshold]]
+
 def store_stuff(notif_info):
-    user_id, first_name = notif_info[0][0], notif_info[0][1]
+    user_info = extract_notif_info(notif_info)
+    #user_info, query_id, parameters, condition_info = extract_notif_info(notif_info)
 
     cnx = connect_to_db()
     if cnx is not None:
         try:
             # STEP 1: Checks if user already exists, if they don't store them in the database!
-            handle_user(cnx, user_id, first_name)
+            handle_user(cnx, user_info)
             # STEP 2: add the notification to the database!
 
         except mysql.connector.Error as err:
@@ -23,11 +28,14 @@ def store_stuff(notif_info):
 ######## STORAGE FUNCTIONS ############
 
 # checks if a user is new or not and acts accordingly
-def handle_user(cnx, user_id, first_name):
-    if not does_user_already_exist(cnx, user_id):
-        add_user(cnx, user_id, first_name)
+def handle_user(cnx, user_info):
+    print(user_info)
+    if not does_user_already_exist(cnx, user_info[0]):
+        add_user(cnx, user_info[0], user_info[1])
 
-
+# adds notification and all its data to the database
+def add_notif(cnx, conditions):
+    condition_id = store_condition_and_return_id(conditions)
 
 
 ####### STORAGE HELPER FUNCTIONS ###########
@@ -50,13 +58,14 @@ def add_user(cnx, user_id, user_first_name):
         cursor.close()
 
 #function to store conditions
-def store_condition_and_return_id(cnx, column_name, comparator, threshold):
+def store_condition_and_return_id(cnx, conditions):
     try:
         cursor = cnx.cursor()
         add_condition_query="""
         INSERT INTO conditions (column_name, comparator, threshold)
         values (%s, %s, %s);
         """
+        column_name, comparator, threshold = conditions
         cursor.execute(add_condition_query, (column_name, comparator, threshold))
         print(f"condition added")
     except mysql.connector.Error as err:
@@ -105,3 +114,14 @@ def connect_to_db():
     except mysql.connector.Error as err:
         print(f"Error: {err}")
         return None
+
+# notif_info should be an array in the following form:
+# notif_info = [[user_id, first_name], query id, [['parameter name', parameter value], ['parameter name', parameter value], …], [column_name, comparator, threshold]]
+
+def extract_notif_info(notif_info):
+    user_info = notif_info[0]
+    # query_id = notif_info[1]
+    # parameters = notif_info[2]
+    # condition_info = notif_info[3]
+    # return user_info, query_id, parameters, condition_info
+    return user_info
