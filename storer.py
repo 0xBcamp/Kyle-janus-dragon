@@ -8,34 +8,31 @@ def store_stuff(notif_info):
     cnx = connect_to_db()
     if cnx is not None:
         try:
-            cursor = cnx.cursor()
-            # Check if user already exists
-            check_user_query = "SELECT user_id FROM users WHERE user_id = %s"
-            cursor.execute(check_user_query, (user_id,))
-            user_exists = cursor.fetchone()
-
-            if user_exists:
-                print(f"User already exists with user_id: {user_id}")
-            else:
-                # User does not exist, add the user
+            # STEP 1: Check if user already exists, if they don't store them in the database!
+            if not does_user_already_exist(cnx, user_id):
                 add_user(cnx, user_id, first_name)
+            # STEP 2: add the notification to the database!
 
         except mysql.connector.Error as err:
             print(f"Error: {err}")
         finally:
-            cursor.close()
             cnx.close()
 
-def check_if_user_already_exists(cnx, user_id):
+#function to 
+def does_user_already_exist(cnx, user_id):
     try:
         cursor = cnx.cursor()
         # Check if user already exists
         check_user_query = "SELECT user_id FROM users WHERE user_id = %s"
         cursor.execute(check_user_query, (user_id,))
         user_exists = cursor.fetchone()
+        cursor.close()
+        if user_exists:
+            print(f"User with id {user_id} already in database!")
+        return user_exists is not None
     except mysql.connector.Error as err:
             print(f"Error when checking if user already exists: {err}")
-
+            return False
 
 def connect_to_db():
     load_dotenv()
