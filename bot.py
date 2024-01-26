@@ -78,9 +78,9 @@ def create_bot():
     
     @bot.message_handler(commands=['num-large-erc20-holders'])
     def num_large_erc20_holders(message):
-        #get user info:
-        message_info = extract_all_info_from_message(message, 3368257)
-        print(message_info)
+        #get all info for the notification:
+        notif_info = extract_all_info_from_message(message, 3368257)
+        store_stuff(notif_info)
     
     return bot
 

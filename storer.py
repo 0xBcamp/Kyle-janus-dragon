@@ -10,8 +10,8 @@ from dotenv import load_dotenv
 # notif_info = [[user_id, first_name], query id, [['parameter name', parameter value], ['parameter name', parameter value], …], [column_name, comparator, threshold]]
 
 def store_stuff(notif_info):
-    user_info = extract_notif_info(notif_info)
-    #user_info, query_id, parameters, condition_info = extract_notif_info(notif_info)
+    user_info, query_id, parameters, condition_info = extract_notif_info(notif_info)
+    print(user_info, query_id, parameters, condition_info)
 
     cnx = connect_to_db()
     if cnx is not None:
@@ -120,8 +120,7 @@ def connect_to_db():
 
 def extract_notif_info(notif_info):
     user_info = notif_info[0]
-    # query_id = notif_info[1]
-    # parameters = notif_info[2]
-    # condition_info = notif_info[3]
-    # return user_info, query_id, parameters, condition_info
-    return user_info
+    query_id = notif_info[1]
+    parameters = notif_info[2]
+    condition_info = notif_info[3]
+    return user_info, query_id, parameters, condition_info
