@@ -27,7 +27,7 @@ def store_stuff(notif_info):
 
 # checks if a user is new or not and acts accordingly
 def check_user(cnx, user_info):
-    if not does_user_already_exist(cnx, user_info[0]):
+    if not user_already_stored(cnx, user_info[0]):
         add_user(cnx, user_info[0], user_info[1])
     
 # adds notification and all its data to the database
@@ -37,11 +37,13 @@ def add_notif(cnx, user_info, query_id, parameters, condition):
     condition_id = store_condition_and_return_id(cnx, condition)
     #Step 2: create a new notification
     notif_id = store_notif_and_return_id(cnx, user_id, query_id, condition_id)
+    #step 3: add parameters
+    store_parameters(cnx, parameters)
 
 
 ####### STORAGE HELPER FUNCTIONS ###########
 
-#function to store a new user to the database
+#function to store a new user to users
 def add_user(cnx, user_id, user_first_name):
     try:
         cursor = cnx.cursor()
@@ -92,26 +94,67 @@ def store_notif_and_return_id(cnx, user_id, query_id, condition_id):
         print(f"Notif added to notifs table with notif_id: {notif_id}")
 
     except mysql.connector.Error as err:
-        print(f"store_notif_error: {err}")
+        print(f"store_notif error: {err}")
     finally:
         cursor.close()
+
+
+#function to add parameters
+def store_parameters(cnx, parameters):
+    for parameter in parameters:
+        parameter_name = parameter[0]
+        if not parameters_already_stored(cnx, parameter_name):
+                try:
+                    cursor = cnx.cursor()
+                    add_notif_query = """
+                    INSERT INTO query_parameters (parameter_name)
+                    VALUES (%s);
+                    """
+                    cursor.execute(add_notif_query, (parameter_name,))
+                    cnx.commit()
+                    notif_id = cursor.lastrowid
+                    print(f"Parameter added to table with notif_id: {notif_id}")
+
+                except mysql.connector.Error as err:
+                    print(f"store_parameters error: {err}")
+                finally:
+                    cursor.close()
+
+
 #######    HELPER FUNCTIONS      ###########
 
 #function to check if the user already exists in the database!
-def does_user_already_exist(cnx, user_id):
+def user_already_stored(cnx, user_id):
     try:
         cursor = cnx.cursor()
         # Check if user already exists
         check_user_query = "SELECT user_id FROM users WHERE user_id = %s"
         cursor.execute(check_user_query, (user_id,))
-        user_exists = cursor.fetchone()
+        user_stored = cursor.fetchone()
         cursor.close()
-        if user_exists:
+        if user_stored:
             print(f"User with id {user_id} already in database!")
-        return user_exists is not None
+        return user_stored is not None
     except mysql.connector.Error as err:
             print(f"Error when checking if user already exists: {err}")
             return False
+
+#function to check if parameters are already stored
+def parameters_already_stored(cnx, parameter_name):
+    try:
+        cursor = cnx.cursor()
+        #check if the parameter already exists
+        check_parameter_query = "SELECT param_name_id FROM query_parameters WHERE parameter_name = %s"
+        cursor.execute(check_parameter_query, (parameter_name,))
+        parameter_stored = cursor.fetchone()
+        cursor.close()
+        if parameter_stored:
+            print(f"parameter with name {parameter_name} already stored")
+        return parameter_stored is not None
+    except mysql.connector.Error as err:
+            print(f"Error when checking if parameter already exists: {err}")
+            return False
+    
 
 #function to connect to the database, returns a connection instance
 def connect_to_db():
