@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 from storer import store_stuff
 # Load environment variables
 
+# git clone -b store_in_db https://github.com/0xBcamp/Kyle-janus-dragon.git
+
 load_dotenv()
 TG_API_KEY = os.getenv('TG_API_KEY')
 CMC_API_KEY = os.getenv('CMC_API_KEY')
