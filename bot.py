@@ -4,7 +4,7 @@ import telebot
 from dotenv import load_dotenv
 from storer import store_stuff
 # Load environment variables
-#test
+# test 2
 load_dotenv()
 TG_API_KEY = os.getenv('TG_API_KEY')
 CMC_API_KEY = os.getenv('CMC_API_KEY')
