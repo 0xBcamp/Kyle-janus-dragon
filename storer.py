@@ -11,9 +11,6 @@ from dotenv import load_dotenv
 
 def store_stuff(notif_info):
     user_info, query_id, parameters, condition_info = extract_notif_info(notif_info)
-    print(user_info, query_id, parameters, condition_info)
-    print(query_id)
-
     cnx = connect_to_db()
     if cnx is not None:
         try:
@@ -54,7 +51,7 @@ def add_user(cnx, user_id, user_first_name):
         """
         cursor.execute(add_user_query, (user_id, user_first_name))
         cnx.commit()
-        print(f"User added with user_id: {user_id}")
+        print(f"User added to users table with user_id: {user_id}")
 
     except mysql.connector.Error as err:
         print(f"add_user error: {err}")
@@ -74,7 +71,7 @@ def store_condition_and_return_id(cnx, conditions):
         cnx.commit()
         # Get the last inserted id
         condition_id = cursor.lastrowid
-        print(f"condition added with id: {condition_id}")
+        print(f"Condition added to conditions table with condition_id: {condition_id}")
         return condition_id
     except mysql.connector.Error as err:
         print(f"store_condition error:{err}")
@@ -92,7 +89,7 @@ def store_notif_and_return_id(cnx, user_id, query_id, condition_id):
         cursor.execute(add_notif_query, (user_id, query_id, condition_id ))
         cnx.commit()
         notif_id = cursor.lastrowid
-        print(f"notif added with notif_id: {notif_id}")
+        print(f"Notif added to notifs table with notif_id: {notif_id}")
 
     except mysql.connector.Error as err:
         print(f"store_notif_error: {err}")
