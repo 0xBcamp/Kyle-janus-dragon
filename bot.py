@@ -73,7 +73,6 @@ def create_bot():
         msg_text = message.text.split(' ', 1)
         user_info = get_user_info(message)
         store_stuff([user_info])
-        print(msg_text)
         if len(msg_text) > 1:
             user_message = msg_text[1:]
             print(user_message)
@@ -82,4 +81,8 @@ def create_bot():
         else:
             bot.reply_to(message, "Please provide a message to send.")
 
+    @bot.message_handler(commands=['num-large-erc20-holders'])
+    def num_large_erc20_holders(message):
+        #get user info:
+        user_info = get_user_info(message)
     return bot
