@@ -4,7 +4,7 @@ import telebot
 from dotenv import load_dotenv
 from storer import store_stuff
 # Load environment variables
-
+# test
 # git clone -b store_in_db https://github.com/0xBcamp/Kyle-janus-dragon.git
 
 load_dotenv()
