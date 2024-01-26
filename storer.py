@@ -29,7 +29,6 @@ def store_stuff(notif_info):
 
 # checks if a user is new or not and acts accordingly
 def handle_user(cnx, user_info):
-    print(user_info)
     if not does_user_already_exist(cnx, user_info[0]):
         add_user(cnx, user_info[0], user_info[1])
 

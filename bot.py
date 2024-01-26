@@ -97,7 +97,6 @@ def create_bot():
         user_message = extract_msg_text(message)
         if user_message:
             print(user_message)
-            bot.reply_to(message, user_message)
             bot.reply_to(message, f"Hello, {user_info[1]}! Your user ID is {user_info[0]}")
         else:
             bot.reply_to(message, "Please provide a message to send.")
