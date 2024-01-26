@@ -34,8 +34,9 @@ def handle_user(cnx, user_info):
 
 # adds notification and all its data to the database
 def add_notif(cnx, conditions):
+    #Step 1: store condition and get its id
     condition_id = store_condition_and_return_id(conditions)
-
+    #Step 2: 
 
 ####### STORAGE HELPER FUNCTIONS ###########
 
