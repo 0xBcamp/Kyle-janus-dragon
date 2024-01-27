@@ -62,6 +62,7 @@ def create_bot():
     
     return bot
 
+
 ########## HELPER FUNCTIONS ##########
 # Get Bitcoin price function
 def get_bitcoin_price():
