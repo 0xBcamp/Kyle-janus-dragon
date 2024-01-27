@@ -4,41 +4,14 @@ import telebot
 from dotenv import load_dotenv
 from storer import store_stuff
 import re
-# Load environment variables
-# test
-# git clone -b store_in_db https://github.com/0xBcamp/Kyle-janus-dragon.git
 
 load_dotenv()
 TG_API_KEY = os.getenv('TG_API_KEY')
 CMC_API_KEY = os.getenv('CMC_API_KEY')
 url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
 
-# Get Bitcoin price function
-def get_bitcoin_price():
-    parameters = {
-        'start':'1',
-        'limit':'2',
-        'convert':'USD'
-    }
-    headers = {
-        'Accepts': 'application/json',
-        'X-CMC_PRO_API_KEY': CMC_API_KEY,
-    }
-
-    try:
-        response = requests.get(url, headers=headers, params=parameters)
-        response.raise_for_status()  # Raise an exception for bad requests
-        data = response.json()
-
-        # Extract the Bitcoin price from the response
-        bitcoin_price = data['data'][0]['quote']['USD']['price']
-
-        return bitcoin_price
-
-    except requests.exceptions.RequestException as e:
-        print(f"Error fetching Bitcoin price: {e}")
-        return None
-
+###### CREATE_BOT() ########
+#function to initialize bot!
 def create_bot():
     bot = telebot.TeleBot(TG_API_KEY)
 
@@ -137,3 +110,30 @@ def extract_condition_from_msg_array(msg_array):
     condition = re.split(r'(<=|>=|<|>|=)', raw_condition)  # Split using regular expression
     condition = [c for c in condition if c]  # Remove empty strings from the result
     return condition
+
+########## ADDITIONAL HELPER FUNCTIONS ##########
+# Get Bitcoin price function
+def get_bitcoin_price():
+    parameters = {
+        'start':'1',
+        'limit':'2',
+        'convert':'USD'
+    }
+    headers = {
+        'Accepts': 'application/json',
+        'X-CMC_PRO_API_KEY': CMC_API_KEY,
+    }
+
+    try:
+        response = requests.get(url, headers=headers, params=parameters)
+        response.raise_for_status()  # Raise an exception for bad requests
+        data = response.json()
+
+        # Extract the Bitcoin price from the response
+        bitcoin_price = data['data'][0]['quote']['USD']['price']
+
+        return bitcoin_price
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching Bitcoin price: {e}")
+        return None
