@@ -19,7 +19,7 @@ def store_stuff(notif_info):
             # STEP 2: add the notification to the database!
             add_notif(cnx, user_info, query_id, parameters, condition_info)
         except mysql.connector.Error as err:
-            print(f"Error: {err}")
+            print(f"Error when general storing: {err}")
         finally:
             cnx.close()
 
@@ -37,8 +37,9 @@ def add_notif(cnx, user_info, query_id, parameters, condition):
     condition_id = store_condition_and_return_id(cnx, condition)
     #Step 2: store a new notification in notifs table
     notif_id = store_notif_and_return_id(cnx, user_id, query_id, condition_id)
+    print(notif_id)
     #step 3: store parameters in notifs
-    store_parameters(cnx, parameters)
+    store_parameters(cnx, notif_id, parameters)
 
 
 ####### STORAGE HELPER FUNCTIONS ###########
@@ -92,34 +93,73 @@ def store_notif_and_return_id(cnx, user_id, query_id, condition_id):
         cnx.commit()
         notif_id = cursor.lastrowid
         print(f"Notif added to notifs table with notif_id: {notif_id}")
+        return notif_id
 
     except mysql.connector.Error as err:
         print(f"store_notif error: {err}")
     finally:
         cursor.close()
 
+def store_parameters(cnx, notif_id, parameters):
 
-#function to add parameters
-def store_parameters(cnx, parameters):
+    param_name_ids = get_parameter_name_ids(cnx, parameters)
+    for i in range(0, len(parameters)):
+        try:
+            cursor = cnx.cursor()
+            add_notif_query = """
+            INSERT INTO parameter_values (notif_id, param_name_id, parameter_value)
+            VALUES (%s, %s, %s);
+            """
+            param_name_id = param_name_ids[i]
+            param_value = parameters[i][1]
+            cursor.execute(add_notif_query, (notif_id, param_name_id, param_value))
+            cnx.commit()
+            print(f"parameter values added to parameter_values table: ({param_name_id}, {param_value})")
+
+        except mysql.connector.Error as err:
+            print(f"store_parameters error: {err}")
+        finally:
+            cursor.close()
+
+#function to get parameter_name ids and add to parameter_names if necessary
+def get_parameter_name_ids(cnx, parameters):
+    parameter_ids = []
     for parameter in parameters:
-        parameter_name = parameter[0]
-        if not parameters_already_stored(cnx, parameter_name):
-                try:
-                    cursor = cnx.cursor()
-                    add_notif_query = """
-                    INSERT INTO query_parameters (parameter_name)
-                    VALUES (%s);
-                    """
-                    cursor.execute(add_notif_query, (parameter_name,))
-                    cnx.commit()
-                    notif_id = cursor.lastrowid
-                    print(f"Parameter added to table with notif_id: {notif_id}")
+        cursor = None
+        try:
+            parameter_name = parameter[0]
+            cursor = cnx.cursor()
 
-                except mysql.connector.Error as err:
-                    print(f"store_parameters error: {err}")
-                finally:
-                    cursor.close()
+            # Check if parameters already stored
+            if not parameters_already_stored(cnx, parameter_name):
+                add_notif_query = """
+                INSERT INTO parameter_names (parameter_name)
+                VALUES (%s);
+                """
+                cursor.execute(add_notif_query, (parameter_name,))
+                cnx.commit()
+                notif_id = cursor.lastrowid
+                print(f"Parameter added to table with notif_id: {notif_id}")
+                parameter_ids.append(notif_id)
+            else:
+                get_parameter_name_id_query = """
+                SELECT param_name_id FROM parameter_names WHERE parameter_name = %s
+                """
+                cursor.execute(get_parameter_name_id_query, (parameter_name,))
+                parameter_name_id = cursor.fetchone()
+                if parameter_name_id:
+                    parameter_ids.append(parameter_name_id[0])
 
+        except mysql.connector.Error as err:
+            print(f"store_new_parameters error: {err}")
+        finally:
+            if cursor:
+                cursor.close()
+
+    return parameter_ids
+
+
+            
 
 #######    HELPER FUNCTIONS      ###########
 
@@ -142,18 +182,17 @@ def user_already_stored(cnx, user_id):
 #function to check if parameters are already stored
 def parameters_already_stored(cnx, parameter_name):
     try:
-        cursor = cnx.cursor()
-        #check if the parameter already exists
-        check_parameter_query = "SELECT param_name_id FROM query_parameters WHERE parameter_name = %s"
+        cursor = cnx.cursor(buffered=True)
+        check_parameter_query = "SELECT param_name_id FROM parameter_names WHERE parameter_name = %s"
         cursor.execute(check_parameter_query, (parameter_name,))
         parameter_stored = cursor.fetchone()
-        cursor.close()
-        if parameter_stored:
-            print(f"parameter with name {parameter_name} already stored")
         return parameter_stored is not None
     except mysql.connector.Error as err:
-            print(f"Error when checking if parameter already exists: {err}")
-            return False
+        print(f"Error when checking if parameter already exists: {err}")
+        return False
+    finally:
+        cursor.close()
+
     
 
 #function to connect to the database, returns a connection instance
@@ -177,7 +216,7 @@ def connect_to_db():
         print("Connection established")
         return cnx
     except mysql.connector.Error as err:
-        print(f"Error: {err}")
+        print(f"Error when connecting to DB: {err}")
         return None
 
 # notif_info should be an array in the following form:
