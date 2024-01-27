@@ -2,7 +2,7 @@ import os
 import requests
 import telebot
 from dotenv import load_dotenv
-from bot.store_stuff import store_stuff
+from bot.bot_functions.store_stuff import store_stuff
 import re
 
 load_dotenv()
