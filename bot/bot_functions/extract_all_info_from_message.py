@@ -1,6 +1,6 @@
 """
-store_stuff function
-Usage: Called by bot.py to store the necessary information (user_id, query_id, query parameters, and condition) into the database
+extract_all_info_from_message
+Usage: called by bot.py to extract all the information from the message into an array to pass into store_stuff
 """
 
 import re

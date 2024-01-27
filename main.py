@@ -1,3 +1,8 @@
+"""
+main.py
+Usage: call with "python3 main.py"
+"""
+
 from bot.bot import create_bot
 
 def main():

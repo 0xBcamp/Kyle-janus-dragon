@@ -1,3 +1,8 @@
+"""
+create_bot()
+Usage: function called by main.py to initialize the bot and specify the bot's functionality
+"""
+
 import os
 import requests
 import telebot
@@ -57,7 +62,7 @@ def create_bot():
     
     return bot
 
-########## ADDITIONAL HELPER FUNCTIONS ##########
+########## HELPER FUNCTIONS ##########
 # Get Bitcoin price function
 def get_bitcoin_price():
     parameters = {
