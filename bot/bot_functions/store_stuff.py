@@ -1,3 +1,8 @@
+"""
+store_stuff function
+Usage: Called by bot.py to store the necessary information (user_id, query_id, query parameters, and condition) into the database
+"""
+
 import mysql.connector
 import os
 from dotenv import load_dotenv
