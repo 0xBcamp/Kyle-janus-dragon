@@ -40,7 +40,7 @@ def create_bot():
         bot.reply_to(message, "Goodnight 🌙")
 
     @bot.message_handler(commands=['gm'])
-    def a(message):
+    def gm(message):
         bot.reply_to(message, "Good morning ☀️")
 
     @bot.message_handler(commands=['btc'])
