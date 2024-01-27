@@ -242,7 +242,6 @@ def parameter_name_already_stored(cnx, parameter_name):
     finally:
         cursor.close()
 
-
 #function to initialize a connection to the database
 def connect_to_db():
     load_dotenv()
