@@ -23,7 +23,7 @@ def get_user_notifs(user_id):
         # Create a cursor to execute SQL queries
         cursor = connection.cursor()
 
-        # Example query to select data from table
+        # query to get notifications from notifs
         query = f"""
         
         SELECT notifs.notif_name
