@@ -42,9 +42,7 @@ def check_condition(resulting_statistic, notif_id):
         # Fetch all the rows
         result = cursor.fetchall()
 
-        # Print the data
-        for row in result:
-            print(row)
+        row = result[0]
         
         res = evaluate(resulting_statistic, row[1], row[0])
 
