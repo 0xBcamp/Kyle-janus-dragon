@@ -16,11 +16,9 @@ def store_stuff(notif_info):
     # notif_info = [[user_id, first_name], query id, [['parameter name', parameter value], ['parameter name', parameter value], …], [column_name, comparator, threshold]]
 
     #get variables to store
-    user_info, query_id, parameters, condition_info = extract_notif_info(notif_info)
-
+    user_info, query_id, parameters, condition_info, notif_name = extract_notif_info(notif_info)
     #initialize main connection
     cnx = connect_to_db()
-
     #if connection successful:
     if cnx is not None:
 
@@ -28,7 +26,7 @@ def store_stuff(notif_info):
             # STEP 1: Checks if user already exists, if they don't store them in the database!
             check_user_and_store_if_new(cnx, user_info)
             # STEP 2: add the notification to the database!
-            store_notification(cnx, user_info, query_id, parameters, condition_info)
+            store_notification(cnx, user_info, query_id, parameters, condition_info, notif_name)
 
         except mysql.connector.Error as err:
             print(f"Error in store_stuff: {err}")
@@ -75,12 +73,12 @@ def add_new_user(cnx, user_id, user_first_name):
 #### STORE_NOTIFICATION() #####
         
 # adds notification and all its data to the database
-def store_notification(cnx, user_info, query_id, parameters, condition):
+def store_notification(cnx, user_info, query_id, parameters, condition, notif_name):
     user_id = user_info[0]
     #Step 1: store condition in conditions table and get its id
     condition_id = store_condition_and_return_id(cnx, condition)
     #Step 2: store the new notification in notifs table
-    notif_id = store_notif_and_return_id(cnx, user_id, query_id, condition_id)
+    notif_id = store_notif_and_return_id(cnx, user_id, query_id, condition_id, notif_name)
     #step 3: store parameters in notifs
     store_parameters(cnx, notif_id, parameters)
 
@@ -129,18 +127,18 @@ def store_condition_and_return_id(cnx, conditions):
         cursor.close()
 
 #function to store notif in notif table and return its notif_id
-def store_notif_and_return_id(cnx, user_id, query_id, condition_id):
+def store_notif_and_return_id(cnx, user_id, query_id, condition_id, notif_name):
     try:
         cursor = cnx.cursor()
         add_notif_query = """
-        INSERT INTO notifs (user_id, query_id, condition_id)
-        VALUES (%s, %s, %s);
+        INSERT INTO notifs (user_id, query_id, condition_id, notif_name)
+        VALUES (%s, %s, %s, %s);
         """
-        cursor.execute(add_notif_query, (user_id, query_id, condition_id ))
+        cursor.execute(add_notif_query, (user_id, query_id, condition_id, notif_name))
         cnx.commit()
         #get the notification's notif_id
         notif_id = cursor.lastrowid
-        print(f"Added to notifs table: {notif_id}")
+        print(f"Added to notifs table: {notif_id}. {notif_name}")
         return notif_id
 
     except mysql.connector.Error as err:
@@ -153,6 +151,7 @@ def store_parameters(cnx, notif_id, parameters):
     
     #store parameter names if they are new and get all of their id's in an ordered array
     param_name_ids = store_parameter_names_and_get_ids(cnx, parameters)
+    print(param_name_ids)
     #loop through each parameter name and its parameter name id to store it in parameter values!
     for i in range(0, len(parameters)):
         try:
@@ -211,7 +210,7 @@ def store_parameter_names_and_get_ids(cnx, parameters):
         finally:
             if cursor:
                 cursor.close()
-
+    print(parameter_ids)
     return parameter_ids   
 
 #######    HELPER FUNCTIONS      ###########
@@ -277,4 +276,5 @@ def extract_notif_info(notif_info):
     query_id = notif_info[1]
     parameters = notif_info[2]
     condition_info = notif_info[3]
-    return user_info, query_id, parameters, condition_info
+    notif_name = notif_info[4]
+    return user_info, query_id, parameters, condition_info, notif_name

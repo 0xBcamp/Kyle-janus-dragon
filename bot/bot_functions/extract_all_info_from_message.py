@@ -12,14 +12,14 @@ def extract_all_info_from_message(message, query_id):
     #get user info
     user_info = get_user_info(message)
     #extract message into an array
-    msg_array = extract_msg_into_array(message)
+    notif_parameters, notif_name = extract_msg_into_array(message)
     #get parameters from message array
-    parameters = extract_parameters_from_msg_array(msg_array)
+    parameters = extract_parameters_from_msg_array(notif_parameters)
     #get condition from message array
-    condition = extract_condition_from_msg_array(msg_array)
+    condition = extract_condition_from_msg_array(notif_parameters)
 
     #LATER, MAYBE MAKE A DICTIONARY WITH PRESET:QUERY_ID KEY VALUE PAIRS?
-    message_info = user_info, query_id , parameters, condition
+    message_info = user_info, query_id , parameters, condition, notif_name
     return message_info
 
 ###### MESSAGE EXTRACTION HELPER FUNCTIONS ##########
@@ -30,13 +30,20 @@ def get_user_info(message):
     first_name = message.from_user.first_name
     return [user_id, first_name]
 
-#function to extract message into an array
+# Function to extract message into an array
 def extract_msg_into_array(message):
-    msg_text = message.text.split(' ')
-    if len(msg_text) > 1:
-        return msg_text[1:]
+    msg_text = message.text.split('"')
+    notif_name = msg_text[len(msg_text) - 2]
+    notif_parameters = msg_text[0]
+    
+    # Split each element in the array on spaces
+    notif_parameters_array= notif_parameters.split(' ')
+    
+    if len(notif_parameters_array) >= 1:
+        return notif_parameters_array[1:len(notif_parameters_array) - 1], notif_name
     else:
         return False
+
 
 #function to get parameters from message array
 def extract_parameters_from_msg_array(msg_array):

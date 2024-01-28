@@ -60,6 +60,13 @@ def create_bot():
         notif_info = extract_all_info_from_message(message, 3368257)
         store_stuff(notif_info)
     
+    @bot.message_handler(commands=['my-notifs'])
+    def my_notifs(message):
+        notif_string = "Here are your notifications"
+        
+        bot.reply_to(message, f"Here are your notifications")
+
+    
     return bot
 
 

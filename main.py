@@ -33,15 +33,19 @@ async def main():
     # Start the bot's polling method in a separate thread
     polling_task = asyncio.create_task(start_polling_in_thread(bot))
 
-    # Start the query loop
-    query_task = asyncio.create_task(start_query_loop())
+    # # Start the query loop
+    # query_task = asyncio.create_task(start_query_loop())
 
+    # while True:
+    #     # wait for results from query loop
+    #     resulting_statistic, notif_id = await result_queue.get()
+    #     # check if the results meet the condition
+    #     if check_condition(resulting_statistic, notif_id):
+    #         print("send message to owner of that notif_id!")
+    # Keep the main coroutine running indefinitely
     while True:
-        # wait for results from query loop
-        resulting_statistic, notif_id = await result_queue.get()
-        # check if the results meet the condition
-        if check_condition(resulting_statistic, notif_id):
-            print("send message to owner of that notif_id!")
+        await asyncio.sleep(1)  # Sleep for a short time to prevent high CPU usage
+
 
 if __name__ == '__main__':
     asyncio.run(main())
