@@ -70,4 +70,3 @@ def evaluate(new_value, operator, threshold):
     
     return eval(comparison_string)
 
-print(check_condition(99999999, 51))
