@@ -23,7 +23,7 @@ def check_condition(resulting_statistic, notif_id):
 
         if connection.is_connected():
             print("Connected to MySQL database")
-
+        
         # Create a cursor to execute SQL queries
         cursor = connection.cursor()
 

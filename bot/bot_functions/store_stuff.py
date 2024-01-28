@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 def store_stuff(notif_info):
 
     # notif_info should be an array in the following form:
-    # notif_info = [[user_id, first_name], query id, [['parameter name', parameter value], ['parameter name', parameter value], …], [column_name, comparator, threshold]]
+    # notif_info = [[user_id, first_name], query id, [['parameter name', parameter value], ['parameter name', parameter value], …], [column_name, comparator, threshold], notif_name]
 
     #get variables to store
     user_info, query_id, parameters, condition_info, notif_name = extract_notif_info(notif_info)
@@ -138,7 +138,7 @@ def store_notif_and_return_id(cnx, user_id, query_id, condition_id, notif_name):
         cnx.commit()
         #get the notification's notif_id
         notif_id = cursor.lastrowid
-        print(f"Added to notifs table: {notif_id}. {notif_name}")
+        print(f"Added notification #{notif_id}: {notif_name}")
         return notif_id
 
     except mysql.connector.Error as err:
@@ -151,7 +151,6 @@ def store_parameters(cnx, notif_id, parameters):
     
     #store parameter names if they are new and get all of their id's in an ordered array
     param_name_ids = store_parameter_names_and_get_ids(cnx, parameters)
-    print(param_name_ids)
     #loop through each parameter name and its parameter name id to store it in parameter values!
     for i in range(0, len(parameters)):
         try:
@@ -210,7 +209,6 @@ def store_parameter_names_and_get_ids(cnx, parameters):
         finally:
             if cursor:
                 cursor.close()
-    print(parameter_ids)
     return parameter_ids   
 
 #######    HELPER FUNCTIONS      ###########

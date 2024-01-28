@@ -12,3 +12,20 @@
 # Examples
 - Unibot https://t.me/unibotscanner
 - Crypto Signal Scanner https://cryptosignalscanner.com
+
+# how to reset the database!
+-- Disable foreign key checks
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- Delete data from tables
+-- Replace 'table1', 'table2', etc., with your actual table names
+DELETE FROM conditions;
+DELETE FROM notifs;
+DELETE FROM parameter_names;
+DELETE FROM parameter_values;
+DELETE FROM users;
+
+-- ... add more DELETE statements for each table ...
+
+-- Re-enable foreign key checks
+SET FOREIGN_KEY_CHECKS = 1;

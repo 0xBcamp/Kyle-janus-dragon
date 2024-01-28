@@ -9,6 +9,7 @@ import telebot
 from dotenv import load_dotenv
 from bot.bot_functions.store_stuff import store_stuff
 from bot.bot_functions.extract_all_info_from_message import extract_all_info_from_message
+from bot.bot_functions.get_user_notifs import get_user_notifs
 
 load_dotenv()
 TG_API_KEY = os.getenv('TG_API_KEY')
@@ -63,8 +64,16 @@ def create_bot():
     @bot.message_handler(commands=['my-notifs'])
     def my_notifs(message):
         notif_string = "Here are your notifications"
-        
-        bot.reply_to(message, f"Here are your notifications")
+        user_id = message.from_user.id
+        notifications = get_user_notifs(user_id)
+        if len(notifications) == 0:
+            my_notifs_message = "You don't have any notifications yet!"
+        else:
+            my_notifs_message = f"Here are your notifications: \n"
+            for index, notification in enumerate(notifications):
+                my_notifs_message += f"{index+1}. {notification} \n"
+        bot.reply_to(message, my_notifs_message)
+
 
     
     return bot
