@@ -29,6 +29,7 @@ def create_bot():
         /gn --> Says goodnight\n
         /btc --> Returns the current price of bitcoin in USD\n
         /send --> Records your user_id in our database\n
+        /my-notifs --> See a list of your notifications! \n
         /help --> send this same message to see available commands
         """)
     
@@ -59,7 +60,10 @@ def create_bot():
     def num_large_erc20_holders(message):
         #get all info for the notification:
         notif_info = extract_all_info_from_message(message, 3368257)
-        store_stuff(notif_info)
+        if store_stuff(notif_info) == 2:
+            bot.reply_to(message, "Notification name already used! Name it something else!")
+        elif store_stuff(notif_info) == 3:
+            bot.reply_to(message, "Having trouble accessing our database, check in later!")
     
     @bot.message_handler(commands=['my-notifs'])
     def my_notifs(message):

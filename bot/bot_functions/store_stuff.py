@@ -19,8 +19,10 @@ def store_stuff(notif_info):
     user_info, query_id, parameters, condition_info, notif_name = extract_notif_info(notif_info)
     #initialize main connection
     cnx = connect_to_db()
+    if check_if_notif_name_exists(cnx, notif_name):
+        return 2
     #if connection successful:
-    if cnx is not None:
+    elif cnx is not None:
 
         try:
             # STEP 1: Checks if user already exists, if they don't store them in the database!
@@ -32,8 +34,10 @@ def store_stuff(notif_info):
             print(f"Error in store_stuff: {err}")
         finally:
             cnx.close()
+            return 1
     else:
         print("Can't connect to database server!")
+        return 3
 
 
 ######## USER STORAGE FUNCTIONS ############
@@ -267,6 +271,22 @@ def connect_to_db():
     except mysql.connector.Error as err:
         print(f"Error when connecting to DB: {err}")
         return None
+
+#function to check if a notification already has that name
+def check_if_notif_name_exists(cnx, notif_name):
+    try:
+        cursor = cnx.cursor()
+        # Check if user already exists
+        check_notif_query = "SELECT notif_name FROM notifs WHERE notif_name = %s"
+        cursor.execute(check_notif_query, (notif_name,))
+        notif_stored = cursor.fetchone()
+        cursor.close()
+        if notif_stored:
+            print(f"User with id {notif_name} already in database!")
+        return notif_stored is not None
+    except mysql.connector.Error as err:
+            print(f"Error when checking if user already exists: {err}")
+            return False
 
 #function to take the notif_info (in array form) and extract it into single variables to work with
 def extract_notif_info(notif_info):
