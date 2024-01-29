@@ -87,7 +87,7 @@ Preset Notifications:\n
         elif response_value == 3:
             bot.reply_to(message, "Having trouble accessing our database, check in later!")
         else:
-            bot.reply_to(message, f"""Number of large transactions in the last 24 hours: {response_value[1]} \nWe will let you know when the rate of large transactions passes {condition_info[2]}
+            bot.reply_to(message, f"""Current number of large transactions in the last 24 hours: {response_value[1]} \nWe will let you know when the rate of large transactions passes {condition_info[2]}
                                     """)
         
     @bot.message_handler(commands=['my-notifs'])
