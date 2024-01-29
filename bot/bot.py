@@ -7,7 +7,7 @@ import os
 import requests
 import telebot
 from dotenv import load_dotenv
-from bot.bot_functions.store_stuff import store_stuff, extract_notif_info
+from bot.bot_functions.store_stuff import store_stuff
 from bot.bot_functions.extract_all_info_from_message import extract_all_info_from_message
 from bot.bot_functions.get_user_notifs import get_user_notifs
 
@@ -49,6 +49,7 @@ Preset Notifications:\n
     
     @bot.message_handler(commands=['my-notifs'])
     def my_notifs(message):
+
         #get user_id
         user_id = message.from_user.id
         
@@ -104,4 +105,3 @@ def handle_notification_creation(bot, message, query_id, condition_text):
         return False
     else:
         bot.reply_to(message, f"Current number of {condition_text}: {current_value} \nWe will let you know when this value passes {threshold}.")
-    
