@@ -24,16 +24,16 @@ def create_bot():
     @bot.message_handler(commands=['help'])
     def help(message):
         bot.reply_to(message, """
-        Available Commands:\n
-        /gm --> Says good morning\n
-        /gn --> Says goodnight\n
-        /btc --> Returns the current price of bitcoin in USD\n
-        /send --> Records your user_id in our database\n
-        /my-notifs --> See a list of your notifications! \n
-        /help --> send this same message to see available commands
-        /num-large-erc20-holders --> parameters: (min_token_balance=int toke_address_to_analyze=address) conditions: (total_large_trades) \n 
-        /dex-large-transactions --> parameter: (large_transaction_amount=int) conditions: (	
-total_large_trades)
+            Available Commands:\n
+            /gm --> Says good morning\n
+            /gn --> Says goodnight\n
+            /btc --> Returns the current price of bitcoin in USD\n
+            /send --> Records your user_id in our database\n
+            /my-notifs --> See a list of your notifications! \n
+            /help --> send this same message to see available commands\n
+Preset Notifications:\n
+            /num-large-erc20-holders --> parameters: (min_token_balance=int toke_address_to_analyze=address) conditions: (total_large_trades)\n 
+            /dex-large-transactions --> parameter: (large_transaction_amount=int) conditions: (total_large_trades)\n
         """)
     
     @bot.message_handler(commands=['greet'])
