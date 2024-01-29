@@ -32,7 +32,7 @@ def create_bot():
             /my-notifs --> See a list of your notifications! \n
             /help --> send this same message to see available commands\n
 Preset Notifications:\n
-            /num-large-erc20-holders --> parameters: (min_token_balance=int toke_address_to_analyze=address) conditions: (total_large_trades)\n 
+            /num-large-erc20-holders --> parameters: (min_token_balance=int token_address_to_analyze=address) conditions: (total_large_holders)\n 
             /dex-large-transactions --> parameter: (large_transaction_amount=int) conditions: (total_large_trades)\n
         """)
     
