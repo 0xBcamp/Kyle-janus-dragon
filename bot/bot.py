@@ -11,6 +11,7 @@ from bot.bot_functions.store_stuff import store_stuff
 from bot.bot_functions.extract_all_info_from_message import extract_all_info_from_message
 from bot.bot_functions.get_user_notifs import get_user_notifs
 
+
 load_dotenv()
 TG_API_KEY = os.getenv('TG_API_KEY')
 CMC_API_KEY = os.getenv('CMC_API_KEY')
@@ -31,6 +32,7 @@ def create_bot():
         /send --> Records your user_id in our database\n
         /my-notifs --> See a list of your notifications! \n
         /help --> send this same message to see available commands
+        /num-large-erc20-holders --> parameters: (min_token_balance=int toke_address_to_analyze=address) conditions: (total_large_holders) 
         """)
     
     @bot.message_handler(commands=['greet'])
@@ -60,10 +62,15 @@ def create_bot():
     def num_large_erc20_holders(message):
         #get all info for the notification:
         notif_info = extract_all_info_from_message(message, 3368257)
-        if store_stuff(notif_info) == 2:
+        response_value = store_stuff(notif_info)
+        if response_value == 1:
+            bot.reply_to(message, "Parameters not valid for query!")
+        if response_value == 2:
             bot.reply_to(message, "Notification name already used! Name it something else!")
-        elif store_stuff(notif_info) == 3:
+        elif response_value == 3:
             bot.reply_to(message, "Having trouble accessing our database, check in later!")
+        else:
+            bot.reply_to(message, f"Current value: {response_value[1]}")
     
     @bot.message_handler(commands=['my-notifs'])
     def my_notifs(message):

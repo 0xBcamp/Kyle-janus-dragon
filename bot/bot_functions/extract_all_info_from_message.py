@@ -48,15 +48,16 @@ def extract_msg_into_array(message):
 #function to get parameters from message array
 def extract_parameters_from_msg_array(msg_array):
     parameters = []
-    #loop through everything except for last bit of message!!!!
+    # Loop through everything except for the last bit of message
     parameters_in_msg_array = msg_array[:len(msg_array) - 1]
     for parameter in parameters_in_msg_array:
         parameter_info = parameter.split('=', 1)
-        parameters.append(parameter_info)
+        parameters.append(tuple(parameter_info))  # Convert to tuple
     if len(parameters) >= 1:
         return parameters
     else:
         return False
+
 
 #function to get condition from message array
 def extract_condition_from_msg_array(msg_array):

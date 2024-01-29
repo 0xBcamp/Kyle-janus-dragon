@@ -6,6 +6,12 @@ Usage: Called by bot.py to store the necessary information (user_id, query_id, q
 import mysql.connector
 import os
 from dotenv import load_dotenv
+from dune_client.types import QueryParameter
+from dune_client.client import DuneClient
+from dune_client.query import QueryBase
+import os
+from dotenv import load_dotenv
+import logging
 
 ######## MAIN FUNCTION TO CALL FROM BOT.PY ########
 
@@ -17,6 +23,10 @@ def store_stuff(notif_info):
 
     #get variables to store
     user_info, query_id, parameters, condition_info, notif_name = extract_notif_info(notif_info)
+    value_or_not= check_if_queriable(query_id, parameters, condition_info)
+    if not value_or_not:
+        return 1
+    
     #initialize main connection
     cnx = connect_to_db()
     if check_if_notif_name_exists(cnx, notif_name):
@@ -34,7 +44,7 @@ def store_stuff(notif_info):
             print(f"Error in store_stuff: {err}")
         finally:
             cnx.close()
-            return 1
+            return [0, value_or_not]
     else:
         print("Can't connect to database server!")
         return 3
@@ -214,6 +224,62 @@ def store_parameter_names_and_get_ids(cnx, parameters):
             if cursor:
                 cursor.close()
     return parameter_ids   
+
+#######    CHECK IF THE NOTIFICATION PARAMETERS ARE QUERIABLE    ###########
+
+# Get the logger for the 'dune_client' library
+dune_logger = logging.getLogger('dune_client')
+
+# Set the logging level for the 'dune_client' logger to WARNING
+dune_logger.setLevel(logging.WARNING)
+
+# Load environment variables from .env file
+load_dotenv()
+
+def is_numeric(value):
+    try:
+        float(value)
+        return True
+    except ValueError:
+        return False
+
+def check_if_queriable(query_id, parameters, condition_info):
+    result_column = condition_info[0]
+    query_params = []
+    for param in parameters:
+        name, value = param
+        if is_numeric(value):
+            # Use number_type for numeric values
+            query_params.append(QueryParameter.number_type(name, value))
+        else:
+            # Use text_type for non-numeric values
+            query_params.append(QueryParameter.text_type(name, value))
+
+    query = QueryBase(
+        name="Sample Query",
+        query_id=query_id,
+        params=query_params
+    )
+
+    dune = DuneClient.from_env()
+    print('loading...')
+    try:
+        results = dune.run_query(query)
+
+        # save as Pandas Dataframe
+        results_df = dune.run_query_dataframe(query)
+
+        # Check if the result_column exists in the DataFrame
+        if result_column in results_df.columns:
+        # Extract the first value from the result_column
+            result_value = results_df[result_column].iloc[0]
+            return result_value
+        else:
+            print(f"Column '{result_column}' not found in the DataFrame")
+            return None
+    except:
+        print("parameters invalid")
+        return None
 
 #######    HELPER FUNCTIONS      ###########
 
