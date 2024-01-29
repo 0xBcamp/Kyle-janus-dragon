@@ -44,7 +44,7 @@ def store_stuff(notif_info):
             print(f"Error in store_stuff: {err}")
         finally:
             cnx.close()
-            threshold = condition_info[1]
+            threshold = condition_info[2]
             return 0, result, threshold
     else:
         print("Can't connect to database server!")

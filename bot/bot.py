@@ -4,12 +4,12 @@ Usage: function called by main.py to initialize the bot and specify the bot's fu
 """
 
 import os
+import mysql.connector
 import requests
 import telebot
 from dotenv import load_dotenv
 from bot.bot_functions.store_stuff import store_stuff
 from bot.bot_functions.extract_all_info_from_message import extract_all_info_from_message
-from bot.bot_functions.get_user_notifs import get_user_notifs
 
 load_dotenv()
 TG_API_KEY = os.getenv('TG_API_KEY')
@@ -56,6 +56,7 @@ Preset Notifications:\n
         #get the user's notifications
         notifications = get_user_notifs(user_id)
 
+
         if len(notifications) == 0:
             my_notifs_message = "You don't have any notifications yet!"
         
@@ -67,7 +68,6 @@ Preset Notifications:\n
 
     @bot.message_handler(commands=['num-large-erc20-holders'])
     def num_large_erc20_holders(message):
-        #get all info for the notification:
         handle_notification_creation(bot, message, 3368257, "large ERC20 Token holders")
 
     @bot.message_handler(commands=['dex-large-transactions'])
@@ -76,7 +76,9 @@ Preset Notifications:\n
     
     return bot
 
+
 ########## HELPER FUNCTIONS #############
+
 #function that checks if message is valid by trying to store it!
 def handle_notification_creation(bot, message, query_id, condition_text):
 
@@ -105,3 +107,47 @@ def handle_notification_creation(bot, message, query_id, condition_text):
         return False
     else:
         bot.reply_to(message, f"Current number of {condition_text}: {current_value} \nWe will let you know when this value passes {threshold}.")
+
+#
+def get_user_notifs(user_id):
+    try:
+        load_dotenv()
+        connection = mysql.connector.connect(
+            host=os.getenv("DB_HOST"),
+            user=os.getenv("DB_USER"),
+            password=os.getenv("DB_PASSWORD"),
+            database="tg_db",
+        )
+
+        if connection.is_connected():
+            print("get_user_notifs: Connected to MySQL database")
+        
+        # Create a cursor to execute SQL queries
+        cursor = connection.cursor()
+
+        # query to get notifications from notifs
+        query = f"""
+        
+        SELECT notifs.notif_name
+        FROM notifs
+        WHERE notifs.user_id = {user_id};
+        
+        """
+
+        cursor.execute(query)
+
+        # Fetch all the rows
+        result = cursor.fetchall()
+        # Extract raw text from each tuple
+        notif_names = [notif[0] for notif in result]
+        return notif_names
+
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+
+    finally:
+        # Close the cursor and connection
+        if "cursor" in locals():
+            cursor.close()
+        if "connection" in locals() and connection.is_connected():
+            connection.close()
