@@ -25,10 +25,9 @@ def create_bot():
     def help(message):
         bot.reply_to(message, """
             Available Commands:\n
+            /greet --> Says hello\n
             /gm --> Says good morning\n
             /gn --> Says goodnight\n
-            /btc --> Returns the current price of bitcoin in USD\n
-            /send --> Records your user_id in our database\n
             /my-notifs --> See a list of your notifications! \n
             /help --> send this same message to see available commands\n
 Preset Notifications:\n
@@ -47,49 +46,7 @@ Preset Notifications:\n
     @bot.message_handler(commands=['gm'])
     def gm(message):
         bot.reply_to(message, "Good morning ☀️")
-
-    @bot.message_handler(commands=['btc'])
-    def btc(message):
-        btc_price = get_bitcoin_price()
-        
-        if btc_price is None:
-            btc_price = "error"
-        else:
-            btc_price = f"${round(btc_price, 2)}"
-
-        bot.reply_to(message, btc_price)
     
-    @bot.message_handler(commands=['num-large-erc20-holders'])
-    def num_large_erc20_holders(message):
-        #get all info for the notification:
-        notif_info = extract_all_info_from_message(message, 3368257)
-        _,_,_,condition_info, _ = extract_notif_info(notif_info)
-        response_value = store_stuff(notif_info)
-        if response_value == 1:
-            bot.reply_to(message, "Parameters not valid for query!")
-        if response_value == 2:
-            bot.reply_to(message, "Notification name already used! Name it something else!")
-        elif response_value == 3:
-            bot.reply_to(message, "Having trouble accessing our database, check in later!")
-        else:
-            bot.reply_to(message, f"""Current number of large erc20 holders: {response_value[1]} \nWe will let you know when the number of large erc20 holders passes {condition_info[2]}
-                                    """)
-    @bot.message_handler(commands=['dex-large-transactions'])
-    def num_large_erc20_holders(message):
-        #get all info for the notification:
-        notif_info = extract_all_info_from_message(message, 3386756)
-        _,_,_,condition_info, _ = extract_notif_info(notif_info)
-        response_value = store_stuff(notif_info)
-        if response_value == 1:
-            bot.reply_to(message, "Parameters not valid for query!")
-        if response_value == 2:
-            bot.reply_to(message, "Notification name already used! Name it something else!")
-        elif response_value == 3:
-            bot.reply_to(message, "Having trouble accessing our database, check in later!")
-        else:
-            bot.reply_to(message, f"""Current number of large transactions in the last 24 hours: {response_value[1]} \nWe will let you know when the rate of large transactions passes {condition_info[2]}
-                                    """)
-        
     @bot.message_handler(commands=['my-notifs'])
     def my_notifs(message):
         #get user_id
@@ -106,33 +63,45 @@ Preset Notifications:\n
             for index, notification in enumerate(notifications):
                 my_notifs_message += f"{index+1}. {notification} \n"
         bot.reply_to(message, my_notifs_message)
+
+    @bot.message_handler(commands=['num-large-erc20-holders'])
+    def num_large_erc20_holders(message):
+        #get all info for the notification:
+        handle_notification_creation(bot, message, 3368257, "large ERC20 Token holders")
+
+    @bot.message_handler(commands=['dex-large-transactions'])
+    def num_large_erc20_holders(message):
+        handle_notification_creation(bot, message, 3386756, "large transactions on Dexes in the last 24 hours")
     
     return bot
 
+########## HELPER FUNCTIONS #############
+#function that checks if message is valid by trying to store it!
+def handle_notification_creation(bot, message, query_id, condition_text):
 
-########## HELPER FUNCTIONS ##########
-# Get Bitcoin price function
-def get_bitcoin_price():
-    parameters = {
-        'start':'1',
-        'limit':'2',
-        'convert':'USD'
+    #break down message into separate variables
+    notif_info = extract_all_info_from_message(message, query_id)
+    #store the notification and get the current value and threshold value
+    response_code, current_value, threshold = store_stuff(notif_info)
+
+    def reply_parameters_invalid():
+        bot.reply_to(message, "Parameters not valid for query!")
+
+    def reply_name_used():
+        bot.reply_to(message, "Notification name already used! Name it something else!")
+
+    def reply_database_issue():
+        bot.reply_to(message, "Having trouble accessing our database, check in later!")
+    actions = {
+        1: reply_parameters_invalid,
+        2: reply_name_used,
+        3: reply_database_issue
     }
-    headers = {
-        'Accepts': 'application/json',
-        'X-CMC_PRO_API_KEY': CMC_API_KEY,
-    }
 
-    try:
-        response = requests.get(url, headers=headers, params=parameters)
-        response.raise_for_status()  # Raise an exception for bad requests
-        data = response.json()
-
-        # Extract the Bitcoin price from the response
-        bitcoin_price = data['data'][0]['quote']['USD']['price']
-
-        return bitcoin_price
-
-    except requests.exceptions.RequestException as e:
-        print(f"Error fetching Bitcoin price: {e}")
-        return None
+    action = actions.get(response_code)
+    if action:
+        action()
+        return False
+    else:
+        bot.reply_to(message, f"Current number of {condition_text}: {current_value} \nWe will let you know when this value passes {threshold}.")
+    

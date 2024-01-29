@@ -27,10 +27,10 @@ def store_stuff(notif_info):
     #initialize main connection
     cnx = connect_to_db()
     if check_if_notif_name_exists(cnx, notif_name):
-        return 2
-    value_or_not= check_if_queriable(query_id, parameters, condition_info)
-    if not value_or_not:
-        return 1
+        return 2, None
+    result = check_if_queriable(query_id, parameters, condition_info)
+    if not result:
+        return 1, None, None
     #if connection successful:
     elif cnx is not None:
 
@@ -44,10 +44,11 @@ def store_stuff(notif_info):
             print(f"Error in store_stuff: {err}")
         finally:
             cnx.close()
-            return [0, value_or_not]
+            threshold = condition_info[1]
+            return 0, result, threshold
     else:
         print("Can't connect to database server!")
-        return 3
+        return 3, None, None
 
 
 ######## USER STORAGE FUNCTIONS ############
