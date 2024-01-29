@@ -23,14 +23,14 @@ def store_stuff(notif_info):
 
     #get variables to store
     user_info, query_id, parameters, condition_info, notif_name = extract_notif_info(notif_info)
-    value_or_not= check_if_queriable(query_id, parameters, condition_info)
-    if not value_or_not:
-        return 1
     
     #initialize main connection
     cnx = connect_to_db()
     if check_if_notif_name_exists(cnx, notif_name):
         return 2
+    value_or_not= check_if_queriable(query_id, parameters, condition_info)
+    if not value_or_not:
+        return 1
     #if connection successful:
     elif cnx is not None:
 
