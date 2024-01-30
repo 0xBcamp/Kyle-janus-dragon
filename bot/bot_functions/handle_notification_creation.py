@@ -20,11 +20,11 @@ from bot.bot_functions.extract_all_info_from_message import extract_all_info_fro
     # checking that notification can be created
     # creating the notification if it can!
 def handle_notification_creation(bot, message, query_id, condition_text):
-
+    cnx = connect_to_db()
     notif_info = extract_all_info_from_message(message, query_id)
 
     # STEP 1: check if the user's command is correctly formatted/if notification is valid
-    response_code, cnx, current_value, threshold = check_if_notif_is_valid(notif_info)
+    response_code, cnx, current_value, threshold = check_if_notif_is_valid(cnx, notif_info)
 
     #STEP 2a: if the user's attempt to create notification is not valid for whatever reason, send a message explaining why
     def reply_parameters_invalid():
@@ -57,7 +57,7 @@ def handle_notification_creation(bot, message, query_id, condition_text):
 
 
 # function check if the notification parameters are valid!
-def check_if_notif_is_valid(notif_info):
+def check_if_notif_is_valid(cnx, notif_info):
 
     # notif_info should be an array in the following form:
     # notif_info = [[user_id, first_name], query id, [['parameter name', parameter value], ['parameter name', parameter value], …], [column_name, comparator, threshold], notif_name]
@@ -67,7 +67,6 @@ def check_if_notif_is_valid(notif_info):
         notif_info)
 
     # initialize main connection
-    cnx = connect_to_db()
     if check_if_notif_name_exists(cnx, notif_name):
 
         #Response Code 1: if there is already a notification with that same name!
