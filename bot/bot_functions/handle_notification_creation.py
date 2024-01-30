@@ -20,13 +20,15 @@ from bot.bot_functions.extract_all_info_from_message import extract_all_info_fro
     # checking that notification can be created
     # creating the notification if it can!
 def handle_notification_creation(bot, message, query_id, condition_text):
+    
+    #STEP 1: establish a connection to the database
     cnx = connect_to_db()
-    notif_info = extract_all_info_from_message(message, query_id)
 
-    # STEP 1: check if the user's command is correctly formatted/if notification is valid
+    notif_info = extract_all_info_from_message(message, query_id)
+    # STEP 2: check if the user's command is correctly formatted/if notification is valid
     response_code, cnx, current_value, threshold = check_if_notif_is_valid(cnx, notif_info)
 
-    #STEP 2a: if the user's attempt to create notification is not valid for whatever reason, send a message explaining why
+    #STEP 3a: if the user's attempt to create notification is not valid for whatever reason, send a message explaining why
     def reply_parameters_invalid():
         bot.reply_to(message, "Parameters not valid for query!")
 
@@ -48,13 +50,48 @@ def handle_notification_creation(bot, message, query_id, condition_text):
         action()
         return False
 
-    # STEP 2b: if the user's attempt at creating a notification is valid, store the notification!
+    # STEP 3b: if the user's attempt at creating a notification is valid, store the notification!
     else:
         store_notification(cnx, notif_info)
         cnx.close()
         bot.reply_to(
             message, f"Current number of {condition_text}: {current_value} \nWe will let you know when this value passes {threshold}.")
 
+######## HANDLE NOTIFICATIONS HELPER FUNCTIONS #######
+
+######## USER STORAGE FUNCTIONS ############
+
+#### CHECK_USER_AND_STORE_IF_NEW() #####
+
+# checks if a user is new or not and acts accordingly
+def check_user_and_store_if_new(cnx, user_info):
+    user_id = user_info[0]
+    first_name = user_info[1]
+    # if the user is not already stored
+    if not user_already_stored(cnx, user_id):
+        # store them in the users table!
+        add_new_user(cnx, user_id, first_name)
+
+#### CHECK_USER_AND_STORE_IF_NEW() HELPER FUNCTIONS #####
+
+# function to store a new user to the users table
+def add_new_user(cnx, user_id, user_first_name):
+    try:
+        cursor = cnx.cursor()
+        add_user_query = """
+        INSERT INTO users (user_id, first_name)
+        VALUES (%s, %s);
+        """
+        cursor.execute(add_user_query, (user_id, user_first_name))
+        cnx.commit()
+        print(f"User added to users table with user_id: {user_id}")
+
+    except mysql.connector.Error as err:
+        print(f"add_user error: {err}")
+    finally:
+        cursor.close()
+
+######## NOTIFICATION STORAGE FUNCTIONS ############
 
 # function check if the notification parameters are valid!
 def check_if_notif_is_valid(cnx, notif_info):
@@ -93,48 +130,7 @@ def check_if_notif_is_valid(cnx, notif_info):
             threshold = condition_info[2]
             return 0, cnx, result, threshold
 
-
-######## USER STORAGE FUNCTIONS ############
-
-#### CHECK_USER_AND_STORE_IF_NEW() #####
-
-# checks if a user is new or not and acts accordingly
-def check_user_and_store_if_new(cnx, user_info):
-    user_id = user_info[0]
-    first_name = user_info[1]
-    # if the user is not already stored
-    if not user_already_stored(cnx, user_id):
-        # store them in the users table!
-        add_new_user(cnx, user_id, first_name)
-
-#### CHECK_USER_AND_STORE_IF_NEW() HELPER FUNCTIONS #####
-
-# function to store a new user to the users table
-
-
-def add_new_user(cnx, user_id, user_first_name):
-    try:
-        cursor = cnx.cursor()
-        add_user_query = """
-        INSERT INTO users (user_id, first_name)
-        VALUES (%s, %s);
-        """
-        cursor.execute(add_user_query, (user_id, user_first_name))
-        cnx.commit()
-        print(f"User added to users table with user_id: {user_id}")
-
-    except mysql.connector.Error as err:
-        print(f"add_user error: {err}")
-    finally:
-        cursor.close()
-
-######## NOTIFICATION STORAGE FUNCTIONS ############
-
-#### STORE_NOTIFICATION() #####
-
 # adds notification and all its data to the database
-
-
 def store_notification(cnx, notif_info):
     user_info, query_id, parameters, condition, notif_name = extract_notif_info(notif_info)
     user_id = user_info[0]
@@ -149,8 +145,6 @@ def store_notification(cnx, notif_info):
 #### STORE_NOTIFICATION() HELPER FUNCTIONS #####
 
 # function to store conditions and return its id
-
-
 def store_condition_and_return_id(cnx, conditions):
     try:
         cursor = cnx.cursor()
@@ -175,8 +169,6 @@ def store_condition_and_return_id(cnx, conditions):
         cursor.close()
 
 # function to store conditions and return its id
-
-
 def store_condition_and_return_id(cnx, conditions):
     cursor = None
     try:
@@ -201,8 +193,6 @@ def store_condition_and_return_id(cnx, conditions):
             cursor.close()
 
 # function to store notif in notif table and return its notif_id
-
-
 def store_notif_and_return_id(cnx, user_id, query_id, condition_id, notif_name):
     cursor = None
     try:
@@ -226,8 +216,6 @@ def store_notif_and_return_id(cnx, user_id, query_id, condition_id, notif_name):
             cursor.close()
 
 # function to store notification query parameters
-
-
 def store_parameters(cnx, notif_id, parameters):
 
     # store parameter names if they are new and get all of their id's in an ordered array
@@ -256,8 +244,6 @@ def store_parameters(cnx, notif_id, parameters):
                 cursor.close()
 
 # helper function to store parameter names into the parameter_names table and return an array of their notif_id's in order
-
-
 def store_parameter_names_and_get_ids(cnx, parameters):
     parameter_ids = []
     # for each parameter...
@@ -300,14 +286,10 @@ def store_parameter_names_and_get_ids(cnx, parameters):
     return parameter_ids
 
 #######    CHECK IF THE NOTIFICATION PARAMETERS ARE QUERIABLE    ###########
-
-
 # Get the logger for the 'dune_client' library
 dune_logger = logging.getLogger('dune_client')
-
 # Set the logging level for the 'dune_client' logger to WARNING
 dune_logger.setLevel(logging.WARNING)
-
 # Load environment variables from .env file
 load_dotenv()
 
