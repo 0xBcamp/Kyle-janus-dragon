@@ -8,8 +8,7 @@ import mysql.connector
 import requests
 import telebot
 from dotenv import load_dotenv
-from bot.bot_functions.store_stuff import store_stuff
-from bot.bot_functions.extract_all_info_from_message import extract_all_info_from_message
+from bot.bot_functions.handle_notification_creation import handle_notification_creation
 
 load_dotenv()
 TG_API_KEY = os.getenv('TG_API_KEY')
@@ -17,10 +16,13 @@ CMC_API_KEY = os.getenv('CMC_API_KEY')
 url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
 
 ###### CREATE_BOT() ########
-#function to initialize bot!
+# function to initialize bot!
+
+
 def create_bot():
     bot = telebot.TeleBot(TG_API_KEY)
 
+    ###### /help command #######
     @bot.message_handler(commands=['help'])
     def help(message):
         bot.reply_to(message, """
@@ -35,7 +37,8 @@ Preset Notifications:\n
             /num_large_erc20_holders --> parameters: (min_token_balance=int token_address_to_analyze=address) conditions: (total_large_holders)\n 
             /dex_large_transactions --> parameters: (large_transaction_amount=int) conditions: (total_large_trades)\n
         """)
-    
+
+    ###### Simple greetings #######
     @bot.message_handler(commands=['greet'])
     def greet(message):
         bot.reply_to(message, "Hey whats up?")
@@ -44,6 +47,11 @@ Preset Notifications:\n
     def gn(message):
         bot.reply_to(message, "Goodnight 🌙")
 
+    @bot.message_handler(commands=['gm'])
+    def gm(message):
+        bot.reply_to(message, "Good morning ☀️")
+
+    ###### Crypto Price getters #######
     @bot.message_handler(commands=['btc'])
     def btc(message):
         btc_price = get_bitcoin_price()
@@ -56,72 +64,40 @@ Preset Notifications:\n
 
         bot.reply_to(message, btc_price)
 
-    @bot.message_handler(commands=['gm'])
-    def gm(message):
-        bot.reply_to(message, "Good morning ☀️")
-    
+    ###### Preset Notifications #######
+    @bot.message_handler(commands=['num_large_erc20_holders'])
+    def num_large_erc20_holders(message):
+        handle_notification_creation(
+            bot, message, 3368257, "large ERC20 Token holders")
+
+    @bot.message_handler(commands=['dex_large_transactions'])
+    def num_large_erc20_holders(message):
+        handle_notification_creation(
+            bot, message, 3386756, "large transactions on Dexes in the last 24 hours")
+
+    ####### Get the user's existing notifications ###########
     @bot.message_handler(commands=['my_notifs'])
     def my_notifs(message):
 
-        #get user_id
+        # get user_id
         user_id = message.from_user.id
-        
-        #get the user's notifications
-        notifications = get_user_notifs(user_id)
 
+        # get the user's notifications
+        notifications = get_user_notifs(user_id)
 
         if len(notifications) == 0:
             my_notifs_message = "You don't have any notifications yet!"
-        
+
         else:
             my_notifs_message = f"Here are your notifications: \n"
             for index, notification in enumerate(notifications):
                 my_notifs_message += f"{index+1}. {notification} \n"
         bot.reply_to(message, my_notifs_message)
-
-    @bot.message_handler(commands=['num_large_erc20_holders'])
-    def num_large_erc20_holders(message):
-        handle_notification_creation(bot, message, 3368257, "large ERC20 Token holders")
-
-    @bot.message_handler(commands=['dex_large_transactions'])
-    def num_large_erc20_holders(message):
-        handle_notification_creation(bot, message, 3386756, "large transactions on Dexes in the last 24 hours")
-    
     return bot
 
 
-########## HELPER FUNCTIONS #############
+########## BOT HELPER FUNCTIONS #############
 
-#function that checks if message is valid by trying to store it!
-def handle_notification_creation(bot, message, query_id, condition_text):
-
-    #break down message into separate variables
-    notif_info = extract_all_info_from_message(message, query_id)
-    #store the notification and get the current value and threshold value
-    response_code, current_value, threshold = store_stuff(notif_info)
-
-    def reply_parameters_invalid():
-        bot.reply_to(message, "Parameters not valid for query!")
-
-    def reply_name_used():
-        bot.reply_to(message, "Notification name already used! Name it something else!")
-
-    def reply_database_issue():
-        bot.reply_to(message, "Having trouble accessing our database, check in later!")
-    actions = {
-        1: reply_parameters_invalid,
-        2: reply_name_used,
-        3: reply_database_issue
-    }
-
-    action = actions.get(response_code)
-    if action:
-        action()
-        return False
-    else:
-        bot.reply_to(message, f"Current number of {condition_text}: {current_value} \nWe will let you know when this value passes {threshold}.")
-
-#
 def get_user_notifs(user_id):
     try:
         load_dotenv()
@@ -134,7 +110,7 @@ def get_user_notifs(user_id):
 
         if connection.is_connected():
             print("get_user_notifs: Connected to MySQL database")
-        
+
         # Create a cursor to execute SQL queries
         cursor = connection.cursor()
 
@@ -167,11 +143,13 @@ def get_user_notifs(user_id):
 
 ########## HELPER FUNCTIONS ##########
 # Get Bitcoin price function
+
+
 def get_bitcoin_price():
     parameters = {
-        'start':'1',
-        'limit':'2',
-        'convert':'USD'
+        'start': '1',
+        'limit': '2',
+        'convert': 'USD'
     }
     headers = {
         'Accepts': 'application/json',
