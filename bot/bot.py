@@ -25,14 +25,14 @@ def create_bot():
     def help(message):
         bot.reply_to(message, """
             Available Commands:\n
-            /greet --> Says hello\n
-            /gm --> Says good morning\n
-            /gn --> Says goodnight\n
-            /my-notifs --> See a list of your notifications! \n
-            /help --> send this same message to see available commands\n
+        /greet --> Says hello\n
+        /gm --> Says good morning\n
+        /gn --> Says goodnight\n
+        /my_notifs --> See a list of your notifications! \n
+        /help --> send this same message to see available commands\n
 Preset Notifications:\n
-            /num-large-erc20-holders --> parameters: (min_token_balance=int token_address_to_analyze=address) conditions: (total_large_holders)\n 
-            /dex-large-transactions --> parameter: (large_transaction_amount=int) conditions: (total_large_trades)\n
+            /num_large_erc20_holders --> parameters: (min_token_balance=int token_address_to_analyze=address) conditions: (total_large_holders)\n 
+            /dex_large_transactions --> parameters: (large_transaction_amount=int) conditions: (total_large_trades)\n
         """)
     
     @bot.message_handler(commands=['greet'])
@@ -47,7 +47,7 @@ Preset Notifications:\n
     def gm(message):
         bot.reply_to(message, "Good morning ☀️")
     
-    @bot.message_handler(commands=['my-notifs'])
+    @bot.message_handler(commands=['my_notifs'])
     def my_notifs(message):
 
         #get user_id
@@ -66,11 +66,11 @@ Preset Notifications:\n
                 my_notifs_message += f"{index+1}. {notification} \n"
         bot.reply_to(message, my_notifs_message)
 
-    @bot.message_handler(commands=['num-large-erc20-holders'])
+    @bot.message_handler(commands=['num_large_erc20_holders'])
     def num_large_erc20_holders(message):
         handle_notification_creation(bot, message, 3368257, "large ERC20 Token holders")
 
-    @bot.message_handler(commands=['dex-large-transactions'])
+    @bot.message_handler(commands=['dex_large_transactions'])
     def num_large_erc20_holders(message):
         handle_notification_creation(bot, message, 3386756, "large transactions on Dexes in the last 24 hours")
     
