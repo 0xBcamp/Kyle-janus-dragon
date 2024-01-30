@@ -51,7 +51,8 @@ Preset Notifications:\n
         if btc_price is None:
             btc_price = "error"
         else:
-            btc_price = f"${round(btc_price, 2)}"
+            # btc_price = f"${round(btc_price, 2)}"
+            btc_price = '$' + '{:,.2f}'.format(btc_price)
 
         bot.reply_to(message, btc_price)
 
