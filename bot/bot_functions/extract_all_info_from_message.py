@@ -1,6 +1,6 @@
 """
 extract_all_info_from_message
-Usage: called by bot.py to extract all the information from the message into an array to pass into store_stuff
+Usage: called by handle_notification_creation to extract all the information from the message into variables to use
 """
 
 import re
@@ -18,9 +18,7 @@ def extract_all_info_from_message(message, query_id):
     #get condition from message array
     condition = extract_condition_from_msg_array(notif_parameters)
 
-    #LATER, MAYBE MAKE A DICTIONARY WITH PRESET:QUERY_ID KEY VALUE PAIRS?
-    message_info = user_info, query_id , parameters, condition, notif_name
-    return message_info
+    return user_info, query_id , parameters, condition, notif_name
 
 ###### MESSAGE EXTRACTION HELPER FUNCTIONS ##########
 

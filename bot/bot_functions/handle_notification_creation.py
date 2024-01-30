@@ -4,15 +4,11 @@ Usage: Called by bot.py to store the necessary information (user_id, query_id, q
 """
 
 import mysql.connector
+from dotenv import load_dotenv
 import os
 from dotenv import load_dotenv
-from dune_client.types import QueryParameter
-from dune_client.client import DuneClient
-from dune_client.query import QueryBase
-import os
-from dotenv import load_dotenv
-import logging
 from bot.bot_functions.extract_all_info_from_message import extract_all_info_from_message
+from bot.bot_functions.check_if_notif_is_valid import check_if_notif_is_valid
 
 ###### HANDLE_NOTIFICATION_CREATION ########
 
@@ -24,38 +20,45 @@ def handle_notification_creation(bot, message, query_id, condition_text):
     #STEP 1: establish a connection to the database
     cnx = connect_to_db()
 
-    notif_info = extract_all_info_from_message(message, query_id)
-    # STEP 2: check if the user's command is correctly formatted/if notification is valid
-    response_code, cnx, current_value, threshold = check_if_notif_is_valid(cnx, notif_info)
+    #STEP 2: extract information from the user's message into variables to use 
+    user_info, query_id , parameters, condition_info, notif_name = extract_all_info_from_message(message, query_id)
 
-    #STEP 3a: if the user's attempt to create notification is not valid for whatever reason, send a message explaining why
-    def reply_parameters_invalid():
-        bot.reply_to(message, "Parameters not valid for query!")
+    # STEP 3: check if the user's command is correctly formatted/if notification is valid
+    response_code, current_value = check_if_notif_is_valid(cnx, query_id, parameters, condition_info, notif_name)
 
+    #STEP 4: send a message back to the user based on if the message was successful or not
+    # Response codes: 
+        # 0: notification creation successful
+        # 1: the notification name has already been used
+        # 2: the parameters specified by the user are invalid!
+        # 3: having trouble connecting to our database
+    
     def reply_name_used():
         bot.reply_to(
             message, "Notification name already used! Name it something else!")
 
+    def reply_parameters_invalid():
+        bot.reply_to(message, "Parameters not valid for query!")
+
     def reply_database_issue():
         bot.reply_to(
             message, "Having trouble accessing our database, check in later!")
+    def notification_is_valid():
+        check_user_and_store_if_new(cnx, user_info)
+        store_notification(cnx, user_info, query_id, parameters, condition_info, notif_name)
+        threshold = condition_info[2]
+        cnx.close()
+        bot.reply_to(
+            message, f"Current number of {condition_text}: {current_value} \nWe will let you know when this value passes {threshold}.")
     actions = {
+        0: notification_is_valid,
         1: reply_name_used,
         2: reply_parameters_invalid,
         3: reply_database_issue
     }
 
     action = actions.get(response_code)
-    if action:
-        action()
-        return False
-
-    # STEP 3b: if the user's attempt at creating a notification is valid, store the notification!
-    else:
-        store_notification(cnx, notif_info)
-        cnx.close()
-        bot.reply_to(
-            message, f"Current number of {condition_text}: {current_value} \nWe will let you know when this value passes {threshold}.")
+    action()
 
 ######## HANDLE NOTIFICATIONS HELPER FUNCTIONS #######
 
@@ -91,48 +94,9 @@ def add_new_user(cnx, user_id, user_first_name):
     finally:
         cursor.close()
 
-######## NOTIFICATION STORAGE FUNCTIONS ############
-
-# function check if the notification parameters are valid!
-def check_if_notif_is_valid(cnx, notif_info):
-
-    # notif_info should be an array in the following form:
-    # notif_info = [[user_id, first_name], query id, [['parameter name', parameter value], ['parameter name', parameter value], …], [column_name, comparator, threshold], notif_name]
-
-    # get variables to store
-    user_info, query_id, parameters, condition_info, notif_name = extract_notif_info(
-        notif_info)
-
-    # initialize main connection
-    if check_if_notif_name_exists(cnx, notif_name):
-
-        #Response Code 1: if there is already a notification with that same name!
-        return 1, cnx, None, None
-    result = check_if_queriable(query_id, parameters, condition_info)
-
-    #Response Code 2: if the message's parameters did not result in a valid query!
-    if not result:
-        return 2, cnx, None, None
-    
-    elif cnx is None:
-        #Response Code 3: if the database cannot be reached
-        return 3, cnx, None, None
-    
-    else:
-        try:
-            #if everything went smoothly and you can store the notification, first, check to see if you need to store the user (in the case that they are new) and then store them if needed
-            check_user_and_store_if_new(cnx, user_info)
-            #then store the notification!
-
-        except mysql.connector.Error as err:
-            print(f"Error in store_stuff: {err}")
-        finally:
-            threshold = condition_info[2]
-            return 0, cnx, result, threshold
 
 # adds notification and all its data to the database
-def store_notification(cnx, notif_info):
-    user_info, query_id, parameters, condition, notif_name = extract_notif_info(notif_info)
+def store_notification(cnx, user_info, query_id, parameters, condition, notif_name):
     user_id = user_info[0]
     # Step 1: store condition in conditions table and get its id
     condition_id = store_condition_and_return_id(cnx, condition)
@@ -285,67 +249,9 @@ def store_parameter_names_and_get_ids(cnx, parameters):
                 cursor.close()
     return parameter_ids
 
-#######    CHECK IF THE NOTIFICATION PARAMETERS ARE QUERIABLE    ###########
-# Get the logger for the 'dune_client' library
-dune_logger = logging.getLogger('dune_client')
-# Set the logging level for the 'dune_client' logger to WARNING
-dune_logger.setLevel(logging.WARNING)
-# Load environment variables from .env file
-load_dotenv()
-
-
-def is_numeric(value):
-    try:
-        float(value)
-        return True
-    except ValueError:
-        return False
-
-
-def check_if_queriable(query_id, parameters, condition_info):
-    print(condition_info)
-    result_column = condition_info[0]
-    query_params = []
-    for param in parameters:
-        name, value = param
-        if is_numeric(value):
-            # Use number_type for numeric values
-            query_params.append(QueryParameter.number_type(name, value))
-        else:
-            # Use text_type for non-numeric values
-            query_params.append(QueryParameter.text_type(name, value))
-
-    query = QueryBase(
-        name="Sample Query",
-        query_id=query_id,
-        params=query_params
-    )
-
-    dune = DuneClient.from_env()
-    print('loading...')
-    try:
-        results = dune.run_query(query)
-
-        # save as Pandas Dataframe
-        results_df = dune.run_query_dataframe(query)
-
-        # Check if the result_column exists in the DataFrame
-        if result_column in results_df.columns:
-            # Extract the first value from the result_column
-            result_value = results_df[result_column].iloc[0]
-            return result_value
-        else:
-            print(f"Column '{result_column}' not found in the DataFrame")
-            return None
-    except:
-        print("parameters invalid")
-        return None
-
 #######    HELPER FUNCTIONS      ###########
 
 # function to check if the user already exists in the database!
-
-
 def user_already_stored(cnx, user_id):
     try:
         cursor = cnx.cursor()
@@ -362,8 +268,6 @@ def user_already_stored(cnx, user_id):
         return False
 
 # function to check if parameters are already stored
-
-
 def parameter_name_already_stored(cnx, parameter_name):
     try:
         cursor = cnx.cursor(buffered=True)
@@ -379,8 +283,6 @@ def parameter_name_already_stored(cnx, parameter_name):
         cursor.close()
 
 # function to initialize a connection to the database
-
-
 def connect_to_db():
     load_dotenv()
     DB_USER = os.getenv('DB_USER')
@@ -403,32 +305,3 @@ def connect_to_db():
     except mysql.connector.Error as err:
         print(f"Error when connecting to DB: {err}")
         return None
-
-# function to check if a notification already has that name
-
-
-def check_if_notif_name_exists(cnx, notif_name):
-    try:
-        cursor = cnx.cursor()
-        # Check if user already exists
-        check_notif_query = "SELECT notif_name FROM notifs WHERE notif_name = %s"
-        cursor.execute(check_notif_query, (notif_name,))
-        notif_stored = cursor.fetchone()
-        cursor.close()
-        if notif_stored:
-            print(f"Notification with name {notif_name} already in database!")
-        return notif_stored is not None
-    except mysql.connector.Error as err:
-        print(f"Error when checking if user already exists: {err}")
-        return False
-
-# function to take the notif_info (in array form) and extract it into single variables to work with
-
-
-def extract_notif_info(notif_info):
-    user_info = notif_info[0]
-    query_id = notif_info[1]
-    parameters = notif_info[2]
-    condition_info = notif_info[3]
-    notif_name = notif_info[4]
-    return user_info, query_id, parameters, condition_info, notif_name
