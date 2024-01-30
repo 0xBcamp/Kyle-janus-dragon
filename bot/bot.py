@@ -186,3 +186,7 @@ def get_bitcoin_price():
         bitcoin_price = data['data'][0]['quote']['USD']['price']
 
         return bitcoin_price
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching Bitcoin price: {e}")
+        return None
