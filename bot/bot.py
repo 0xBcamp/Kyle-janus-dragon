@@ -163,3 +163,26 @@ def get_user_notifs(user_id):
             cursor.close()
         if "connection" in locals() and connection.is_connected():
             connection.close()
+
+########## HELPER FUNCTIONS ##########
+# Get Bitcoin price function
+def get_bitcoin_price():
+    parameters = {
+        'start':'1',
+        'limit':'2',
+        'convert':'USD'
+    }
+    headers = {
+        'Accepts': 'application/json',
+        'X-CMC_PRO_API_KEY': CMC_API_KEY,
+    }
+
+    try:
+        response = requests.get(url, headers=headers, params=parameters)
+        response.raise_for_status()  # Raise an exception for bad requests
+        data = response.json()
+
+        # Extract the Bitcoin price from the response
+        bitcoin_price = data['data'][0]['quote']['USD']['price']
+
+        return bitcoin_price
