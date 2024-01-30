@@ -27,7 +27,7 @@ def store_stuff(notif_info):
     #initialize main connection
     cnx = connect_to_db()
     if check_if_notif_name_exists(cnx, notif_name):
-        return 2, None
+        return 2, None, None
     result = check_if_queriable(query_id, parameters, condition_info)
     if not result:
         return 1, None, None
