@@ -28,6 +28,7 @@ def create_bot():
         /greet --> Says hello\n
         /gm --> Says good morning\n
         /gn --> Says goodnight\n
+        /btc --> Returns the current price of bitcoin in USD\n
         /my_notifs --> See a list of your notifications! \n
         /help --> send this same message to see available commands\n
 Preset Notifications:\n
@@ -42,6 +43,17 @@ Preset Notifications:\n
     @bot.message_handler(commands=['gn'])
     def gn(message):
         bot.reply_to(message, "Goodnight 🌙")
+
+    @bot.message_handler(commands=['btc'])
+    def btc(message):
+        btc_price = get_bitcoin_price()
+
+        if btc_price is None:
+            btc_price = "error"
+        else:
+            btc_price = f"${round(btc_price, 2)}"
+
+        bot.reply_to(message, btc_price)
 
     @bot.message_handler(commands=['gm'])
     def gm(message):
