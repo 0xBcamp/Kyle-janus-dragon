@@ -36,7 +36,7 @@
 </div>
 
 ## Summary of our product:
-Our product is a chatbot that users can interact with to easily access and utilize [Dune](https://dune.com/)’s sophisticated and large query system. It is not just a chatbot to access Dune, but a means for users to specify query-based "events," which, if triggered will notify the user.
+Our product is a chatbot that users can interact with to easily access and utilize [Dune](https://dune.com/)’s sophisticated and large query system. It's not just a chatbot to access Dune, but a means for users to specify query-based "events," which, if triggered will notify the user.
 
 ## User interactions:
 Utilizing built-in functionality from the [Telegram Bot API](https://core.telegram.org/bots/api), our chatbot will allow users to create notifications in this basic format
