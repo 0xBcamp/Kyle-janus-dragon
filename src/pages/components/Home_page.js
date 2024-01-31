@@ -40,7 +40,7 @@ export default function Home_Page() {
                 </div>
                 <div className="text-container">
                     <p>
-                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Excepturi facilis, illum ipsam ullam aliquid molestiae maiores modi quidem doloribus pariatur, nihil beatae omnis enim, minima sit repellat rem totam nam atque sint sed numquam distinctio. Dolores natus, excepturi itaque sunt soluta corporis, expedita, voluptatem quo maxime eos totam nobis quis.
+                        Lorem ipsum daolor, sit amet consectetur adipisicing elit. Excepturi facilis, illum ipsam ullam aliquid molestiae maiores modi quidem doloribus pariatur, nihil beatae omnis enim, minima sit repellat rem totam nam atque sint sed numquam distinctio. Dolores natus, excepturi itaque sunt soluta corporis, expedita, voluptatem quo maxime eos totam nobis quis.
                     </p>
                 </div>
             </div>
