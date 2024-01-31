@@ -8,7 +8,7 @@ import mysql.connector
 import requests
 import telebot
 from dotenv import load_dotenv
-from bot.bot_functions.handle_notification_creation import handle_notification_creation
+from .bot_functions.notification_creation.handle_notification_creation import handle_notification_creation
 
 load_dotenv()
 TG_API_KEY = os.getenv('TG_API_KEY')
@@ -17,7 +17,6 @@ url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
 
 ###### CREATE_BOT() ########
 # function to initialize bot!
-
 
 def create_bot():
     bot = telebot.TeleBot(TG_API_KEY)

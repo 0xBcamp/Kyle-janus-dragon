@@ -1,7 +1,8 @@
 """
 check_if_notif_is_valid function
-Usage: Called by handle_notification_creation to check if the notification is valid by running the associated query! If it is, return the result!
+Usage: Called by handle_notification_creation to check if the notification is valid by running the associated query! If it is valid, return the result!
 """
+
 from dune_client.types import QueryParameter
 from dune_client.client import DuneClient
 from dune_client.query import QueryBase
@@ -10,7 +11,6 @@ from dotenv import load_dotenv
 import logging
 
 ###### CHECK_IF_NOTIF_IS_VALID ##########
-#usage: called  y
 def check_if_notif_is_valid(cnx, query_id, parameters, condition_info, notif_name):
 
     # initialize main connection
