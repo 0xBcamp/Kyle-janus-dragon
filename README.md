@@ -56,6 +56,7 @@ With this information, the user will send a command to the chatbot.
 > Idea of how users can set a notification: <br/>
 
 ``` /num_large_erc20_holders min_token_balance=1000000 token_address_to_analyze=0x514910771AF9Ca656af840dff83E8264EcF986CA total_large_holders>=160
+```
 
 # how to reset the database!
 -- Disable foreign key checks
