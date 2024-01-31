@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot Name</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="mediaqueries.css">
+</head>
+<body>
+    <nav id="desktop-nav">
+        <div class="logo">Bot Name/Logo</div>
+        <div>
+            <ul class="nav-links">
+                <li><a href="#about">About</a></li>
+                <li><a href="#team">Team</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+    <nav id="hamburger-nav">
+        <div class="logo">Bot Name/Logo</div>
+        <div class="hamburger-menu">
+            <div class="hamburger-icon" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="menu-links">
+                <li><a href="#about" onclick="toggleMenu()">About</a></li>
+                <li><a href="#team" onclick="toggleMenu()">Team</a></li>
+                <li><a href="#contact" onclick="toggleMenu()">Contact</a></li>
+            </div>
+        </div>
+    </nav>
+    <section id="profile">
+        <!-- <div class="section__pic-container">
+            <img 
+                src="./assets/profile-pic.png" 
+                alt="Daniel Bird profile picture"
+                class="profile-pic"
+            >
+        </div> -->
+        <div class="section__text">
+            <p class="section__text__p1">We Are</p>
+            <h1 class="title">Bot Name</h1>
+            <p class="section__text__p2">Crypto Bot</p>
+            <div class="btn-container">
+                
+                <button class="btn btn-color-1 repo-btn" 
+                onclick="location.href='https://github.com/0xBcamp/Kyle-janus-dragon'">
+                    Github Repo
+                </button>
+            </div>
+        </div>
+        <img 
+            src="./assets/arrow.png" 
+            alt="Arrow icon" 
+            class="icon arrow"
+            onclick="location.href='./#about'"
+        >
+    </section>
+    <section id="about">
+        <p class="section__text__p1">Get To Know More</p>
+        <h1 class="title">About Us</h1>
+        <div class="section-container">
+            <!-- <div class="section__pic-container">
+                <img 
+                    src="./assets/about-pic.png" 
+                    alt="Profile picture" 
+                    class="about-pic"
+                >
+            </div> -->
+            <div class="about-details-container">
+                <div class="about-containers">
+                    <div class="details-container">
+                        <img 
+                            src="./assets/experience.png" 
+                            alt="Experience icon" 
+                            class="icon"
+                        >
+                        <h3>Fact #1</h3>
+                        <p>Info <br>Info</p>
+                    </div>
+                    <div class="details-container">
+                        <img 
+                            src="./assets/education.png" 
+                            alt="Education icon" 
+                            class="icon"
+                        >
+                        <h3>Fact #2</h3>
+                        <p>Info</p>
+                    </div>
+                </div>
+                <div class="text-container">
+                    <p>
+                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Excepturi facilis, illum ipsam ullam aliquid molestiae maiores modi quidem doloribus pariatur, nihil beatae omnis enim, minima sit repellat rem totam nam atque sint sed numquam distinctio. Dolores natus, excepturi itaque sunt soluta corporis, expedita, voluptatem quo maxime eos totam nobis quis.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <img 
+            src="./assets/arrow.png" 
+            alt="Arrow icon" 
+            class="icon arrow"
+            onclick="location.href='./#team'"
+        >
+    </section>
+    <section id="team">
+        <p class="section__text__p1">Meet The</p>
+        <h1 class="title">Team</h1>
+        <div class="experience-details-container">
+            <div class="about-containers">
+            <div class="details-container color-container">
+                <div class="article-container">
+                    <img 
+                        src="assets/danielha-pic.png" 
+                        alt="Daniel Ha pic" 
+                        class="team-img"
+                    >
+                </div>
+                <h2 class="experience-sub-title team-title team-member name">Daniel Ha</h2>
+                <h3 class="experience-sub-title team-title role team-member-role">Scrum Master</h3>
+                <h3 class="experience-sub-title team-title role team-member-role">Backend Software Engineer</h3>
+                <div class="btn-container">
+                    <button class="btn btn-color-2 team-btn" onclick="location.href='https://github.com/'">
+                        LinkedIn
+                    </button>
+                    <button class="btn btn-color-2 team-btn" onclick="location.href='https://github.com/Daniel-Ha'">
+                        Github
+                    </button>
+                </div>
+            </div>
+            <div class="details-container color-container">
+                <div class="article-container">
+                    <img 
+                        src="assets/danielbird-pic.png" 
+                        alt="Daniel Bird pic" 
+                        class="team-img"
+                    >
+                </div>
+                <h2 class="experience-sub-title team-title team-member name">Daniel Bird</h2>
+                <h3 class="experience-sub-title team-title role team-member-role">Product Owner</h3>
+                <h3 class="experience-sub-title team-title role team-member-role">Fullstack Software Engineer</h3>
+                <div class="btn-container">
+                    <button class="btn btn-color-2 team-btn" onclick="location.href='https://www.linkedin.com/in/danielbirdjr'">
+                        LinkedIn
+                    </button>
+                    <button class="btn btn-color-2 team-btn" onclick="location.href='https://github.com/danielbirdjr'">
+                        Github
+                    </button>
+                </div>
+            </div>
+            <div class="details-container color-container">
+                <div class="article-container">
+                    <img 
+                        src="assets/adamgill-pic.png" 
+                        alt="Adam Gill pic" 
+                        class="team-img"
+                    >
+                </div>
+                <h2 class="experience-sub-title team-title">Adam Gill</h2>
+                <h3 class="experience-sub-title team-title role team-member-role">Product Owner</h3>
+                <h3 class="experience-sub-title team-title role team-member-role">Fullstack Software Engineer</h3>
+                <div class="btn-container">
+                    <button class="btn btn-color-2 team-btn" onclick="location.href='https://www.linkedin.com/in/adam-gill-614346264/'">
+                        LinkedIn
+                    </button>
+                    <button class="btn btn-color-2 team-btn" onclick="location.href='https://github.com/adam-gill'">
+                        Github
+                    </button>
+                </div>
+            </div>
+            <div class="details-container color-container">
+                <div class="article-container">
+                    <img 
+                        src="assets/dontepalmer-pic.png" 
+                        alt="Donte Palmer pic" 
+                        class="team-img"
+                    >
+                </div>
+                <h2 class="experience-sub-title team-title">Donte Palmer</h2>
+                <h3 class="experience-sub-title team-title role team-member-role">Backend Software Engineer</h3>
+                <h3 class="experience-sub-title team-title role team-member-role">Security Specialist</h3>
+                <div class="btn-container">
+                    <button class="btn btn-color-2 team-btn" onclick="location.href='https://www.linkedin.com/in/dontepalmer/'">
+                        LinkedIn
+                    </button>
+                    <button class="btn btn-color-2 team-btn" onclick="location.href='https://github.com/solesprung'">
+                        Github
+                    </button>
+                </div>
+            </div>
+        </div>
+        </div>
+        <img 
+            src="./assets/arrow.png" 
+            alt="Arrow icon" 
+            class="icon arrow"
+            onclick="location.href='./#contact'"
+        >
+    </section>
+    <section id="contact">
+        <p class="section__text__p1">Get in Touch</p>
+        <h1 class="title">Contact Us</h1>
+        <div class="contact-info-upper-container">
+            <div class="contact-info-container">
+                <img 
+                    src="./assets/email.png" 
+                    alt="Email icon" 
+                    class="icon contact-icon email-icon"
+                >
+                <p><a href="mailto:Example@gmail.com">Example@gmail.com</a></p>
+            </div>
+        </div>
+    </section>
+    <footer>
+        <nav>
+            <div class="nav-links-container">
+                <ul class="nav-links">
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#team">Team</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+        </nav>
+        <p>Copyright &#169; 2024 Bot Name.</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
