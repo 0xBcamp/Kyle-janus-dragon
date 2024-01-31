@@ -37,13 +37,16 @@ def handle_notification_creation(bot, message, query_id, condition_text):
     def reply_database_issue():
         bot.reply_to(
             message, "Having trouble accessing our database, check in later!")
+    
     def notification_is_valid():
         check_user_and_store_if_new(cnx, user_info)
-        store_notification(cnx, user_info, query_id, parameters, condition_info, notif_name)
+        user_id = user_info[0]
+        store_notification(cnx, user_id, query_id, parameters, condition_info, notif_name)
         threshold = condition_info[2]
         cnx.close()
         bot.reply_to(
             message, f"Current number of {condition_text}: {current_value} \nWe will let you know when this value passes {threshold}.")
+        
     actions = {
         0: notification_is_valid,
         1: reply_name_used,

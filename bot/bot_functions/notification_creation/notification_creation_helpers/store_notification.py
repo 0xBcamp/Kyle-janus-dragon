@@ -6,40 +6,17 @@ import mysql.connector
 
 ###### STORE_NOTIFICATION() ###########
 # adds notification and all its data to the database
-def store_notification(cnx, user_info, query_id, parameters, condition, notif_name):
-    user_id = user_info[0]
-    # Step 1: store condition in conditions table and get its id
+def store_notification(cnx, user_id, query_id, parameters, condition, notif_name):
+    
+    # Step 1: Store condition into conditions table, and get its id
     condition_id = store_condition_and_return_id(cnx, condition)
-    # Step 2: store the new notification in notifs table
-    notif_id = store_notif_and_return_id(
-        cnx, user_id, query_id, condition_id, notif_name)
-    # step 3: store parameters in notifs
-    store_parameters(cnx, notif_id, parameters)
+    # Step 2: Store the new notification into notifs table with the condition_id, and get the notification id
+    notif_id = store_notif_and_return_id(cnx, user_id, query_id, condition_id, notif_name)
+    # step 3: Store parameters values into the parameter_values table with the notification id
+    store_parameter_values(cnx, notif_id, parameters)
 
-# function to store conditions and return its id
-def store_condition_and_return_id(cnx, conditions):
-    try:
-        cursor = cnx.cursor()
-        # store the three parts of the condition to he database
-        add_condition_query = """
-        INSERT INTO conditions (column_name, comparator, threshold)
-        values (%s, %s, %s);
-        """
-        column_name, comparator, threshold = conditions
-        cursor.execute(add_condition_query,
-                       (column_name, comparator, threshold))
-        cnx.commit()
-        # get the id of the condition to return!
-        condition_id = cursor.lastrowid
-        print(
-            f"Condition added to conditions table with condition_id: {condition_id}")
-        return condition_id
-
-    except mysql.connector.Error as err:
-        print(f"store_condition_and_return_id error:{err}")
-    finally:
-        cursor.close()
-
+####### STORE_NOTIFICATIONS() HELPER FUNCTIONS #########
+    
 # function to store conditions and return its id
 def store_condition_and_return_id(cnx, conditions):
     cursor = None
@@ -88,7 +65,7 @@ def store_notif_and_return_id(cnx, user_id, query_id, condition_id, notif_name):
             cursor.close()
 
 # function to store notification query parameters
-def store_parameters(cnx, notif_id, parameters):
+def store_parameter_values(cnx, notif_id, parameters):
 
     # store parameter names if they are new and get all of their id's in an ordered array
     param_name_ids = store_parameter_names_and_get_ids(cnx, parameters)
