@@ -207,6 +207,10 @@ section {
     gap: 1rem;
 }
 
+#profile .arrow {
+    right: 5.8%; /* Adjust the right positioning for the arrow in the profile section */
+}
+
 /* ICONS */ 
 
 .icon {
@@ -277,6 +281,8 @@ section {
     gap: 2rem;
     margin-bottom: 2rem;
     margin-top: 2rem;
+    display: flex; /* Add this line to ensure flex layout */
+    justify-content: center; /* Center items horizontally */
 }
 
 .about-details-container {
@@ -299,6 +305,7 @@ section {
     bottom: 2.5rem;
 }
 
+
 .details-container {
     padding: 1.5rem;
     flex: 1;
@@ -320,12 +327,13 @@ section {
     margin: auto 0;
 }
 
-
-
 /* TEAM SECTION */
 
 #team {
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center items horizontally */
 }
 
 .color-container {
