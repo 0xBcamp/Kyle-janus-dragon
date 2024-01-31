@@ -7,7 +7,7 @@ import mysql.connector
 ###### STORE_NOTIFICATION() ###########
 # adds notification and all its data to the database
 def store_notification(cnx, user_id, query_id, parameters, condition, notif_name):
-    
+
     # Step 1: Store condition into conditions table, and get its id
     condition_id = store_condition_and_return_id(cnx, condition)
     # Step 2: Store the new notification into notifs table with the condition_id, and get the notification id
