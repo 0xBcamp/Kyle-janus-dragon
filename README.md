@@ -49,18 +49,13 @@ Our chatbot's main functionality is to allow users to create custom notification
 **Example use:** <br/>
 Say a user wanted to be notified when the number of holders of more than $1 million in LINK surpasses 160. <br/>
 They would:
-1. Choose an existing query for the job by searching on [Dune](https://dune.com/browse/queries) and note its "query id." In this case, they would use [this query](https://dune.com/queries/3368257) which has a query id of **3368257** (which you can spot in the url of the query).
-2. Specify query parameters (in this case, **minimum_token_balance_large_holders = 1,000,000**).
+1. Choose an existing notification from our suite of notifications, in this case **num_large_erc20_holders**
+2. Specify query parameters (in this case, **min_token_balance_large_holders = 1,000,000**).
 3. Specify the column name, value, and condition that they would like to be notified on (in this case, column name = **total_holders**, value = **160**, condition = **>** (greater than).
 With this information, the user will send a command to the chatbot. 
-> Idea of how we might ask our users to format their commands: <br/>
+> Idea of how users can set a notification: <br/>
 
-``` /notify query_id={the query id} params=[{parameter_A=A, parameter_B=B,...}] when {conditions} ```<br/>
-
-> Example use of fake command format:<br/>
-
-``` /notify query_id=3368257 params=[minimum_token_balance_large_holders=1000000] when total_holders>160 ```<br/>
-
+``` /num_large_erc20_holders min_token_balance=1000000 token_address_to_analyze=0x514910771AF9Ca656af840dff83E8264EcF986CA total_large_holders>=160
 
 # how to reset the database!
 -- Disable foreign key checks
