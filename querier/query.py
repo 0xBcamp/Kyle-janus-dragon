@@ -1,4 +1,4 @@
-from connect_to_db import connect_to_db
+from .connect_to_db import connect_to_db
 import asyncio
 import mysql.connector
 from dune_client.types import QueryParameter
@@ -8,14 +8,18 @@ import logging
 from dotenv import load_dotenv
 
 #function to call to query a notification by its id
-async def query(cnx, notif_id):
+async def query(pool, notif_id):
+    try:
+        async with pool.acquire() as cnx:  # Acquire a connection from the pool
+        # get the parameters associated with the notif_id to run the query
+            parameters = await get_parameters(cnx, notif_id)
+            #get the query_id
+            query_id = await get_query_id(cnx, notif_id)
+            #get the condition_info
+            result_column, comparator, threshold = await get_condition_info(cnx, notif_id)
+    except Exception as e:
+        print(f"error: {e}")
 
-    # get the parameters associated with the notif_id to run the query
-    parameters = get_parameters(cnx, notif_id)
-    #get the query_id
-    query_id = get_query_id(cnx, notif_id)
-    #get the condition_info
-    result_column, comparator, threshold = get_condition_info(cnx, notif_id)
     # run a query on the query!
     query_params = []
     for param in parameters:
@@ -26,26 +30,22 @@ async def query(cnx, notif_id):
         else:
             # Use text_type for non-numeric values
             query_params.append(QueryParameter.text_type(name, value))
-
     query = QueryBase(
         name="Sample Query",
         query_id=query_id,
         params=query_params
     )
-
     dune = DuneClient.from_env()
-    print('loading...')
+    print(f'notificaion {notif_id} loading...')
     try:
         results = dune.run_query(query)
 
         # save as Pandas Dataframe
         results_df = dune.run_query_dataframe(query)
-        print(results_df)
         #Check if the result_column exists in the DataFrame
         if result_column in results_df.columns:
             # Extract the first value from the result_column
             result_value = results_df[result_column].iloc[0]
-            print(result_value)
             return result_value
         else:
             print(f"Column '{result_column}' not found in the DataFrame")
@@ -55,135 +55,93 @@ async def query(cnx, notif_id):
         print("parameters invalid")
         return None
     
-def get_condition_info(cnx, notif_id):
-    cursor = None
+async def get_condition_info(cnx, notif_id):
     try:
-        cursor = cnx.cursor()
-        # query to get notifications from notifs
-        query = f"""
-        
-        SELECT condition_id
-        FROM notifs
-        WHERE notifs.notif_id = {notif_id};
-        
-        """
-        cursor.execute(query)
-        condition_id = cursor.fetchall()
-        condition_id = condition_id[0][0]
-        query = f"""
-        
-        SELECT column_name, comparator, threshold
-        FROM conditions
-        WHERE conditions.condition_id = {condition_id};
-        
-        """
-        cursor.execute(query)
-        condition_info = cursor.fetchall()
-        condition_info = condition_info
-        result_column= condition_info[0][0]
-        comparator=condition_info[0][1]
-        threshold=condition_info[0][2]
-        return result_column, comparator, threshold
-    except mysql.connector.Error as err:
+        async with cnx.cursor() as cursor:
+            # Asynchronously execute the query
+            await cursor.execute("""
+                SELECT condition_id
+                FROM notifs
+                WHERE notifs.notif_id = %s;  
+            """, (notif_id,))
+
+            # Asynchronously fetch all the rows
+            condition_id = await cursor.fetchall()
+            condition_id = condition_id[0]['condition_id']
+            await cursor.execute("""
+                SELECT column_name, comparator, threshold
+                FROM conditions
+                WHERE conditions.condition_id = %s;
+            """,(condition_id, ))
+            condition_info = await cursor.fetchall()
+            column_name = condition_info[0]['column_name']
+            comparator = condition_info[0]['comparator']
+            threshold = condition_info[0]['threshold']
+            return column_name, comparator, threshold
+            
+    except Exception as err:
         print(f"Error in get_condition_info: {err}")
 
-    finally:
-        # Close the cursor and connection
-        if "cursor" in locals():
-            cursor.close()
-        if "connection" in locals() and cnx.is_connected():
-            cnx.close()
-
-def get_query_id(cnx, notif_id):
-    cursor = None
+async def get_query_id(cnx, notif_id):
     try:
-        cursor = cnx.cursor()
-        # query to get notifications from notifs
-        query = f"""
-        
-        SELECT query_id
-        FROM notifs
-        WHERE notifs.notif_id = {notif_id};
-        
-        """
-        cursor.execute(query)
-        query_id = cursor.fetchall()
-        return query_id[0][0]
-    except mysql.connector.Error as err:
-        print(f"Error: {err}")
+        async with cnx.cursor() as cursor:
+            # Asynchronously execute the query
+            await cursor.execute("""
+                SELECT query_id
+                FROM notifs
+                WHERE notifs.notif_id = %s;
+            """, (notif_id,))
 
-    finally:
-        # Close the cursor and connection
-        if "cursor" in locals():
-            cursor.close()
-        if "connection" in locals() and cnx.is_connected():
-            cnx.close()
+            # Asynchronously fetch all the rows
+            query_id = await cursor.fetchall()
+            query_id = query_id[0]['query_id']
+            return query_id
+    except Exception as err:
+        print(f"Error in get_parameters: {err}")
 
-def get_parameters(cnx, notif_id):
-    cursor = None
+async def get_parameters(cnx, notif_id):
     try:
-        # Create a cursor to execute SQL queries
-        cursor = cnx.cursor()
+        async with cnx.cursor() as cursor:
+            # Asynchronously execute the query
+            await cursor.execute("""
+                SELECT param_name_id, parameter_value
+                FROM parameter_values
+                WHERE parameter_values.notif_id = %s;
+            """, (notif_id,))
 
-        # query to get notifications from notifs
-        query = f"""
-        
-        SELECT param_name_id, parameter_value
-        FROM parameter_values
-        WHERE parameter_values.notif_id = {notif_id};
-        
-        """
-        cursor.execute(query)
+            # Asynchronously fetch all the rows
+            raw_parameters = await cursor.fetchall()
+            parameters = []
+            for raw_parameter in raw_parameters:
+                parameter_name_id = raw_parameter['param_name_id']
+                parameter_value = raw_parameter['parameter_value']
+                # Make sure get_parameter_name is also async and awaited
+                parameter_name = await get_parameter_name(cnx, parameter_name_id)
+                parameters.append((parameter_name, parameter_value))
+            return parameters
+    except Exception as err:
+        print(f"Error in get_parameters: {err}")
 
-        # Fetch all the rows
-        raw_parameters = cursor.fetchall()
-        parameters = []
-        for raw_parameter in raw_parameters:
-            parameter_name_id = raw_parameter[0]
-            parameter_value = raw_parameter[1]
-            parameter_name = get_parameter_name(cnx, parameter_name_id)
-            parameters.append((parameter_name, parameter_value))
-        return parameters
-    except mysql.connector.Error as err:
-        print(f"Error: {err}")
-
-    finally:
-        # Close the cursor and connection
-        if "cursor" in locals():
-            cursor.close()
-        if "connection" in locals() and cnx.is_connected():
-            cnx.close()
-
-def get_parameter_name(cnx, parameter_name_id):
-    cursor= None
+async def get_parameter_name(cnx, parameter_name_id):
     try:
-        # Create a cursor to execute SQL queries
-        cursor = cnx.cursor()
+        async with cnx.cursor() as cursor:  # Use an async context manager to get a cursor
+            # Asynchronously execute the query
+            await cursor.execute("""
+                SELECT parameter_name
+                FROM parameter_names
+                WHERE parameter_names.param_name_id = %s;
+            """, (int(parameter_name_id),))  # Use parameterized queries to prevent SQL injection
 
-        # query to get notifications from notifs
-        query = f"""
-        
-        SELECT parameter_name
-        FROM parameter_names
-        WHERE parameter_names.param_name_id = {parameter_name_id};
-        
-        """
-        cursor.execute(query)
+            # Asynchronously fetch all the rows
+            parameter_name = await cursor.fetchone()  # Fetch the first row
+            if parameter_name:
+                return parameter_name['parameter_name']
+            else:
+                return None  # Return None if no result is found
+                
+    except Exception as err:  # Catch a more general exception if not specifically using mysql.connector
+        print(f"Error in get_parameter_name: {err}")
 
-        # Fetch all the rows
-        parameter_name = cursor.fetchall()
-        return parameter_name[0][0]
-        
-        
-    except mysql.connector.Error as err:
-        print(f"Error: {err}")
-
-    finally:
-        # Close the cursor and connection
-        if "cursor" in locals():
-            cursor.close()
-        if "connection" in locals() and cnx.is_connected():
-            cnx.close()
 
 def is_numeric(value):
     try:
@@ -201,12 +159,12 @@ dune_logger.setLevel(logging.WARNING)
 load_dotenv()
 
 
-async def main():
-    cnx = connect_to_db()
-    if cnx is not None:
-        await query(cnx, 115)
-    else:
-        print("Failed to connect to the database")
+# async def main():
+#     cnx = connect_to_db()
+#     if cnx is not None:
+#         await query(cnx, 115)
+#     else:
+#         print("Failed to connect to the database")
 
-if __name__ == '__main__':
-    asyncio.run(main())
+# if __name__ == '__main__':
+#     asyncio.run(main())

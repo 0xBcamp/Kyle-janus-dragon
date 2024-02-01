@@ -30,7 +30,7 @@ def check_condition(resulting_statistic, notif_id):
         # Example query to select data from a table
         query = f"""
         
-        SELECT conditions.threshold, conditions.comparator
+        SELECT conditions.column_name, conditions.threshold, conditions.comparator
         FROM notifs
         JOIN conditions ON notifs.condition_id = conditions.condition_id
         WHERE notifs.notif_id = {notif_id};
@@ -44,12 +44,12 @@ def check_condition(resulting_statistic, notif_id):
 
         row = result[0]
         
-        res = evaluate(resulting_statistic, row[1], row[0])
+        res = evaluate(resulting_statistic, row[2], row[1])
 
         # notify when large eth holders is over 100
 
     except mysql.connector.Error as err:
-        print(f"Error: {err}")
+        print(f"Error in chceck_condition: {err}")
 
     finally:
         # Close the cursor and connection
@@ -58,7 +58,10 @@ def check_condition(resulting_statistic, notif_id):
         if "connection" in locals() and connection.is_connected():
             connection.close()
         
-        return res
+        if res:
+            return res, row[0], row[2], row[1]
+        else:
+            return res, None, None, None
 
 def evaluate(new_value, operator, threshold):
     operators = {'==': '==', '!=': '!=', '>': '>', '<': '<', '>=': '>=', '<=': '<='}

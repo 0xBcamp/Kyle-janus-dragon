@@ -64,6 +64,11 @@ Preset Notifications:\n
         bot.reply_to(message, btc_price)
 
     ###### Preset Notifications #######
+    @bot.message_handler(commands=['easy_one'])
+    def easy_one(message):
+        handle_notification_creation(
+            bot, message, 3397131, "token amount bought by last dex trade monitored by us"
+        )
     @bot.message_handler(commands=['num_large_erc20_holders'])
     def num_large_erc20_holders(message):
         handle_notification_creation(

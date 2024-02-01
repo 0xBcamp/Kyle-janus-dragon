@@ -20,7 +20,6 @@ def extract_all_info_from_message(message, query_id):
     query_parameters = extract_and_format_query_parameters(notif_parameters)
     #get condition from notification parameters
     condition = extract_and_format_condition(notif_parameters)
-
     return user_info, query_id , query_parameters, condition, notif_name
 
 ###### EXTRACT_ALL_INFO_FROM_MESSAGE() HELPER FUNCTIONS ##########

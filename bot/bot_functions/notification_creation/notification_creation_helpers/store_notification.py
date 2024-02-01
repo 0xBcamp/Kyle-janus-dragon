@@ -13,7 +13,8 @@ def store_notification(cnx, user_id, query_id, parameters, condition, notif_name
     # Step 2: Store the new notification into notifs table with the condition_id, and get the notification id
     notif_id = store_notif_and_return_id(cnx, user_id, query_id, condition_id, notif_name)
     # step 3: Store parameters values into the parameter_values table with the notification id
-    store_parameter_values(cnx, notif_id, parameters)
+    if parameters:
+        store_parameter_values(cnx, notif_id, parameters)
 
 ####### STORE_NOTIFICATIONS() HELPER FUNCTIONS #########
     

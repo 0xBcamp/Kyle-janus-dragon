@@ -35,14 +35,12 @@ async def main():
 
     # Start the query loop
     query_task = asyncio.create_task(start_query_loop())
-    i = 1
     while True:
         try:
             # wait for results from query loop
-            (result, notif_id) = await result_queue.get()
-            print(result, notif_id)
-            
-            
+            (user_id, first_name, notif_name, monitored_statistic_name, threshold, resulting_statistic) = await result_queue.get()
+            message = f"Hello, {first_name}!\nYour notification, {notif_name}, has been triggered because the {monitored_statistic_name} has passed {threshold} with a value of {resulting_statistic}!"
+            await bot.send_message(chat_id=user_id, text=message)
             await asyncio.sleep(0.5)  # Sleep for a short time to prevent high CPU usage
         except:
             await asyncio.sleep(0.5)

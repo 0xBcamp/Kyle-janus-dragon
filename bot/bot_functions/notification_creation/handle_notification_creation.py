@@ -20,7 +20,6 @@ def handle_notification_creation(bot, message, query_id, condition_text):
 
     # STEP 1: check if the notification is valid and return a code
     response_code, current_value = check_if_notif_is_valid(cnx, query_id, parameters, condition_info, notif_name)
-
     #STEP 2: send a message back to the user based on this code number
     # Response codes: 
         # 0: notification creation successful

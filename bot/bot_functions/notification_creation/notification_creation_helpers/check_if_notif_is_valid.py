@@ -53,23 +53,30 @@ def check_if_notif_name_exists(cnx, notif_name):
 def check_if_queriable(query_id, parameters, condition_info):
     result_column = condition_info[0]
     query_params = []
-    for param in parameters:
-        name, value = param
-        if is_numeric(value):
-            # Use number_type for numeric values
-            query_params.append(QueryParameter.number_type(name, value))
-        else:
-            # Use text_type for non-numeric values
-            query_params.append(QueryParameter.text_type(name, value))
+    if parameters:
+        for param in parameters:
+            name, value = param
+            if is_numeric(value):
+                # Use number_type for numeric values
+                query_params.append(QueryParameter.number_type(name, value))
+            else:
+                # Use text_type for non-numeric values
+                query_params.append(QueryParameter.text_type(name, value))
 
-    query = QueryBase(
-        name="Sample Query",
-        query_id=query_id,
-        params=query_params
-    )
+        query = QueryBase(
+            name="Sample Query",
+            query_id=query_id,
+            params=query_params
+        )
+        
+    else:
+            query = QueryBase(
+            name="Sample Query",
+            query_id=query_id
+        )
 
     dune = DuneClient.from_env()
-    print('loading...')
+    print('Notification creation loading...')
     try:
         results = dune.run_query(query)
 
