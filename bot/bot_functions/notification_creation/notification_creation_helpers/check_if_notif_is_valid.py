@@ -51,7 +51,6 @@ def check_if_notif_name_exists(cnx, notif_name):
 
 
 def check_if_queriable(query_id, parameters, condition_info):
-    print(condition_info)
     result_column = condition_info[0]
     query_params = []
     for param in parameters:
