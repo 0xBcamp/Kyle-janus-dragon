@@ -9,9 +9,6 @@ const Home: NextPage = () => {
   return (
     <div>
       <Navbar/>
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
-        <SignupPage/>
-      </div>
       <Home_Page/>
     </div>
   );
