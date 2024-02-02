@@ -151,7 +151,7 @@ a:hover {
 
 section {
     padding-top: 4vh;
-    height: 96vh;
+    //height: 96vh;
     margin: 0 10rem;
     box-sizing: border-box;
     min-height: fit-content;
@@ -328,12 +328,20 @@ section {
 
 /* TEAM SECTION */
 
+
+Copy code
 #team {
-        display: flex;
-    flex-direction: column;
-    min-height: auto; /* Adjust as needed */
-    position: relative;
-    marg-inbottom: 20px;
+  display: flex; /* Establishes a grid container */
+  place-items: center; /* Shortcut for align-items and justify-items center */
+}
+
+.experience-details-container {
+  display: grid; /* Also make this a grid container */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Creates as many columns as can fit, with each item at least 250px wide */
+  gap: 20px; /* Spacing between grid items */
+  width: 100%; /* Takes the full width of its parent */
+  /* Optionally, set a max-width to prevent it from getting too wide on large screens */
+  max-width: 1200px;
 }
 
 .color-container {
