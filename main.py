@@ -11,6 +11,7 @@ Usage:
     DB_USER=
     DB_PASSWORD=
     DB_HOST=
+    DB_DATABASE=
     DEBUG=
 2. Then, start the telegram bot with "./main.py". 
 2a. If permission denied, run this command first "chmod +x main.py".
