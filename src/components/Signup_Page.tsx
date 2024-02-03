@@ -5,6 +5,9 @@ import {
 } from '@moonup/moon-api';
 import { useState } from 'react';
 import {useMoonSDK} from '../hooks/useMoonSDK'
+import { addUser } from '@/hooks/addUser';
+import { findEntriesByEmail } from '@/hooks/getMoonAddresses';
+
 const SignupPage: React.FC = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
@@ -12,14 +15,13 @@ const SignupPage: React.FC = () => {
 	const [passwordError, setPasswordError] = useState('');
 	const [signupSuccess, setSignupSuccess] = useState(false);
 	const [signInSuccess, setSignInSuccess] = useState(false);
-	const [authenticatedAddress, setAuthenticatedAddress] = useState('');
+	const [addresses, setAddresses] = useState(['']);
 	const [isConnected, setIsConnected] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
     const [isSigningUp, setIsSigningUp] = useState(true); // New state to toggle between sign up and sign in
-	const [accountBalance, setAccountBalance] = useState('');
 
-	const { moon, connect, createAccount, disconnect, updateToken, initialize } =
+	const { moon, connect, createAccount, disconnect, updateToken, initialize, getUserAddresses } =
 		useMoonSDK();
 
 	const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,32 +103,21 @@ const SignupPage: React.FC = () => {
 			console.log('Authenticating...');
 			const loginResponse: any = await auth.emailLogin(loginRequest);
 			const {token, refreshToken} = loginResponse.data;
-			console.log(token, refreshToken)
 			console.log('Authentication successful:', loginResponse);
 
 			// Set tokens and email
-			console.log('Updating tokens and email...');
+			console.log('Updating tokens and email for browser session...');
 			await updateToken(
 				loginResponse.data.token,
 				loginResponse.data.refreshToken
 			);
-			console.log(token)
-			console.log(loginResponse.data.token)
 			moon.MoonAccount.setEmail(email);
 			moon.MoonAccount.setExpiry(loginResponse.data.expiry);
-			console.log('Tokens and email updated!');
+			const userAddresses = await getUserAddresses()
+			setAddresses(userAddresses)
+			addUser(email)
 
-			// Perform sign-in logic with MoonSDK
-			console.log('Creating account...');
-			const newAccount = await createAccount();
-			console.log('New Account Data:', newAccount?.data);
-			console.log('Setting expiry and navigating...');
-			moon.MoonAccount.setExpiry(loginResponse.data.expiry);
 			setSignInSuccess(true);
-			setAuthenticatedAddress(newAccount.data.data.address);
-			setAccountBalance(newAccount.data.data.balance);
-			console.log('balance:', newAccount.data.data.balance)
-			console.log('Authenticated Address:', newAccount.data.data.address);
 		} catch (error) {
 			console.error('Error during sign-in:', error);
 			setError('Error signing in. Please try again.');
@@ -141,7 +132,6 @@ const SignupPage: React.FC = () => {
 		try {
 			setLoading(true);
 			setError(null);
-
 			// Disconnect from Moon
 			console.log('Disconnecting...');
 			await disconnect();
@@ -272,20 +262,19 @@ const SignupPage: React.FC = () => {
 				</div>
           )}
     
-          {signInSuccess && isConnected && (
-            <div className="mt-4 text-center">
-					<p>Authenticated Address: {authenticatedAddress}</p>
-					<p>Account Balance: {accountBalance}</p>
-					<button
-						type="button"
-						className="bg-red-500 text-white p-2 rounded mt-2"
-						onClick={handleDisconnect}
-					>
-						{loading ? 'Disconnecting...' : 'Disconnect from Moon'}
-					</button>
-					{error && <p className="text-red-500 mt-2">{error}</p>}
-				</div>
-          )}
+		{signInSuccess && isConnected && (
+			<div className="mt-4 text-center">
+				<button></button>
+				<button
+				type="button"
+				className="bg-red-500 text-white p-2 rounded mt-2"
+				onClick={handleDisconnect}
+				>
+				{loading ? 'Disconnecting...' : 'Disconnect from Moon'}
+				</button>
+				{error && <p className="text-red-500 mt-2">{error}</p>}
+			</div>
+			)}
         </div>
       );
     };

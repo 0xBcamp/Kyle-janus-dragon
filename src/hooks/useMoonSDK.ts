@@ -53,6 +53,20 @@ export const useMoonSDK = () => {
 		}
 	};
 
+	const getUserAddresses = async () => {
+		if (moon) {
+			const addresses = await moon.listAccounts();
+			const keys = addresses.data.keys; // Assuming addresses.data correctly contains an AccountResponse
+			console.log(keys)
+			if (keys) { // First, check if keys is not undefined
+				return(keys); 
+			} else {
+				console.log("No keys found in the response.");
+			}
+		}
+	};
+	
+
 	return {
 		moon,
 		initialize,
@@ -60,5 +74,6 @@ export const useMoonSDK = () => {
 		updateToken,
 		createAccount,
 		disconnect,
+		getUserAddresses,
 	};
 };
