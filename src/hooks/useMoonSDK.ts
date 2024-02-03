@@ -39,6 +39,8 @@ export const useMoonSDK = () => {
 		if (moon) {
 			const data: CreateAccountInput = {};
 			const newAccount = await moon?.getAccountsSDK().createAccount(data);
+			console.log(moon?.getAccountsSDK())
+			console.log(newAccount)
 			return newAccount;
 		}
 	};

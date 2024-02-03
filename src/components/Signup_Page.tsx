@@ -1,10 +1,10 @@
 import {
 	EmailLoginInput,
 	EmailSignupInput,
+	Accounts
 } from '@moonup/moon-api';
 import { useState } from 'react';
-import { useMoonSDK } from './usemoonsdk';
-
+import {useMoonSDK} from '../hooks/useMoonSDK'
 const SignupPage: React.FC = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
@@ -17,7 +17,7 @@ const SignupPage: React.FC = () => {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
     const [isSigningUp, setIsSigningUp] = useState(true); // New state to toggle between sign up and sign in
-
+	const [accountBalance, setAccountBalance] = useState('');
 
 	const { moon, connect, createAccount, disconnect, updateToken, initialize } =
 		useMoonSDK();
@@ -73,6 +73,7 @@ const SignupPage: React.FC = () => {
 				};
 				console.log('Signing up...');
 				const signupResponse: any = await auth.emailSignup(signupRequest);
+				const {token, refreshToken} = signupResponse.data;
 				console.log('Signup successful:', signupResponse);
 
 				setSignupSuccess(true);
@@ -96,8 +97,11 @@ const SignupPage: React.FC = () => {
 				email,
 				password,
 			};
+			
 			console.log('Authenticating...');
 			const loginResponse: any = await auth.emailLogin(loginRequest);
+			const {token, refreshToken} = loginResponse.data;
+			console.log(token, refreshToken)
 			console.log('Authentication successful:', loginResponse);
 
 			// Set tokens and email
@@ -106,6 +110,8 @@ const SignupPage: React.FC = () => {
 				loginResponse.data.token,
 				loginResponse.data.refreshToken
 			);
+			console.log(token)
+			console.log(loginResponse.data.token)
 			moon.MoonAccount.setEmail(email);
 			moon.MoonAccount.setExpiry(loginResponse.data.expiry);
 			console.log('Tokens and email updated!');
@@ -118,6 +124,8 @@ const SignupPage: React.FC = () => {
 			moon.MoonAccount.setExpiry(loginResponse.data.expiry);
 			setSignInSuccess(true);
 			setAuthenticatedAddress(newAccount.data.data.address);
+			setAccountBalance(newAccount.data.data.balance);
+			console.log('balance:', newAccount.data.data.balance)
 			console.log('Authenticated Address:', newAccount.data.data.address);
 		} catch (error) {
 			console.error('Error during sign-in:', error);
@@ -267,6 +275,7 @@ const SignupPage: React.FC = () => {
           {signInSuccess && isConnected && (
             <div className="mt-4 text-center">
 					<p>Authenticated Address: {authenticatedAddress}</p>
+					<p>Account Balance: {accountBalance}</p>
 					<button
 						type="button"
 						className="bg-red-500 text-white p-2 rounded mt-2"
