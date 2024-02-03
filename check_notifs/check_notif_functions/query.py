@@ -1,6 +1,4 @@
 from .connect_to_db import connect_to_db
-import asyncio
-import mysql.connector
 from dune_client.types import QueryParameter
 from dune_client.client import DuneClient
 from dune_client.query import QueryBase
@@ -35,8 +33,9 @@ async def query(pool, notif_id):
         query_id=query_id,
         params=query_params
     )
+
     dune = DuneClient.from_env()
-    print(f'notificaion {notif_id} loading...')
+    print(f'checking notificaion {notif_id}...')
     try:
         results = dune.run_query(query)
 
@@ -157,14 +156,3 @@ dune_logger = logging.getLogger('dune_client')
 dune_logger.setLevel(logging.WARNING)
 # Load environment variables from .env file
 load_dotenv()
-
-
-# async def main():
-#     cnx = connect_to_db()
-#     if cnx is not None:
-#         await query(cnx, 115)
-#     else:
-#         print("Failed to connect to the database")
-
-# if __name__ == '__main__':
-#     asyncio.run(main())
