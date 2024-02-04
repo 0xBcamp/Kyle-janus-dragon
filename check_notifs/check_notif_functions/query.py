@@ -4,6 +4,7 @@ from dune_client.client import DuneClient
 from dune_client.query import QueryBase
 import logging
 from dotenv import load_dotenv
+import os
 
 #function to call to query a notification by its id
 async def query(pool, notif_id):
@@ -33,8 +34,10 @@ async def query(pool, notif_id):
         query_id=query_id,
         params=query_params
     )
-
-    dune = DuneClient.from_env()
+    load_dotenv()
+    my_variable = os.getenv('DUNE_API_KEY')
+    print(my_variable)
+    dune = DuneClient
     print(f'checking notificaion {notif_id}...')
     try:
         results = dune.run_query(query)
