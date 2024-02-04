@@ -37,7 +37,7 @@ async def query(pool, notif_id):
     load_dotenv()
     my_variable = os.getenv('DUNE_API_KEY')
     print(my_variable)
-    dune = DuneClient
+    dune = DuneClient.from_env()
     print(f'checking notificaion {notif_id}...')
     try:
         results = dune.run_query(query)
