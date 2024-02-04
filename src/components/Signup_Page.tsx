@@ -6,7 +6,7 @@ import {
 import { useState } from 'react';
 import {useMoonSDK} from '../hooks/useMoonSDK'
 import { addUser } from '@/hooks/addUser';
-import { findEntriesByEmail } from '@/hooks/getMoonAddresses';
+import { findEntriesByEmail } from '@/pages/api/findEntriesByEmail';
 
 const SignupPage: React.FC = () => {
 	const [email, setEmail] = useState('');
@@ -87,12 +87,11 @@ const SignupPage: React.FC = () => {
 			setLoading(false);
 		}
 	};
-
 	const handleSignIn = async () => {
 		try {
 			setLoading(true);
 			setError(null);
-
+	
 			// Authenticate the user and sign in
 			const auth = moon.getAuthSDK();
 			const loginRequest: EmailLoginInput = {
@@ -102,21 +101,25 @@ const SignupPage: React.FC = () => {
 			
 			console.log('Authenticating...');
 			const loginResponse: any = await auth.emailLogin(loginRequest);
-			const {token, refreshToken} = loginResponse.data;
 			console.log('Authentication successful:', loginResponse);
-
-			// Set tokens and email
-			console.log('Updating tokens and email for browser session...');
+	
+			// Set tokens and email for browser session
+			console.log('Updating tokens and email...');
 			await updateToken(
 				loginResponse.data.token,
 				loginResponse.data.refreshToken
 			);
 			moon.MoonAccount.setEmail(email);
 			moon.MoonAccount.setExpiry(loginResponse.data.expiry);
-			const userAddresses = await getUserAddresses()
-			setAddresses(userAddresses)
-			addUser(email)
-
+	
+			// Retrieve and use user addresses
+			const userAddresses = await getUserAddresses();
+			setAddresses(userAddresses); // Update state with the new addresses
+			console.log(userAddresses); // userAddresses contains the updated data
+	
+			// Use userAddresses directly here since it's the updated data
+			addUser(email, userAddresses); // Adjusted to use userAddresses directly
+	
 			setSignInSuccess(true);
 		} catch (error) {
 			console.error('Error during sign-in:', error);
@@ -125,6 +128,7 @@ const SignupPage: React.FC = () => {
 			setLoading(false);
 		}
 	};
+	
 
 
 
