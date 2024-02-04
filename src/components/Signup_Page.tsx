@@ -1,29 +1,25 @@
-import {
-	EmailLoginInput,
-	EmailSignupInput,
-	Accounts
-} from '@moonup/moon-api';
 import { useState } from 'react';
 import {useMoonSDK} from '../hooks/useMoonSDK'
-import { addUser } from '@/hooks/addUser';
-import { findEntriesByEmail } from '@/hooks/findEntriesByEmail';
+import { useAuth } from '../hooks/useAuth'; // Adjust the import path as necessary
 
 const SignupPage: React.FC = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
 	const [passwordError, setPasswordError] = useState('');
-	const [signupSuccess, setSignupSuccess] = useState(false);
-	const [signInSuccess, setSignInSuccess] = useState(false);
-	const [addresses, setAddresses] = useState(['']);
-	const [chosenAddresses, setChosenAddresses] = useState([['','']]);
-	const [isConnected, setIsConnected] = useState(false);
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState<string | null>(null);
     const [isSigningUp, setIsSigningUp] = useState(true); // New state to toggle between sign up and sign in
-
-	const { moon, connect, createAccount, disconnect, updateToken, initialize, getUserAddresses } =
-		useMoonSDK();
+	const {
+		handleSignup,
+		handleSignIn,
+		handleInitializeAndConnect,
+		handleDisconnect,
+		isConnected,
+		signupSuccess,
+		signInSuccess,
+		loading,
+		error,
+		chosenAddresses,
+	  } = useAuth(email, password, confirmPassword, setPasswordError);
 
 	const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setEmail(event.target.value);
@@ -38,121 +34,11 @@ const SignupPage: React.FC = () => {
 	) => {
 		setConfirmPassword(event.target.value);
 	};
-
-	const handleInitializeAndConnect = async () => {
-		try {
-			setLoading(true);
-			setError(null);
-
-			// Initialize and connect to Moon
-			console.log('Initializing and connecting to Moon...');
-			await initialize();
-			await connect();
-			console.log('Connected to Moon!');
-			setIsConnected(true);
-		} catch (error) {
-			console.error('Error during connection:', error);
-			setError('Error connecting to Moon. Please try again.');
-		} finally {
-			setLoading(false);
-		}
+	// Toggle between sign up and sign in
+	const toggleSignInUp = () => {
+		setIsSigningUp(!isSigningUp);
 	};
 
-	const handleSignup = async () => {
-		try {
-			setLoading(true);
-			setError(null);
-
-			if (password !== confirmPassword) {
-				setPasswordError('Passwords do not match');
-			} else {
-				setPasswordError('');
-
-				// Sign up the user
-				const auth = moon.getAuthSDK();
-				const signupRequest: EmailSignupInput = {
-					email,
-					password,
-				};
-				console.log('Signing up...');
-				const signupResponse: any = await auth.emailSignup(signupRequest);
-				const {token, refreshToken} = signupResponse.data;
-				console.log('Signup successful:', signupResponse);
-
-				setSignupSuccess(true);
-			}
-		} catch (error) {
-			console.error('Error during signup:', error);
-			setError('Error signing up. Please try again.');
-		} finally {
-			setLoading(false);
-		}
-	};
-	const handleSignIn = async () => {
-		try {
-			setLoading(true);
-			setError(null);
-	
-			// Authenticate the user and sign in
-			const auth = moon.getAuthSDK();
-			const loginRequest: EmailLoginInput = {
-				email,
-				password,
-			};
-			
-			console.log('Authenticating...');
-			const loginResponse: any = await auth.emailLogin(loginRequest);
-			console.log('Authentication successful:', loginResponse);
-	
-			// Set tokens and email for browser session
-			console.log('Updating tokens and email...');
-			await updateToken(
-				loginResponse.data.token,
-				loginResponse.data.refreshToken
-			);
-			moon.MoonAccount.setEmail(email);
-			moon.MoonAccount.setExpiry(loginResponse.data.expiry);
-	
-			// Retrieve and use user addresses
-			const userAddresses = await getUserAddresses();
-			setAddresses(userAddresses); // Update state with the new addresses
-			console.log(userAddresses); // userAddresses contains the updated data
-	
-			// Use userAddresses directly here since it's the updated data
-			addUser(email, userAddresses); // Adjusted to use userAddresses directly
-			setChosenAddresses(await findEntriesByEmail(email))
-			setSignInSuccess(true);
-		} catch (error) {
-			console.error('Error during sign-in:', error);
-			setError('Error signing in. Please try again.');
-		} finally {
-			setLoading(false);
-		}
-	};
-	
-
-
-
-	const handleDisconnect = async () => {
-		try {
-			setLoading(true);
-			setError(null);
-			// Disconnect from Moon
-			console.log('Disconnecting...');
-			await disconnect();
-			console.log('Disconnected');
-			setIsConnected(false);
-		} catch (error) {
-			console.error('Error during disconnection:', error);
-			setError('Error disconnecting from Moon. Please try again.');
-		} finally {
-			setLoading(false);
-		}
-	};
-
-    const toggleSignInUp = () => {
-        setIsSigningUp(!isSigningUp);
-      };    
 
       return (
         <div className="flex justify-center items-center h-screen">
