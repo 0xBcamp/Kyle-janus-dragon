@@ -1,6 +1,6 @@
 // Import necessary dependencies
 import { useState } from 'react';
-import { useMoonSDK } from '../hooks/useMoonSDK'; // Adjust the import path as necessary
+import { useMoonSDK } from './useMoonSDK'; // Adjust the import path as necessary
 import {
 	EmailLoginInput,
 	EmailSignupInput,
@@ -8,7 +8,10 @@ import {
 } from '@moonup/moon-api';
 import { addUser } from '@/hooks/addUser';
 import { findEntriesByEmail } from '@/hooks/findEntriesByEmail';
-export const useAuth = (email: string, password: string, confirmPassword: string, setPasswordError: (error: string) => void) => {
+
+
+
+export const signInLogic = (email: string, password: string, confirmPassword: string, setPasswordError: (error: string) => void) => {
   // Hook state management for authentication
   const [isConnected, setIsConnected] = useState(false);
   const [signupSuccess, setSignupSuccess] = useState(false);

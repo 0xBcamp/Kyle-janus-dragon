@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import {useMoonSDK} from '../hooks/useMoonSDK'
-import { useAuth } from '../hooks/useAuth'; // Adjust the import path as necessary
+import { signInLogic } from '../hooks/signInLogic'; // Adjust the import path as necessary
 
 const SignupPage: React.FC = () => {
 	const [email, setEmail] = useState('');
@@ -19,7 +18,7 @@ const SignupPage: React.FC = () => {
 		loading,
 		error,
 		chosenAddresses,
-	  } = useAuth(email, password, confirmPassword, setPasswordError);
+	  } = signInLogic(email, password, confirmPassword, setPasswordError);
 
 	const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setEmail(event.target.value);
