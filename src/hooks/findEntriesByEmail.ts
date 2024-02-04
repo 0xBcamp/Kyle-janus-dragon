@@ -4,7 +4,7 @@ type Entry = [string, string];
 // Function to call the findEntries API
 export const findEntriesByEmail = async (email: string): Promise<Entry[]> => {
     try {
-        const response = await fetch('/api/findEntries', {
+        const response = await fetch('/api/findEntriesByEmail', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -23,3 +23,4 @@ export const findEntriesByEmail = async (email: string): Promise<Entry[]> => {
         throw error;
     }
 }
+

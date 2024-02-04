@@ -6,7 +6,7 @@ import {
 import { useState } from 'react';
 import {useMoonSDK} from '../hooks/useMoonSDK'
 import { addUser } from '@/hooks/addUser';
-import { findEntriesByEmail } from '@/pages/api/findEntriesByEmail';
+import { findEntriesByEmail } from '@/hooks/findEntriesByEmail';
 
 const SignupPage: React.FC = () => {
 	const [email, setEmail] = useState('');
@@ -16,6 +16,7 @@ const SignupPage: React.FC = () => {
 	const [signupSuccess, setSignupSuccess] = useState(false);
 	const [signInSuccess, setSignInSuccess] = useState(false);
 	const [addresses, setAddresses] = useState(['']);
+	const [chosenAddresses, setChosenAddresses] = useState([['','']]);
 	const [isConnected, setIsConnected] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -119,7 +120,7 @@ const SignupPage: React.FC = () => {
 	
 			// Use userAddresses directly here since it's the updated data
 			addUser(email, userAddresses); // Adjusted to use userAddresses directly
-	
+			setChosenAddresses(await findEntriesByEmail(email))
 			setSignInSuccess(true);
 		} catch (error) {
 			console.error('Error during sign-in:', error);
@@ -268,7 +269,10 @@ const SignupPage: React.FC = () => {
     
 		{signInSuccess && isConnected && (
 			<div className="mt-4 text-center">
-				<button></button>
+				<h3>Your addresses:</h3>
+				{chosenAddresses.map((address, index) => (
+					<p key={index}>{address}</p> // use the adddress itself or index as key
+				))}
 				<button
 				type="button"
 				className="bg-red-500 text-white p-2 rounded mt-2"

@@ -1,13 +1,24 @@
 import mysql from 'mysql2/promise';
 import * as dotenv from 'dotenv';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 // Load environment variables from .env file
 dotenv.config();
 
 // Function to find entries by email and return an array of tuples (moon_array, address_name)
-export const findEntriesByEmail = async (email: string): Promise<[string, string][]> => {
+export default async function findEntriesByEmail(req: NextApiRequest, res: NextApiResponse) {
+    if (req.method !== 'POST') {
+        res.status(405).json({ error: 'Method Not Allowed' });
+        return;
+    }
+    
+    const { email } = req.body;
+    
+    if (typeof email !== 'string') {
+        res.status(400).json({ error: 'Email must be a string' });
+        return;
+    }
     let connection;
-
     try {
         // Create a connection to the database
         connection = await mysql.createConnection({
@@ -18,7 +29,7 @@ export const findEntriesByEmail = async (email: string): Promise<[string, string
         });
 
         // Prepare the SQL statement to select the required columns
-        const sql = 'SELECT moon_array, address_name FROM moon_addresses WHERE email = ?';
+        const sql = 'SELECT moon_address, address_name FROM moon_addresses WHERE email = ? AND address_name IS NOT NULL';
         const values = [email];
 
         // Execute the query
@@ -26,12 +37,12 @@ export const findEntriesByEmail = async (email: string): Promise<[string, string
 
         // Map the result to an array of tuples
         const results: [string, string][] = rows.map((row: any) => [row.moon_array, row.address_name]);
-        return results;
+        res.status(200).json(results);
 
     } catch (error) {
         // Handle any errors
         console.error('Failed to find entries:', error);
-        throw error; // Rethrow to allow caller to handle
+        res.status(500).json({ error: 'Failed to find entries' });
     } finally {
         // Ensure the connection is closed
         if (connection) {
