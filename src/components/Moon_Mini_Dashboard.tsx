@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useMoonSDK } from '@/hooks/useMoonSDK';
 import { getChosenUserAddresses } from '@/hooks/getChosenUserAddresses';
 import { getUnchosenUserAddresses } from '@/hooks/getUnchosenUserAddresses';
-import AddAddressComponent from './Add_Address_Component';// Assuming AddAddressComponent is in the same directory
+import AddAddressComponent from './Add_Address_Component'; // Assuming AddAddressComponent is in the same directory
+import PaymentComponent from './Payment_Component';
 
 interface MoonMiniDashboardProps {
     email: string;
@@ -12,10 +13,12 @@ interface MoonMiniDashboardProps {
 const MoonMiniDashboard: React.FC<MoonMiniDashboardProps> = ({ email, onDisconnect }) => {
     const [chosenAddresses, setChosenAddresses] = useState<string[][]>([]);
     const [unchosenAddresses, setUnchosenAddresses] = useState<string[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
+    // Start with loading set to true to indicate that data is being fetched
+    const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [disconnecting, setDisconnecting] = useState<boolean>(false);
     const [isAddingAddress, setIsAddingAddress] = useState<boolean>(false);
+    const [currentAddress, setCurrentAddress] = useState<string[] | null>(null);
 
     const { disconnect } = useMoonSDK();
 
@@ -38,19 +41,19 @@ const MoonMiniDashboard: React.FC<MoonMiniDashboardProps> = ({ email, onDisconne
     useEffect(() => {
         loadAddresses();
     }, [email]);
-    
+
     const handleDisconnect = async () => {
-      setDisconnecting(true);
-      try {
-          await disconnect();
-          console.log('Disconnected');
-          onDisconnect();
-      } catch (error) {
-          console.error('Error during disconnection:', error);
-          setError('Error disconnecting from Moon. Please try again.');
-      } finally {
-          setDisconnecting(false);
-      }
+        setDisconnecting(true);
+        try {
+            await disconnect();
+            console.log('Disconnected');
+            onDisconnect();
+        } catch (error) {
+            console.error('Error during disconnection:', error);
+            setError('Error disconnecting from Moon. Please try again.');
+        } finally {
+            setDisconnecting(false);
+        }
     };
 
     const handleAddAddressClick = () => {
@@ -59,37 +62,48 @@ const MoonMiniDashboard: React.FC<MoonMiniDashboardProps> = ({ email, onDisconne
 
     const handleAddressAdded = () => {
         setIsAddingAddress(false);
-        // Reload addresses or perform any other necessary updates
+        loadAddresses();
     };
 
     const handleBack = () => {
         setIsAddingAddress(false);
-      };
-      
+        setCurrentAddress(null);
+    };
+
+    const handleAddressSelection = (address: string, addressName: string) => {
+        setCurrentAddress([address, addressName]);
+    };
 
     return (
         <div className="mt-4 text-center">
             <p>Signed in with: {email}</p>
+            
             {isAddingAddress ? (
-               <AddAddressComponent
-               userAddresses={unchosenAddresses}
-               onAddressAdded={() => {
-                 setIsAddingAddress(false); // Optionally reset isAddingAddress when an address is successfully added
-                 loadAddresses();
-               }}
-               onBack={handleBack}
-             />
+                <AddAddressComponent
+                    userAddresses={unchosenAddresses}
+                    onAddressAdded={handleAddressAdded}
+                    onBack={handleBack}
+                />
+            ) : currentAddress ? (
+                <PaymentComponent address={currentAddress[0]} addressName={currentAddress[1]} onBack={handleBack} />
+            ) : loading ? (
+                <p>Loading addresses...</p> // Display loading message while fetching data
             ) : (
                 <>
-                    <h3>Your addresses:</h3>
+                    <h3>Choose an address to pay with:</h3>
                     {chosenAddresses.length > 0 ? (
-                        chosenAddresses.map((address, index) => (
-                            <p key={index}>{address}</p>
+                        chosenAddresses.map(([address, addressName], index) => (
+                            <div key={index} style={{ margin: '5px 0' }}>
+                                <button className="marked" style={{ display: 'block' }} onClick={() => handleAddressSelection(address, addressName)}>
+                                    <strong>{addressName}</strong>: {address}
+                                </button>
+                            </div>
                         ))
                     ) : (
                         <p>No addresses in use yet!</p>
                     )}
-                    {unchosenAddresses.length != 0 && (
+
+                    {unchosenAddresses.length !== 0 && (
                         <button type="button" onClick={handleAddAddressClick}>Add an address here</button>
                     )}
                     <button

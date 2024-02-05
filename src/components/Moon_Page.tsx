@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import SignupPage from './Moon_SignIn_Page';
 import MoonMiniDashboard from './Moon_Mini_Dashboard';
-import { useMoonSDK } from '@/hooks/useMoonSDK';
 
 const MoonPage: React.FC = () => {
     // Initialize states to manage connection and sign-in status

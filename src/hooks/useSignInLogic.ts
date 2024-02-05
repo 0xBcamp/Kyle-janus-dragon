@@ -59,8 +59,6 @@ export const useSignInLogic = () => {
     setLoading(true);
     setError(null);
     try {
-      console.log(email)
-      console.log(password)
       const auth = moon.getAuthSDK();
       const loginRequest: EmailLoginInput = { email, password };
       const loginResponse: any = await auth.emailLogin(loginRequest);

@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@moonup/ethers": "^1.0.0",
     "@moonup/moon-sdk": "^0.0.43",
     "@moonup/types": "^0.0.6",
     "dotenv": "^16.4.1",

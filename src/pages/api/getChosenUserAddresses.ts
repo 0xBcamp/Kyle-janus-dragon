@@ -36,7 +36,7 @@ export default async function getChosenUserAddresses(req: NextApiRequest, res: N
         const [rows] = await connection.execute(sql, values);
 
         // Map the result to an array of tuples
-        const results: [string, string][] = rows.map((row: any) => [row.moon_array, row.address_name]);
+        const results: [string, string][] = rows.map((row: any) => [row.moon_address, row.address_name]);
         res.status(200).json(results);
 
     } catch (error) {
