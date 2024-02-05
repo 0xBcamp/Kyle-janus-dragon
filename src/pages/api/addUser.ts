@@ -2,7 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import mysql from 'mysql2/promise';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function addUser(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {
         // Handle any other HTTP method
         res.setHeader('Allow', ['POST']);

@@ -6,7 +6,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 dotenv.config();
 
 // Function to find entries by email and return an array of tuples (moon_array, address_name)
-export default async function findEntriesByEmail(req: NextApiRequest, res: NextApiResponse) {
+export default async function getUnchosenUserAddresses(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {
         res.status(405).json({ error: 'Method Not Allowed' });
         return;
@@ -29,14 +29,13 @@ export default async function findEntriesByEmail(req: NextApiRequest, res: NextA
         });
 
         // Prepare the SQL statement to select the required columns
-        const sql = 'SELECT moon_address, address_name FROM moon_addresses WHERE email = ? AND address_name IS NOT NULL';
+        const sql = 'SELECT moon_address FROM moon_addresses WHERE email = ?  AND address_name IS NULL';
         const values = [email];
-
         // Execute the query
         const [rows] = await connection.execute(sql, values);
 
         // Map the result to an array of tuples
-        const results: [string, string][] = rows.map((row: any) => [row.moon_array, row.address_name]);
+        const results: string[] = rows.map((row: any) => row.moon_address);
         res.status(200).json(results);
 
     } catch (error) {

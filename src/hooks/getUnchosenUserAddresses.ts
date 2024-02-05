@@ -1,10 +1,10 @@
 // Define a type for the response data structure
-type Entry = [string, string];
+type Entry = string;
 
 // Function to call the findEntries API
-export const findEntriesByEmail = async (email: string): Promise<Entry[]> => {
+export const getUnchosenUserAddresses = async (email: string): Promise<Entry[]> => {
     try {
-        const response = await fetch('/api/findEntriesByEmail', {
+        const response = await fetch('/api/getUnchosenUserAddresses', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
