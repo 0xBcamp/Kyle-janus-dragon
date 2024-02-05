@@ -7,18 +7,31 @@ export default function Home_Page() {
   return (
     <main>
     <section id="profile">
-        <div className="section__text">
-            <p className="section__text__p1">We Are</p>
-            <h1 className="title">Bot Name</h1>
-            <p className="section__text__p2">Crypto Bot</p>
-            <div className="btn-container">
-                
-            <button className="btn btn-color-1 repo-btn" onClick={() => window.open('https://github.com/0xBcamp/Kyle-janus-dragon', '_blank')}>
-              Github Repo
-            </button>
-
+        <div className="section-container">
+            <div className="section__text">
+                <p className="section__text__p1">We Are</p>
+                <h1 className="title">Bot Name</h1>
+                <p className="section__text__p2">Crypto Bot</p>
+                <div className="btn-container">
+                    
+                <button
+                    className="btn btn-color-1 repo-btn"
+                    onClick={() => window.location.href = 'https://github.com/0xBcamp/Kyle-janus-dragon'}
+                >
+                    Github Repo
+                </button>
+                </div>
             </div>
         </div>
+        <Image
+            src="/images/arrow.png"
+            alt="Arrow icon"
+            width={20}
+            height={20}
+            className="icon arrow"
+            onClick={() => window.location.href = './#about'}
+        />
+
     </section>
     <section id="about">
         <p className="section__text__p1">Get To Know More</p>
@@ -27,85 +40,97 @@ export default function Home_Page() {
             <div className="about-details-container">
                 <div className="about-containers">
                     <div className="details-container">
-                        <Image src="/images/experience.png" alt="Experience icon" width={32} height={32}/>
-
-                        <h3>Fact #1</h3>
-                        <p>Info</p>
+                        <Image 
+                            src="/images/experience.png" 
+                            alt="Experience icon" 
+                            className="icon"
+                            width={32} height={32}
+                        />
+                        <h3>Insights</h3>
+                        <p>Streamline Dune's queries for actionable notifications.</p>
                     </div>
                     <div className="details-container">
-                        <Image src="/images/education.png" alt="Education icon" width={32} height={32}/>
-                        <h3>Fact #2</h3>
-                        <p>Info</p>
+                        <Image 
+                            src="/images/education.png" 
+                            alt="Education icon" 
+                            width={32} height={32}
+                            className="icon"
+                        />
+                        <h3>User-Defined Alerts</h3>
+                        <p>Tailor notifications to specific criteria effortlessly.</p>
                     </div>
                 </div>
                 <div className="text-container">
                     <p>
-                        Lorem ipsum daolor, sit amet consectetur adipisicing elit. Excepturi facilis, illum ipsam ullam aliquid molestiae maiores modi quidem doloribus pariatur, nihil beatae omnis enim, minima sit repellat rem totam nam atque sint sed numquam distinctio. Dolores natus, excepturi itaque sunt soluta corporis, expedita, voluptatem quo maxime eos totam nobis quis.
+                        Welcome to our innovative chatbot platform, where we bridge the gap between complex data and user convenience. With empowering insights," we provide a seamless interface to navigate Dune's intricate query system. Users can effortlessly set up personalized alerts with user-defined alerts, ensuring they stay informed when critical thresholds are met. Our mission is to empower users with actionable insights, making data-driven decisions a breeze. Experience the future of data interaction with our intuitive and efficient chatbot solution.
                     </p>
                 </div>
             </div>
         </div>
+        <Image
+            src="/images/arrow.png"
+            alt="Arrow icon"
+            width={20}
+            height={20}
+            className="icon arrow"
+            onClick={() => window.location.href = './#team'}
+        />
     </section>
     <section id="team">
         <p className="section__text__p1">Meet The</p>
         <h1 className="title">Team</h1>
         <div className="experience-details-container">
             <div className="about-containers">
-            <div className="details-container color-container">
-                <div className="article-container">
-                    <div className="image-wrapper">
+                <div className="details-container color-container">
+                    <div className="article-container">
                         <Image 
-                                src="/images/danielha-pic.png" 
-                                alt="Daniel Ha pic" 
-                                className="team-img"
-                                fill={true}
-                            />
+                            src="/images/danielha-pic.png" 
+                            alt="Daniel Ha pic" 
+                            className="team-img"
+                            fill={true}
+                        />
                     </div>
                     <h2 className="experience-sub-title team-title team-member name">Daniel Ha</h2>
                     <h3 className="experience-sub-title team-title role team-member-role">Scrum Master</h3>
                     <h3 className="experience-sub-title team-title role team-member-role">Backend Software Engineer</h3>
                     <div className="btn-container">
                         <button className="btn btn-color-2 team-btn" onClick={() => window.open('https://www.linkedin.com/in/daniel-ha-554ba8180/', '_blank')}>
-                        Linkedin
+                            Linkedin
                         </button>
                         <button className="btn btn-color-2 team-btn" onClick={() => window.open('https://github.com/daniel-ha', '_blank')}>
-                        Github
+                            Github
                         </button>
                     </div>
                 </div>
-            </div>
-            <div className="details-container color-container">
-                <div className="article-container">
-                    <div className="image-wrapper">
+                <div className="details-container color-container">
+                    <div className="article-container">
                         <Image 
-                                src="/images/danielbird-pic.png" 
-                                alt="Daniel Bird pic" 
-                                className="team-img"
-                                fill={true}
-                            />
+                            src="/images/danielbird-pic.png" 
+                            alt="Daniel Bird pic" 
+                            className="team-img"
+                            fill={true}
+                        />
                     </div>
                     <h2 className="experience-sub-title team-title team-member name">Daniel Bird</h2>
                     <h3 className="experience-sub-title team-title role team-member-role">Product Owner</h3>
                     <h3 className="experience-sub-title team-title role team-member-role">Fullstack Software Engineer</h3>
                     <div className="btn-container">
                         <button className="btn btn-color-2 team-btn" onClick={() => window.open('https://www.linkedin.com/in/danielbirdjr', '_blank')}>
-                        Linkedin
+                            Linkedin
                         </button>
                         <button className="btn btn-color-2 team-btn" onClick={() => window.open('https://github.com/danielbirdjr', '_blank')}>
                             Github
                         </button>
                     </div>
                 </div>
-            </div>
-            <div className="details-container color-container">
-                <div className="article-container">
-                    <div className="image-wrapper">
+                <div className="details-container color-container">
+                    <div className="article-container">
                         <Image 
-                                src="/images/adamgill-pic.png" 
-                                alt="Adam Gill pic" 
-                                className="team-img"
-                                fill={true}
-                            />
+                            src="/images/adamgill-pic.png" 
+                            alt="Adam Gill pic" 
+                            className="team-img"
+                            fill={true}
+                        />
                     </div>
                     <h2 className="experience-sub-title team-title">Adam Gill</h2>
                     <h3 className="experience-sub-title team-title role team-member-role">Product Owner</h3>
@@ -119,16 +144,14 @@ export default function Home_Page() {
                         </button>
                     </div>
                 </div>
-            </div>
-            <div className="details-container color-container">
-                <div className="article-container">
-                    <div className="image-wrapper">
+                <div className="details-container color-container">
+                    <div className="article-container">
                         <Image 
-                                src="/images/dontepalmer-pic.png" 
-                                alt="Donte Palmer pic" 
-                                className="team-img"
-                                fill={true}
-                            />
+                            src="/images/dontepalmer-pic.png" 
+                            alt="Donte Palmer pic" 
+                            className="team-img"
+                            fill={true}
+                        />
                     </div>
                     <h2 className="experience-sub-title team-title">Donte Palmer</h2>
                     <h3 className="experience-sub-title team-title role team-member-role">Backend Software Engineer</h3>
@@ -144,7 +167,14 @@ export default function Home_Page() {
                 </div>
             </div>
         </div>
-        </div>
+        <Image
+            src="/images/arrow.png"
+            alt="Arrow icon"
+            width={20}
+            height={20}
+            className="icon arrow"
+            onClick={() => window.location.href = './#contact'}
+        />
     </section>
     <section id="contact">
         <p className="section__text__p1">Get in Touch</p>
@@ -159,6 +189,7 @@ export default function Home_Page() {
         <nav>
             <div className="nav-links-container">
                 <ul className="nav-links">
+                    <li><a href="#try_me">Try Me</a></li>
                     <li><a href="#about">About</a></li>
                     <li><a href="#team">Team</a></li>
                     <li><a href="#contact">Contact</a></li>
@@ -170,3 +201,5 @@ export default function Home_Page() {
     </main>
   )
 }
+
+

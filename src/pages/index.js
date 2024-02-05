@@ -2,7 +2,7 @@ import { Inter } from 'next/font/google'
 import SignupPage from './components/Signup_Page'
 import Navbar from './components/Navbar'
 import Image from 'next/image'
-import Home_Page from './components/Home_Page'
+import Home_Page from './components/Home_page'
 
 const inter = Inter({ subsets: ['latin'] })
 

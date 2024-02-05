@@ -207,6 +207,10 @@ section {
     gap: 1rem;
 }
 
+#profile .arrow {
+    right: 5.8%; /* Adjust the right positioning for the arrow in the profile section */
+}
+
 /* ICONS */ 
 
 .icon {
@@ -277,6 +281,8 @@ section {
     gap: 2rem;
     margin-bottom: 2rem;
     margin-top: 2rem;
+    display: flex; /* Add this line to ensure flex layout */
+    justify-content: center; /* Center items horizontally */
 }
 
 .about-details-container {
@@ -302,9 +308,6 @@ section {
 
 .details-container {
     padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     flex: 1;
     background: white;
     border-radius: 2rem;
@@ -324,16 +327,13 @@ section {
     margin: auto 0;
 }
 
-
-
 /* TEAM SECTION */
 
 #team {
-        display: flex;
-    flex-direction: column;
-    min-height: auto; /* Adjust as needed */
     position: relative;
-    marg-inbottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center items horizontally */
 }
 
 .color-container {
@@ -341,18 +341,11 @@ section {
     background: rgb(250, 250, 250);
 }
 
-.image-wrapper {
-    width: 90%;
-    height: 0;
-    padding-bottom: 90%; /* Adjust for desired aspect ratio */
-    position: relative;
-  }
-  
 .team-img {
     border-radius: 2rem;
-    object-fit: cover;
-  }
-  
+    width: 90%;
+    height: 90%;
+}
 
 .team-title {
     margin: 1rem;
