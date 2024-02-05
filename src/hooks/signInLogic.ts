@@ -149,6 +149,7 @@ export const signInLogic = (email: string, password: string, confirmPassword: st
     loading,
     error,
     chosenAddresses,
+	addresses,
     // Add other relevant states and functions
   };
 };

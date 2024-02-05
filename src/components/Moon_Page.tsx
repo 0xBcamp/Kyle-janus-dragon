@@ -18,6 +18,7 @@ const SignupPage: React.FC = () => {
 		loading,
 		error,
 		chosenAddresses,
+    addresses,
 	  } = signInLogic(email, password, confirmPassword, setPasswordError);
 
 	const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,8 +38,6 @@ const SignupPage: React.FC = () => {
 	const toggleSignInUp = () => {
 		setIsSigningUp(!isSigningUp);
 	};
-
-
       return (
         <div className="flex justify-center items-center h-screen">
             {!isConnected && (
@@ -154,10 +153,23 @@ const SignupPage: React.FC = () => {
     
 		{signInSuccess && isConnected && (
 			<div className="mt-4 text-center">
+        <p>Signed in with: {email}</p>
 				<h3>Your addresses:</h3>
-				{chosenAddresses.map((address, index) => (
-					<p key={index}>{address}</p> // use the adddress itself or index as key
-				))}
+        {
+          chosenAddresses.length > 0 ? (
+            chosenAddresses.map((address, index) => (
+              <p key={index}>{address}</p> // Use the address itself or index as key
+            ))
+          ) : (
+            <p>No addresses in use yet!</p>
+          )
+        }
+        {
+          chosenAddresses.length !== addresses.length && (
+            <button type="button">Add an address here</button>
+          )
+        }
+
 				<button
 				type="button"
 				className="bg-red-500 text-white p-2 rounded mt-2"
