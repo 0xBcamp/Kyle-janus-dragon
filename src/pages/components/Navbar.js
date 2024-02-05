@@ -12,7 +12,7 @@ export default function Home_Page() {
   return (
     <main>
         <nav id="desktop-nav">
-            <div className="logo">Bot Name/Logo</div>
+            <div className="logo">Dune Alerts</div>
             <div>
                 <ul className="nav-links">
                     <li><a href="#try_me">Try Me</a></li>

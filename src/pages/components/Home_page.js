@@ -10,7 +10,7 @@ export default function Home_Page() {
         <div className="section-container">
             <div className="section__text">
                 <p className="section__text__p1">We Are</p>
-                <h1 className="title">Bot Name</h1>
+                <h1 className="title">Dune Alerts</h1>
                 <p className="section__text__p2">Crypto Bot</p>
                 <div className="btn-container">
                     
@@ -181,7 +181,7 @@ export default function Home_Page() {
         <h1 className="title">Contact Us</h1>
         <div className="contact-info-upper-container">
             <div className="contact-info-container">
-                <p><a href="mailto:Example@gmail.com">Example@gmail.com</a></p>
+                <p><a href="mailto:DuneAlerts@gmail.com">DuneAlerts@gmail.com</a></p>
             </div>
         </div>
     </section>
@@ -196,7 +196,7 @@ export default function Home_Page() {
                 </ul>
             </div>
         </nav>
-        <p>Copyright &#169; 2024 Bot Name.</p>
+        <p>Copyright &#169; 2024 Dune Alerts.</p>
     </footer>
     </main>
   )
