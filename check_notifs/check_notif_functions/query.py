@@ -8,6 +8,7 @@ import os
 
 #function to call to query a notification by its id
 async def query(pool, notif_id):
+    load_dotenv()
     try:
         async with pool.acquire() as cnx:  # Acquire a connection from the pool
         # get the parameters associated with the notif_id to run the query
@@ -34,9 +35,6 @@ async def query(pool, notif_id):
         query_id=query_id,
         params=query_params
     )
-    load_dotenv()
-    my_variable = os.getenv('DUNE_API_KEY')
-    print(my_variable)
     dune = DuneClient.from_env()
     print(f'checking notificaion {notif_id}...')
     try:
@@ -157,5 +155,3 @@ def is_numeric(value):
 dune_logger = logging.getLogger('dune_client')
 # Set the logging level for the 'dune_client' logger to WARNING
 dune_logger.setLevel(logging.WARNING)
-# Load environment variables from .env file
-load_dotenv()
