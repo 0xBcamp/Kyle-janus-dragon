@@ -1,17 +1,18 @@
 import { Inter } from 'next/font/google';
+import { NextPage } from 'next';
 import React from 'react';
 
 const inter = Inter({ subsets: ['latin'] });
 
-const Navbar: React.FC = () => {
-    function toggleMenu() {
-        const menu = document.querySelector(".menu-links");
-        const icon = document.querySelector(".hamburger-icon");
-        menu?.classList.toggle("open");
-        icon?.classList.toggle("open");
-    }
-  
-    return (
+const HomePage: NextPage = () => {
+  const toggleMenu = (): void => {
+    const menu = document.querySelector(".menu-links");
+    const icon = document.querySelector(".hamburger-icon");
+    menu?.classList.toggle("open");
+    icon?.classList.toggle("open");
+  };
+
+  return (
     <main>
         <nav id="desktop-nav">
             <div className="logo">Dune Alerts</div>
@@ -41,8 +42,7 @@ const Navbar: React.FC = () => {
             </div>
         </nav>
     </main>
-
-);
+  );
 };
 
-export default Navbar;
+export default HomePage;
