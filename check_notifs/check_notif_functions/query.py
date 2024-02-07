@@ -6,16 +6,18 @@ import logging
 from dotenv import load_dotenv
 import os
 
-#function to call to query a notification by its id
+# function to call to query a notification by its id
+
+
 async def query(pool, notif_id):
     load_dotenv()
     try:
         async with pool.acquire() as cnx:  # Acquire a connection from the pool
-        # get the parameters associated with the notif_id to run the query
+            # get the parameters associated with the notif_id to run the query
             parameters = await get_parameters(cnx, notif_id)
-            #get the query_id
+            # get the query_id
             query_id = await get_query_id(cnx, notif_id)
-            #get the condition_info
+            # get the condition_info
             result_column, comparator, threshold = await get_condition_info(cnx, notif_id)
     except Exception as e:
         print(f"error: {e}")
@@ -35,14 +37,16 @@ async def query(pool, notif_id):
         query_id=query_id,
         params=query_params
     )
-    dune = DuneClient.from_env()
+    my_variable = os.getenv('DUNE_API_KEY')
+    print(my_variable)
+    dune = DuneClient(my_variable)
     print(f'checking notificaion {notif_id}...')
     try:
         results = dune.run_query(query)
 
         # save as Pandas Dataframe
         results_df = dune.run_query_dataframe(query)
-        #Check if the result_column exists in the DataFrame
+        # Check if the result_column exists in the DataFrame
         if result_column in results_df.columns:
             # Extract the first value from the result_column
             result_value = results_df[result_column].iloc[0]
@@ -54,7 +58,8 @@ async def query(pool, notif_id):
     except:
         print("parameters invalid")
         return None
-    
+
+
 async def get_condition_info(cnx, notif_id):
     try:
         async with cnx.cursor() as cursor:
@@ -72,15 +77,16 @@ async def get_condition_info(cnx, notif_id):
                 SELECT column_name, comparator, threshold
                 FROM conditions
                 WHERE conditions.condition_id = %s;
-            """,(condition_id, ))
+            """, (condition_id, ))
             condition_info = await cursor.fetchall()
             column_name = condition_info[0]['column_name']
             comparator = condition_info[0]['comparator']
             threshold = condition_info[0]['threshold']
             return column_name, comparator, threshold
-            
+
     except Exception as err:
         print(f"Error in get_condition_info: {err}")
+
 
 async def get_query_id(cnx, notif_id):
     try:
@@ -98,6 +104,7 @@ async def get_query_id(cnx, notif_id):
             return query_id
     except Exception as err:
         print(f"Error in get_parameters: {err}")
+
 
 async def get_parameters(cnx, notif_id):
     try:
@@ -122,6 +129,7 @@ async def get_parameters(cnx, notif_id):
     except Exception as err:
         print(f"Error in get_parameters: {err}")
 
+
 async def get_parameter_name(cnx, parameter_name_id):
     try:
         async with cnx.cursor() as cursor:  # Use an async context manager to get a cursor
@@ -138,7 +146,7 @@ async def get_parameter_name(cnx, parameter_name_id):
                 return parameter_name['parameter_name']
             else:
                 return None  # Return None if no result is found
-                
+
     except Exception as err:  # Catch a more general exception if not specifically using mysql.connector
         print(f"Error in get_parameter_name: {err}")
 
@@ -149,6 +157,7 @@ def is_numeric(value):
         return True
     except ValueError:
         return False
+
 
 #######    CHECK IF THE NOTIFICATION PARAMETERS ARE QUERIABLE    ###########
 # Get the logger for the 'dune_client' library

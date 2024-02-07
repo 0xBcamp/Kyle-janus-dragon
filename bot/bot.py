@@ -18,6 +18,7 @@ url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
 ###### CREATE_BOT() ########
 # function to initialize bot!
 
+
 def create_bot():
     bot = telebot.TeleBot(TG_API_KEY)
 
@@ -33,8 +34,7 @@ def create_bot():
         /my_notifs --> See a list of your notifications! \n
         /help --> send this same message to see available commands\n
 Preset Notifications:\n
-            /num_large_erc20_holders --> parameters: (min_token_balance=int token_address_to_analyze=address) conditions: (total_large_holders)\n 
-            /dex_large_transactions --> parameters: (large_transaction_amount=int) conditions: (total_large_trades)\n
+        /daily_median_gas_price condition:median_gas  
         """)
 
     ###### Simple greetings #######
@@ -63,21 +63,11 @@ Preset Notifications:\n
 
         bot.reply_to(message, btc_price)
 
-    ###### Preset Notifications #######
-    @bot.message_handler(commands=['easy_one'])
-    def easy_one(message):
-        handle_notification_creation(
-            bot, message, 3397131, "token amount bought by last dex trade monitored by us"
-        )
-    @bot.message_handler(commands=['num_large_erc20_holders'])
+    ###### Preset Notifications (1 for now) #######
+    @bot.message_handler(commands=['daily_median_gas_price'])
     def num_large_erc20_holders(message):
         handle_notification_creation(
-            bot, message, 3368257, "large ERC20 Token holders")
-
-    @bot.message_handler(commands=['dex_large_transactions'])
-    def num_large_erc20_holders(message):
-        handle_notification_creation(
-            bot, message, 3386756, "large transactions on Dexes in the last 24 hours")
+            bot, message, 407234, "median gas price of Ethereum in the last 24 hours")
 
     ####### Get the user's existing notifications ###########
     @bot.message_handler(commands=['my_notifs'])
