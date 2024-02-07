@@ -32,17 +32,27 @@ def get_user_info(message):
 
 # Function to split message into the notification parameters and the notification name
 def extract_notif_name(message):
-    msg_text = message.text.split('"')
-    notif_name = msg_text[len(msg_text) - 2]
-    notif_parameters = msg_text[0]
+    # Extracting the message text from the provided message structure
+    msg_text = message.text
     
-    # Split each element in the array on spaces
-    notif_parameters_array= notif_parameters.split(' ')
+    # Splitting the message text by smart quotes to extract the notification name
+    parts = msg_text.split('“')
+    if len(parts) < 2:
+        print("Error: Notification name not found.")
+        return None, None
     
-    if len(notif_parameters_array) >= 1:
-        return notif_parameters_array[1:len(notif_parameters_array) - 1], notif_name
-    else:
-        return False
+    # Further split the second part by smart quote to isolate the notification name
+    notif_name_parts = parts[1].split('”')
+    if len(notif_name_parts) < 1:
+        print("Error: Incorrect notification name format.")
+        return None, None
+    
+    notif_name = notif_name_parts[0]
+    
+    # Assuming the parameters are the part of the message before the notification name
+    notif_parameters = parts[0].split()[1:]  # Splitting by space and removing the command part
+    
+    return notif_parameters, notif_name
 
 #function to get and format the query parameters from the notification parameters
 def extract_and_format_query_parameters(msg_array):

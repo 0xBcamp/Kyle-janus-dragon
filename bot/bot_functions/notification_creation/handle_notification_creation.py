@@ -16,7 +16,6 @@ from .notification_creation_helpers.check_user_and_store_if_new import check_use
 def handle_notification_creation(bot, message, query_id, condition_text):
     
     user_info, query_id , parameters, condition_info, notif_name = extract_all_info_from_message(message, query_id)
-    print(user_info, query_id , parameters, condition_info, notif_name)
     cnx = connect_to_db()
 
     # STEP 1: check if the notification is valid and return a code
