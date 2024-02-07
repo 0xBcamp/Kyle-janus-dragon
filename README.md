@@ -55,9 +55,9 @@ DEBUG=True
 TG_API_KEY=
 DUNE_API_KEY=
 ```
-4. Now, you can start our app using this command!
+4. Now, you can start our app using this command:
 ``` ./main.py ```
-5. Our bot will be available to message. To see what commands are available type /help:
+5. Our bot will be available to message. To see what commands are available type /help. <br/>
 Example command:
 ```/daily_median_gas_price median_gas>=9 “My Notification” ```
 # how to reset the database!
