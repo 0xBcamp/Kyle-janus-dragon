@@ -22,10 +22,10 @@
   <a href="https://play.google.com/store/apps/details?id=org.telegram.messenger&hl=en_US&gl=US&pli=1">
     <img alt="Get it on Google Play" title="Google Play" src="http://i.imgur.com/mtGRPuM.png" width="140">
   </a>
-  <h4>Begin messaging our bot with this handle: @b97cfb452bebb5efbot</h4>
+<!--   <h4>Begin messaging our bot with this handle: @b97cfb452bebb5efbot</h4>
   <h4>
     Or simply follow this link: <a href="https://t.me/b97cfb452bebb5efbot">Telegram Trading Bot</a>
-  </h4>
+  </h4> -->
   <p>
     <strong> Supported Commands: </strong><br/>
     /greet -> says whats up to user <br/>
