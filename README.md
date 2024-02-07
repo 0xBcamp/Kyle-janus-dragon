@@ -47,9 +47,26 @@ Utilizing built-in functionality from the [Telegram Bot API](https://core.telegr
 ## Basic Chatbot Functionality:
 Our chatbot's main functionality is to allow users to create custom notifications from data pulled from existing Dune queries. These notifications will be _threshold-based_, meaning users will be notified if a metric (specified by the user) passes a user specified threshhold. <br/><br/>
 **To get started:** <br/>
-1. clone our github repository using this command: 
-``` git clone 
-
+1. Clone our github repository using this command: 
+``` git clone https://github.com/0xBcamp/Kyle-janus-dragon.git ```
+2. Navigate to it in Terminal, and start the virtual environment using this command:
+``` source .venv/bin/activate ```
+3. Create a .env file and use these variables--if you want to use this without contacting us, you will need to use a Coin Market Cap API Key, a MySQL database, a Telegram Bot API key, and a Dune API key. 
+```
+CMC_API_KEY=
+DB_USER=
+DB_PASSWORD=
+DB_HOST=
+DB_DATABASE=
+DEBUG=True
+TG_API_KEY=
+DUNE_API_KEY=
+```
+4. Now, you can start our app using this command!
+``` ./main.py ```
+5. Our bot will be available to message. To see what commands are available type /help:
+Example command:
+``` ```
 # how to reset the database!
 ```
 -- Disable foreign key checks
@@ -62,8 +79,7 @@ DELETE FROM notifs;
 DELETE FROM parameter_names;
 DELETE FROM parameter_values;
 DELETE FROM users;
-```
--- ... add more DELETE statements for each table ...
 
 -- Re-enable foreign key checks
 SET FOREIGN_KEY_CHECKS = 1;
+```
