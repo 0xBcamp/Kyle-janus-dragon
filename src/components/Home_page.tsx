@@ -1,5 +1,6 @@
 import { Inter } from 'next/font/google'
 import Image from 'next/image'
+import MoonPage from '@/components/Moon_Page';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -23,16 +24,29 @@ export default function Home_Page() {
                 </div>
             </div>
         </div>
+        
         <Image
             src="/images/arrow.png"
             alt="Arrow icon"
             width={20}
             height={20}
             className="icon arrow"
-            onClick={() => window.location.href = './#about'}
+            onClick={() => window.location.href = './#try_me'}
         />
+    </section>
+    <section id="try_me">
+        <MoonPage/>
+        <Image
+                src="/images/arrow.png"
+                alt="Arrow icon"
+                className="icon arrow"
+                width={20}
+                height={20}
+                onClick={() => window.location.href = './#about'}
+            />
 
     </section>
+
     <section id="about">
         <p className="section__text__p1">Get To Know More</p>
         <h1 className="title">About Us</h1>
