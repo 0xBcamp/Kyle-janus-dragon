@@ -44,7 +44,7 @@ def handle_notification_creation(bot, message, query_id, condition_text):
         threshold = condition_info[2]
         cnx.close()
         bot.reply_to(
-            message, f"Current number of {condition_text}: {current_value} \nWe will let you know when this value passes {threshold}.")
+            message, f"Current {condition_text}: {current_value} \nWe will let you know when this value passes {threshold}.")
         
     actions = {
         0: notification_is_valid,
