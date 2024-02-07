@@ -26,13 +26,6 @@
   <h4>
     Or simply follow this link: <a href="https://t.me/b97cfb452bebb5efbot">Telegram Trading Bot</a>
   </h4> -->
-  <p>
-    <strong> Supported Commands: </strong><br/>
-    /greet -> says whats up to user <br/>
-    /gm -> says good morning <br/>
-    /gn -> says good night <br/>
-    /btc -> fetches the current price of Bitcoin <br/>
-  </p>
 </div>
 
 ## Summary of our product:
