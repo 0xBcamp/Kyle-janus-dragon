@@ -44,7 +44,7 @@ Our chatbot's main functionality is to allow users to create custom notification
 ``` git clone https://github.com/0xBcamp/Kyle-janus-dragon.git ```
 2. Navigate to it in Terminal, and start the virtual environment using this command:
 ``` source .venv/bin/activate ```
-3. Create a .env file and use these variables--if you want to use this without contacting us, you will need to use a Coin Market Cap API Key, a MySQL database, a Telegram Bot API key, and a Dune API key. 
+3. Create a .env file and use these variables--if you want to use this without contacting us, you will need to create and use a Coin Market Cap API Key, a MySQL database, a Telegram Bot API key, and a Dune API key. 
 ```
 CMC_API_KEY=
 DB_USER=
@@ -59,7 +59,7 @@ DUNE_API_KEY=
 ``` ./main.py ```
 5. Our bot will be available to message. To see what commands are available type /help:
 Example command:
-``` ```
+```/daily_median_gas_price median_gas>=9 “My Notification” ```
 # how to reset the database!
 ```
 -- Disable foreign key checks
