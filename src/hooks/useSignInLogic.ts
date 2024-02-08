@@ -64,8 +64,9 @@ export const useSignInLogic = () => {
       const loginResponse: any = await auth.emailLogin(loginRequest);
       await updateToken(loginResponse.data.token, loginResponse.data.refreshToken);
       const userAddresses = await getUserAddresses();
-      setAddresses(userAddresses);
-      addUser(email, userAddresses)
+      console.log(userAddresses);
+      await setAddresses(userAddresses);
+      await addUser(email, userAddresses)
       setSignInSuccess(true);
     } catch (error) {
       setError(`Error signing in: ${error instanceof Error ? error.message : 'Unknown error'}`);
