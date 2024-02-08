@@ -148,7 +148,6 @@ const SignUpPage: React.FC<SignupPageProps> = ({ setIsConnected, setSignInSucces
               type="email"
               placeholder="Email"
               className="w-full border p-2 rounded mb-2"
-              value={email}
               onChange={handleEmailChange}
             />
           </div>
