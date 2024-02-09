@@ -1,7 +1,7 @@
-import { CreateAccountInput, InputBody } from '@moonup/moon-api/';
+import { CreateAccountInput, InputBody} from '@moonup/moon-api/';
 import {MoonSigner, MoonSignerConfig} from '@moonup/ethers';
-import { MoonSDK} from '@moonup/moon-sdk';
-import { AUTH, MOON_SESSION_KEY, Storage } from '@moonup/moon-types';
+import { MoonSDK, Accounts} from '@moonup/moon-sdk';
+import { AUTH, MOON_SESSION_KEY, Storage} from '@moonup/moon-types';
 import { useState } from 'react';
 import { utils, BigNumber } from 'ethers';
 
@@ -25,7 +25,7 @@ export const useMoonSDK = () => {
 
 	const connect = async () => {
 		if (moon) {
-			return moon.connect();
+			return await moon.connect();
 		}
 	};
 
@@ -85,47 +85,38 @@ export const useMoonSDK = () => {
 		}
 	  };
 	  const getChainIdInfo = async (chainId) => {
-		if (chainId='80001'){
-			return ["Mumbia", "Polygon", 18];
-		}
-		else if(chainId='1891'){
+		if (chainId=='1891'){
 			return ["LightLink", "Ethereum", 18];
 		}
 		else{
 			return [null, null, null];
 		}
 	  };
-	  const sendCoin = async (address, toAddress, chainId, amountEth) => {
+	  const sendCoin = async (account, toAddress, chainId, amountEth) => {
 		try {
-		  // Ensure moon is initialized and connected before proceeding
+		  // Assuming `moon` is initialized and connected elsewhere in your code
 		  if (!moon) {
-			await initialize(); // Make sure initialize is complete
-			// Consider checking if moon is properly connected or initialized here
+			console.error("Moon SDK is not initialized");
+			return;
 		  }
 	  
-		  // Proceed if moon is initialized and connected
-		  if (moon) {
-			let provider = new ethers.providers.JsonRpcProvider('https://mumbai.rpc.thirdweb.com/');
-			const amountInWei = ethers.utils.parseUnits(amountEth.toString(), 18);
+		  // Setup Accounts SDK with authorization token
+		  const accountsSDK = moon.getAccountsSDK();
+		  const message = await accountsSDK.signTransaction(account);
+		  });
 	  
-			// Adjusted MoonSignerConfig object according to SDK requirements
-			const signerConfig = {
-			  SDK: moon as MoonSDK, // Ensure this matches the expected structure for MoonSigner
-			  address: address,
-			  chainId: chainId,
-			};
-			console.log("Converted amountInWei:", amountInWei); // Ensure this is not undefined
-			console.log("Transaction toAddress:", toAddress); // Verify recipient address
-			console.log("Transaction chainId:", chainId); // Confirm chain ID
-			console.log("gas:", ethers.BigNumber.from("21000"));
-			const signer = new MoonSigner(signerConfig, provider);
-			const transaction = await signer.sendTransaction({
-			  to: toAddress,
-			  value: amountInWei,
-			  gasLimit:ethers.BigNumber.from("21000"), // Example, adjust as needed
-			});
-			console.log(transaction);
-		  }
+		  // Prepare transaction data
+		  const amountInWei = ethers.utils.parseUnits(amountEth.toString(), 'ether');
+		  const transactionData = {
+			to: toAddress,
+			value: amountInWei.toString(),
+			chain_id: chainId,
+			encoding: 'utf-8'
+		  };
+	  
+		  // Sign and send the transaction
+		  const message = await accountsSDK.signTransaction(account, transactionData);
+		  console.log("Transaction signed and sent: ", message);
 		} catch (error) {
 		  console.error("Error sending coin:", error);
 		  throw error;

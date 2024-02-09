@@ -23,8 +23,10 @@ export const useSignInLogic = () => {
     setError(null);
     try {
       await initialize();
-      await connect();
+      const account = await connect();
+      const token = account?.token;
       setIsConnected(true);
+      return token;
     } catch (error) {
       setError('Error connecting to Moon. Please try again.');
     } finally {

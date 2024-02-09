@@ -9,7 +9,10 @@ const MoonPage: React.FC = () => {
     const [isConnected, setIsConnected] = useState(false);
     const [signInSuccess, setSignInSuccess] = useState(false);
     const [email, setEmail] = useState<string>(''); // Add email state
-
+    const [token, setToken] = useState();
+    const handleTokenReceived = (token) => {
+        setToken(token);
+      };
     // Function to handle user disconnection
     const handleDisconnectFromParent = () => {
         setIsConnected(false);
@@ -25,8 +28,8 @@ const MoonPage: React.FC = () => {
                 setIsConnected={setIsConnected} 
                 setSignInSuccess={setSignInSuccess}
                 setEmail={setEmail} // Pass setEmail to SignupPage
+                onTokenReceived={handleTokenReceived}
             />
-            
             )}
         </div>
     );

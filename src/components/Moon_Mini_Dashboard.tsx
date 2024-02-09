@@ -8,9 +8,10 @@ import PaymentComponent from './Payment_Component';
 interface MoonMiniDashboardProps {
     email: string;
     onDisconnect: () => void;
+    token: string;
 }
 
-const MoonMiniDashboard: React.FC<MoonMiniDashboardProps> = ({ email, onDisconnect }) => {
+const MoonMiniDashboard: React.FC<MoonMiniDashboardProps> = ({ email, onDisconnect, token }) => {
     const [chosenAddresses, setChosenAddresses] = useState<string[][]>([]);
     const [unchosenAddresses, setUnchosenAddresses] = useState<string[]>([]);
     // Start with loading set to true to indicate that data is being fetched

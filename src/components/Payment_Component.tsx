@@ -30,7 +30,7 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({ address, addressNam
       return;
     }
   
-    const chainId = "80001"; // Example chainId, adjust as needed
+    const chainId = "1891"; // Example chainId, adjust as needed
     try {
       // Convert amountToSend from MATIC to Wei
       const amountInWei = ethers.utils.parseUnits(amountToSend, 'ether');
@@ -51,7 +51,7 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({ address, addressNam
     if (moon) {
       setLoading(true);
       try {
-        const chainId = "80001"; // Example chainId, adjust as needed
+        const chainId = "1891"; // Example chainId, adjust as needed
         const balanceResponse = await getAddressBalance(address, chainId);
         const chainInfo = await getChainIdInfo(chainId);
         

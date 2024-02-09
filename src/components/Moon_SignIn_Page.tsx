@@ -6,9 +6,11 @@ interface SignupPageProps {
     setIsConnected: (isConnected: boolean) => void;
     setSignInSuccess: (signInSuccess: boolean) => void;
     setEmail: (email:string) => void;
+    onTokenReceived: (token: string | null) => void; // Add this line
 }
 
-const SignUpPage: React.FC<SignupPageProps> = ({ setIsConnected, setSignInSuccess, setEmail})=> {
+
+const SignUpPage: React.FC<SignupPageProps> = ({ setIsConnected, setSignInSuccess, setEmail, onTokenReceived})=> {
   const [emailInput, setEmailInput] = useState(''); // Define emailInput state
 
   const {
@@ -36,6 +38,8 @@ const SignUpPage: React.FC<SignupPageProps> = ({ setIsConnected, setSignInSucces
     setSignInSuccess(signInSuccess);
   }, [hookIsConnected, signInSuccess, setIsConnected, setSignInSuccess]);
 
+  
+
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmailInput(event.target.value); // Update local emailInput state
   };
@@ -61,6 +65,10 @@ const SignUpPage: React.FC<SignupPageProps> = ({ setIsConnected, setSignInSucces
   const onSignUpClick = async () => {
     await handleSignUp(emailInput, password, confirmPassword);
   };
+  const handleInitializeAndConnectWithToken = async () => {
+    const token = await handleInitializeAndConnect();
+    onTokenReceived(token); // Pass the token to the parent component
+  };
     return (
       <div className="flex justify-center items-center h-screen">
           {!hookIsConnected && (
@@ -69,7 +77,7 @@ const SignUpPage: React.FC<SignupPageProps> = ({ setIsConnected, setSignInSucces
                   <button
                       type="button"
                       className="bg-blue-500 text-white p-2 rounded"
-                      onClick={handleInitializeAndConnect}
+                      onClick={handleInitializeAndConnectWithToken}
                   >
                       {loading ? 'Connecting...' : 'Initialize & Connect to Moon'}
                   </button>
