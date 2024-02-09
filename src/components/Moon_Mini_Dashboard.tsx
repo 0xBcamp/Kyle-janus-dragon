@@ -4,23 +4,25 @@ import { getChosenUserAddresses } from '@/hooks/getChosenUserAddresses';
 import { getUnchosenUserAddresses } from '@/hooks/getUnchosenUserAddresses';
 import AddAddressComponent from './Add_Address_Component'; // Assuming AddAddressComponent is in the same directory
 import PaymentComponent from './Payment_Component';
+import { MoonAccount } from '@moonup/types';
 
 interface MoonMiniDashboardProps {
     email: string;
     onDisconnect: () => void;
+    token: string;
+    moon: MoonAccount;
 }
 
-const MoonMiniDashboard: React.FC<MoonMiniDashboardProps> = ({ email, onDisconnect }) => {
+const MoonMiniDashboard: React.FC<MoonMiniDashboardProps> = ({ email, onDisconnect, moon }) => {
     const [chosenAddresses, setChosenAddresses] = useState<string[][]>([]);
     const [unchosenAddresses, setUnchosenAddresses] = useState<string[]>([]);
-    // Start with loading set to true to indicate that data is being fetched
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [disconnecting, setDisconnecting] = useState<boolean>(false);
     const [isAddingAddress, setIsAddingAddress] = useState<boolean>(false);
     const [currentAddress, setCurrentAddress] = useState<string[] | null>(null);
 
-    const { disconnect } = useMoonSDK();
+    const { disconnect, deleteAccount } = useMoonSDK();
 
     const loadAddresses = async () => {
         setLoading(true);
@@ -40,7 +42,7 @@ const MoonMiniDashboard: React.FC<MoonMiniDashboardProps> = ({ email, onDisconne
 
     useEffect(() => {
         loadAddresses();
-    }, [email]);
+    }, []);
 
     const handleDisconnect = async () => {
         setDisconnecting(true);
@@ -54,10 +56,6 @@ const MoonMiniDashboard: React.FC<MoonMiniDashboardProps> = ({ email, onDisconne
         } finally {
             setDisconnecting(false);
         }
-    };
-
-    const handleAddAddressClick = () => {
-        setIsAddingAddress(true);
     };
 
     const handleAddressAdded = () => {
@@ -74,20 +72,23 @@ const MoonMiniDashboard: React.FC<MoonMiniDashboardProps> = ({ email, onDisconne
         setCurrentAddress([address, addressName]);
     };
 
+    const handleAccountDeletion = async (account) => {
+        deleteAccount(account);
+    };
+
+    const toggleNewAccountCreation = () => {
+        setIsAddingAddress(!isAddingAddress);
+        console.log(isAddingAddress);
+    };
+
     return (
         <div className="mt-4 text-center">
             <p>Signed in with: {email}</p>
-            
-            {isAddingAddress ? (
-                <AddAddressComponent
-                    userAddresses={unchosenAddresses}
-                    onAddressAdded={handleAddressAdded}
-                    onBack={handleBack}
-                />
-            ) : currentAddress ? (
+
+            {currentAddress ? (
                 <PaymentComponent address={currentAddress[0]} addressName={currentAddress[1]} onBack={handleBack} />
             ) : loading ? (
-                <p>Loading addresses...</p> // Display loading message while fetching data
+                <p>Loading addresses...</p>
             ) : (
                 <>
                     <h3>Choose an address to pay with:</h3>
@@ -102,19 +103,27 @@ const MoonMiniDashboard: React.FC<MoonMiniDashboardProps> = ({ email, onDisconne
                     ) : (
                         <p>No addresses in use yet!</p>
                     )}
-
-                    {unchosenAddresses.length !== 0 && (
-                        <button type="button" onClick={handleAddAddressClick}>Add an address here</button>
-                    )}
-                    <button
-                        type="button"
-                        className="bg-red-500 text-white p-2 rounded mt-2"
-                        onClick={handleDisconnect}
-                    >
-                        {disconnecting ? 'Disconnecting...' : 'Disconnect from Moon'}
-                    </button>
                 </>
             )}
+
+            <div className="flex-row">
+                {isAddingAddress && (
+                    <div>
+                        <AddAddressComponent onBack={toggleNewAccountCreation} userAddresses={unchosenAddresses} onAddressAdded={handleAddressAdded} moon={moon}/>
+                    </div>
+                )}
+                {!isAddingAddress && (
+                    <button type="button" onClick={toggleNewAccountCreation} style={{ marginRight: '10px' }}>Add an address!</button>
+                )}
+                <button
+                    type="button"
+                    className="bg-red-500 text-white p-2 rounded"
+                    onClick={handleDisconnect}
+                    style={{ marginRight: '10px' }}
+                >
+                    {disconnecting ? 'Disconnecting...' : 'Disconnect from Moon'}
+                </button>
+            </div>
 
             {error && <p className="text-red-500 mt-2">{error}</p>}
         </div>

@@ -1,40 +1,119 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { Dispatch, SetStateAction, useState, useCallback } from 'react';
 import { useSignInLogic } from '../hooks/useSignInLogic'; // Adjust the import path as necessary
+import { MoonSDK } from '@moonup/moon-sdk';
+import { useMoonSDK } from '@/hooks/useMoonSDK';
+import {
+	EmailLoginInput,
+	EmailSignupInput,
+} from '@moonup/moon-api';
+import { addUser } from '@/hooks/hook_functions/addUser';
+
 
 // Define an interface for the component's props
 interface SignupPageProps {
-    setIsConnected: (isConnected: boolean) => void;
-    setSignInSuccess: (signInSuccess: boolean) => void;
-    setEmail: (email:string) => void;
+  setIsConnected: Dispatch<SetStateAction<boolean>>;
+  setSignInSuccess: Dispatch<SetStateAction<boolean>>;
+  setEmail: Dispatch<SetStateAction<string>>;
+  onTokenReceived: (token: string | null) => void;
+  onMoonInstanceReceived: (moonInstance: MoonSDK) => void;
+  isConnected: boolean; // Add this line
+  signInSuccess: boolean; // And this line
 }
 
-const SignUpPage: React.FC<SignupPageProps> = ({ setIsConnected, setSignInSuccess, setEmail})=> {
+
+
+const SignUpPage: React.FC<SignupPageProps> = ({ setIsConnected, setSignInSuccess, setEmail, onMoonInstanceReceived, onTokenReceived, isConnected, signInSuccess})=> {
   const [emailInput, setEmailInput] = useState(''); // Define emailInput state
+	const [password, setPassword] = useState('');
+	const [confirmPassword, setConfirmPassword] = useState('');
+	const [passwordError, setPasswordError] = useState('');
+	const [signupSuccess, setSignupSuccess] = useState(false);
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState<string | null>(null);
+  const { moon, connect, createAccount, disconnect, updateToken, initialize, getUserAddresses } = useMoonSDK();
+  const [isSigningUp, setIsSigningUp] = useState(true);
 
-  const {
-    handleSignUp,
-    handleSignIn,
-    handleInitializeAndConnect,
-    isConnected: hookIsConnected, // Use this for conditional checks
-    signupSuccess,
-    signInSuccess,
-    loading,
-    error,
-    setPassword,
-    setConfirmPassword,
-    setIsSigningUp,
-    isSigningUp,
-    password,
-    email,
-    confirmPassword,
-    passwordError
-  } = useSignInLogic();
-
-
+  
   React.useEffect(() => {
-    setIsConnected(hookIsConnected);
+    setIsConnected(isConnected);
     setSignInSuccess(signInSuccess);
-  }, [hookIsConnected, signInSuccess, setIsConnected, setSignInSuccess]);
+  }, [isConnected, signInSuccess, setIsConnected, setSignInSuccess]);
+
+  const handleInitializeAndConnect = useCallback(async () => {
+
+    setLoading(true);
+    setError(null);
+    try {
+      await initialize();
+      await moon?.connect();
+      console.log(moon);
+      setIsConnected(true);
+    } catch (error) {
+      setError('Error connecting to Moon. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  }, [connect, initialize]);
+
+  const handleSignUp = useCallback(async (email, password, confirmPassword) => {
+    setLoading(true);
+    setError(null);
+    if (password !== confirmPassword) {
+      setPasswordError('Passwords do not match');
+      setLoading(false);
+      return;
+    }
+    else{
+      setPasswordError('None');
+    }
+    try {
+      const auth = moon.getAuthSDK();
+      const signupRequest: EmailSignupInput = { email, password };
+      const signupResponse: any = await auth.emailSignup(signupRequest);
+      const newAccount = createAccount();
+      setSignupSuccess(true);
+    } catch (error) {
+      setError('Error signing up. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  }, [moon]);
+
+  const handleSignIn = useCallback(async (email, password) => {
+    console.log("moon", moon);
+    setLoading(true);
+    setError(null);
+    try {
+      const auth = moon.getAuthSDK();
+      const loginRequest: EmailLoginInput = { email, password };
+      const loginResponse: any = await auth.emailLogin(loginRequest);
+      await updateToken(loginResponse.data.token, loginResponse.data.refreshToken);
+      const userAddresses = await getUserAddresses();
+      console.log('getting addies');
+      console.log(userAddresses);
+      await addUser(email, userAddresses)
+      setSignInSuccess(true);
+
+    } catch (error) {
+      setError(`Error signing in: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.error(error);    
+    } finally {
+      setLoading(false);
+    }
+  }, [moon, updateToken, getUserAddresses]);
+
+  const handleDisconnect = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      await disconnect();
+      setIsConnected(false);
+    } catch (error) {
+      setError('Error disconnecting from Moon. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  }, [disconnect]);
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmailInput(event.target.value); // Update local emailInput state
@@ -55,21 +134,28 @@ const SignUpPage: React.FC<SignupPageProps> = ({ setIsConnected, setSignInSucces
 	};
   const onSignInClick = async () => {
     await handleSignIn(emailInput, password);
+    if (moon) {
+      onMoonInstanceReceived(moon);
+    }
     setEmail(emailInput);
   };
   
   const onSignUpClick = async () => {
     await handleSignUp(emailInput, password, confirmPassword);
   };
+  const handleInitializeAndConnectWithToken = async () => {
+    const token = await handleInitializeAndConnect();
+    console.log(moon);
+  };
     return (
       <div className="flex justify-center items-center h-screen">
-          {!hookIsConnected && (
+          {!isConnected && (
               <div>
                   <h2 className="text-2xl font-bold mb-4 text-center">Initialize & Connect to Moon</h2>
                   <button
                       type="button"
                       className="bg-blue-500 text-white p-2 rounded"
-                      onClick={handleInitializeAndConnect}
+                      onClick={handleInitializeAndConnectWithToken}
                   >
                       {loading ? 'Connecting...' : 'Initialize & Connect to Moon'}
                   </button>
@@ -77,7 +163,7 @@ const SignUpPage: React.FC<SignupPageProps> = ({ setIsConnected, setSignInSucces
               </div>
           )}
   
-        {hookIsConnected && !signupSuccess && !signInSuccess && (
+        {isConnected && !signupSuccess && !signInSuccess && (
           <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-96">
             <div className="mb-4 text-center">
               <h2 className="text-2xl font-bold mb-4">
@@ -137,7 +223,7 @@ const SignUpPage: React.FC<SignupPageProps> = ({ setIsConnected, setSignInSucces
           </form>
         )}
   
-        {signupSuccess && !signInSuccess && hookIsConnected &&  (
+        {signupSuccess && !signInSuccess && isConnected &&  (
           <div className="mb-4 text-center">
         <p>Congratulations! Your Moon account is created.</p>
         <p>Now that you have created an account, sign in.</p>

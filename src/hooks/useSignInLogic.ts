@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useMoonSDK } from './useMoonSDK'; // Adjust the import path as necessary
 import { EmailLoginInput, EmailSignupInput } from '@moonup/moon-api';
 import { addUser } from '@/hooks/hook_functions/addUser';
@@ -17,13 +17,15 @@ export const useSignInLogic = () => {
   const [addresses, setAddresses] = useState<string[]>([]);
   const [isSigningUp, setIsSigningUp] = useState(true);
   const { moon, connect, createAccount, disconnect, updateToken, initialize, getUserAddresses } = useMoonSDK();
-
+  
   const handleInitializeAndConnect = useCallback(async () => {
+
     setLoading(true);
     setError(null);
     try {
       await initialize();
-      await connect();
+      await moon?.connect();
+      console.log(moon);
       setIsConnected(true);
     } catch (error) {
       setError('Error connecting to Moon. Please try again.');
@@ -47,6 +49,7 @@ export const useSignInLogic = () => {
       const auth = moon.getAuthSDK();
       const signupRequest: EmailSignupInput = { email, password };
       const signupResponse: any = await auth.emailSignup(signupRequest);
+      const newAccount = createAccount();
       setSignupSuccess(true);
     } catch (error) {
       setError('Error signing up. Please try again.');
@@ -56,6 +59,7 @@ export const useSignInLogic = () => {
   }, [moon]);
 
   const handleSignIn = useCallback(async (email, password) => {
+    console.log("moon", moon);
     setLoading(true);
     setError(null);
     try {
@@ -64,10 +68,12 @@ export const useSignInLogic = () => {
       const loginResponse: any = await auth.emailLogin(loginRequest);
       await updateToken(loginResponse.data.token, loginResponse.data.refreshToken);
       const userAddresses = await getUserAddresses();
+      console.log('getting addy');
       console.log(userAddresses);
       await setAddresses(userAddresses);
       await addUser(email, userAddresses)
       setSignInSuccess(true);
+
     } catch (error) {
       setError(`Error signing in: ${error instanceof Error ? error.message : 'Unknown error'}`);
       console.error(error);    
