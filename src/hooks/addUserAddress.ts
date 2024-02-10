@@ -1,7 +1,7 @@
 // Function to call the addChosenUserAddress API
-export const addChosenUserAddress = async (moon_address: string, newAddressName: string) => {
+export const addUserAddress = async (moon_address: string, newAddressName: string) => {
     try {
-        const response = await fetch('/api/addChosenUserAddress', {
+        const response = await fetch('/api/addUserAddress', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -8,7 +8,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const { moon_address, newAddressName } = req.body;
-
+    console.log(moon_address);
+    console.log(newAddressName);
     let connection;
     try {
         connection = await mysql.createConnection({

@@ -103,7 +103,7 @@ const MoonMiniDashboard: React.FC<MoonMiniDashboardProps> = ({ email, onDisconne
                 <p>Loading addresses...</p>
             ) : (
                 <>
-                    <h3>Choose an address:</h3>
+                    <h3>Choose an address to use:</h3>
                     {allAddresses.length > 0 ? (
                         allAddresses.map(([address, addressName], index) => (
                             <div key={index} style={{ margin: '5px 0' }}>
@@ -121,10 +121,11 @@ const MoonMiniDashboard: React.FC<MoonMiniDashboardProps> = ({ email, onDisconne
             <div className="flex-row">
                 {isAddingAddress && (
                     <div>
-                        <AddAddressComponent onBack={toggleNewAccountCreation} userAddresses={unnamedAddresses} onAddressAdded={handleAddressAdded} moon={moon}/>
+                        <AddAddressComponent onBack={toggleNewAccountCreation} onAddressAdded={handleAddressAdded} moon={moon}/>
                     </div>
                 )}
                 {!isAddingAddress && (
+                    
                     <button type="button" onClick={toggleNewAccountCreation} style={{ marginRight: '10px' }}>Add an address!</button>
                 )}
                 <button

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { addChosenUserAddress } from '@/hooks/addChosenUserAddress';
+import { addUserAddress } from '@/hooks/addUserAddress';
 import { useMoonSDK } from '@/hooks/useMoonSDK';
-import { MoonAccount} from '@moonup/types';
 import { MoonSDK} from '@moonup/moon-sdk';
 
 interface AddAddressComponentProps {
@@ -27,7 +26,7 @@ const AddAddressComponent: React.FC<AddAddressComponentProps> = ({ userAddresses
         throw new Error('Moon SDK is not initialized');
       }
       const newAccount = await moon.getAccountsSDK().createAccount({}); // Adjust based on actual API
-      await addChosenUserAddress(newAccount, newAddressName);
+      await addUserAddress(newAccount, newAddressName);
       onAddressAdded();
     } catch (err) {
       console.error(err);

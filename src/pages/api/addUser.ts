@@ -78,17 +78,18 @@ export default async function addUser(req: NextApiRequest, res: NextApiResponse)
                 const [[{ unnamed_num: unnamedNumResult }]] = await connection.query(getUnnamedNum, [email]) as [RowDataPacket[], FieldPacket[]]; // Type assertion here
                 let unnamedNum = unnamedNumResult;
                 let newUnnamedNum = unnamedNum;
-
+                
+                console.log('adding new addresses if needed!');
                 for (const address of addresses){
                     //1. check if the address is still in the previous user addresses:
                     //if the address is not in the previous...
                     if (!(address in previousUserAddressesDict)){
                         //add it!
-                        console.log('previous addr')
-                        const addNewOutsideUserAddress = 'INSERT INTO moon_addresses (email, moon_address, address_name) VALUES (?, ?, ?)';
-                        await connection.execute(addNewOutsideUserAddress, [email. unnamedNum]);
-                        newUnnamedNum += 1;
                         console.log('address not in previous!:', address);
+                        const addNewOutsideUserAddress = 'INSERT INTO moon_addresses (email, moon_address, address_name) VALUES (?, ?, ?)';
+                        await connection.execute(addNewOutsideUserAddress, [email, address, `Unnamed Address ${newUnnamedNum}` ]);
+                        newUnnamedNum += 1;
+                        console.log('address', address, "added");
                     }
                     //if the address is in the previous addresses, set its dictionary value to true
                     else{
