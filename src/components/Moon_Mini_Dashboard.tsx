@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useMoonSDK } from '@/hooks/useMoonSDK';
-import { getChosenUserAddresses } from '@/hooks/getChosenUserAddresses';
-import { getUnchosenUserAddresses } from '@/hooks/getUnchosenUserAddresses';
+import { getUserAddresses } from '@/hooks/getUserAddresses';
 import AddAddressComponent from './Add_Address_Component'; // Assuming AddAddressComponent is in the same directory
 import PaymentComponent from './Payment_Component';
 import { MoonAccount } from '@moonup/types';
@@ -14,8 +13,7 @@ interface MoonMiniDashboardProps {
 }
 
 const MoonMiniDashboard: React.FC<MoonMiniDashboardProps> = ({ email, onDisconnect, moon }) => {
-    const [chosenAddresses, setChosenAddresses] = useState<string[][]>([]);
-    const [unchosenAddresses, setUnchosenAddresses] = useState<string[]>([]);
+    const [allAddresses, setAllAddresses] = useState<string[][]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [disconnecting, setDisconnecting] = useState<boolean>(false);
@@ -27,10 +25,24 @@ const MoonMiniDashboard: React.FC<MoonMiniDashboardProps> = ({ email, onDisconne
     const loadAddresses = async () => {
         setLoading(true);
         try {
-            const unchosenAddresses = await getUnchosenUserAddresses(email);
-            setUnchosenAddresses(unchosenAddresses);
-            const chosenAddresses = await getChosenUserAddresses(email);
-            setChosenAddresses(chosenAddresses);
+            const userAddresses = await getUserAddresses(email);
+            setAllAddresses(userAddresses);
+            let tempNamedAddresses = [];
+            let tempUnnamedAddresses = [];    
+                    // Iterate through userAddresses
+            for (let address of userAddresses) {
+                // Check if the second element of the address array is null
+                if (address[1] === null) {
+                    // If it's null, consider it as an unnamed address
+                    // Since unnamedAddresses is a string[] based on your useState, use the first element of the address
+                    tempUnnamedAddresses.push(address);
+                } else {
+                    // If it's not null, consider it as a named address
+                    tempNamedAddresses.push(address);
+                }
+            }
+            // Update state with the new categorized addresses
+            setError(null);
             setError(null);
         } catch (err) {
             setError('Failed to fetch addresses');
@@ -91,9 +103,9 @@ const MoonMiniDashboard: React.FC<MoonMiniDashboardProps> = ({ email, onDisconne
                 <p>Loading addresses...</p>
             ) : (
                 <>
-                    <h3>Choose an address to pay with:</h3>
-                    {chosenAddresses.length > 0 ? (
-                        chosenAddresses.map(([address, addressName], index) => (
+                    <h3>Choose an address:</h3>
+                    {allAddresses.length > 0 ? (
+                        allAddresses.map(([address, addressName], index) => (
                             <div key={index} style={{ margin: '5px 0' }}>
                                 <button className="marked" style={{ display: 'block' }} onClick={() => handleAddressSelection(address, addressName)}>
                                     <strong>{addressName}</strong>: {address}
@@ -101,7 +113,7 @@ const MoonMiniDashboard: React.FC<MoonMiniDashboardProps> = ({ email, onDisconne
                             </div>
                         ))
                     ) : (
-                        <p>No addresses in use yet!</p>
+                        <p>No addresses made by this account!</p>
                     )}
                 </>
             )}
@@ -109,7 +121,7 @@ const MoonMiniDashboard: React.FC<MoonMiniDashboardProps> = ({ email, onDisconne
             <div className="flex-row">
                 {isAddingAddress && (
                     <div>
-                        <AddAddressComponent onBack={toggleNewAccountCreation} userAddresses={unchosenAddresses} onAddressAdded={handleAddressAdded} moon={moon}/>
+                        <AddAddressComponent onBack={toggleNewAccountCreation} userAddresses={unnamedAddresses} onAddressAdded={handleAddressAdded} moon={moon}/>
                     </div>
                 )}
                 {!isAddingAddress && (

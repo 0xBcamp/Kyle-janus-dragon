@@ -6,7 +6,7 @@ import {
 	EmailLoginInput,
 	EmailSignupInput,
 } from '@moonup/moon-api';
-import { addUser } from '@/hooks/hook_functions/addUser';
+import { addUser } from '@/hooks/addUser';
 
 
 // Define an interface for the component's props
