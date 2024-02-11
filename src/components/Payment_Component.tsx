@@ -21,6 +21,9 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({ moon, address, addr
   const [amountToSend, setAmountToSend] = useState<string>('');
   const [recipientAddress, setRecipientAddress] = useState<string>('');
   const [copySuccess, setCopySuccess] = useState('');
+  const [sendStatus, setSendStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [statusMessage, setStatusMessage] = useState<string>('');
+
 
   useEffect(() => {
     handleRefreshBalance(); // Call handleRefreshBalance when component mounts
@@ -82,6 +85,35 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({ moon, address, addr
     setChainId(chainIds[selectedChain]);
     setChainIdName(selectedChain);
   };
+
+  const handleSendCoins = async () => {
+    if (!moon || !recipientAddress || amountToSend === '' || isNaN(Number(amountToSend))) {
+      console.error('Invalid input');
+      setStatusMessage('Invalid input');
+      setSendStatus('error');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const [transactionHash, amountEthSent ]= await sendCoin(moon, address, recipientAddress, chainId, amountToSend);
+      console.log('Coins sent successfully');
+      console.log(transactionHash);
+      setStatusMessage(`Transaction successful: Hash=${transactionHash}, Amount=${amountEthSent} ETH`);
+      setSendStatus('success');
+      setAmountToSend('');
+      setRecipientAddress('');
+      handleRefreshBalance(); // Optionally refresh balance after sending
+    } catch (error) {
+      console.error('Error sending coins:', error);
+      const errorMessage = error.error.message;
+      setStatusMessage(errorMessage);
+      setSendStatus('error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   
   return (
     <div>
@@ -121,6 +153,10 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({ moon, address, addr
           <input type="number" value={amountToSend} onChange={(e) => setAmountToSend(e.target.value)} />
         </label>
       </div>
+      {sendStatus !== 'idle' && (
+        <p style={{ color: sendStatus === 'success' ? 'green' : 'red' }}>{statusMessage}</p>
+      )}
+      <button onClick={handleSendCoins}>Send</button>
       <p>At the moment, this Moon Wallet UI only supports Ethereum transactions</p>
       <button onClick={handleRefreshBalance}>Refresh</button>
       <button onClick={onBack}>Back</button>

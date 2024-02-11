@@ -2,6 +2,7 @@
 import { MoonSDK, CreateAccountInput } from '@moonup/moon-sdk';
 import { AUTH, MOON_SESSION_KEY, Storage } from '@moonup/moon-types';
 import { ethers } from 'ethers'; 
+import { raw } from 'mysql2';
 
 // Add other functions as necessary, using moonInstance as an argument
 export const createAccount = async (moonInstance: MoonSDK): Promise<any> => {
@@ -54,8 +55,23 @@ export const sendCoin = async (moonInstance: MoonSDK, account: string, toAddress
     };
   
     // Sign and send the transaction
-    const message = await moonInstance.getAccountsSDK().signTransaction(account, transactionData);
-    console.log("Transaction signed and sent: ", message);
+    const signedTransactionData = await moonInstance.getAccountsSDK().signTransaction(account, transactionData);
+    const rawTransaction = signedTransactionData.data.data.transactions[0].raw_transaction;
+    const transactionHash = signedTransactionData.data.data.transactions[0].transaction_hash;
+    const transactionValueWei =  signedTransactionData.data.data.transactions[0].transaction.value;
+
+    // Convert the value from Wei to Ether
+    const transactionValueEth = ethers.utils.formatEther(transactionValueWei);
+    
+    // Now, broadcast the signed transaction
+    // Make sure the `broadcastTx` method accepts the signed transaction in the format returned by `signTransaction`
+    const broadcastInput = {
+      chainId: chainId,
+      rawTransaction: rawTransaction
+    }
+    const broadcastResponse = await moonInstance.getAccountsSDK().broadcastTx(account, broadcastInput);
+    console.log("Transaction signed and sent: ", signedTransactionData);
+    return [transactionHash, transactionValueEth];
   } catch (error) {
     console.error("Error sending coin:", error);
     throw error;
