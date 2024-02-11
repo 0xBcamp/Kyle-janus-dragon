@@ -1,67 +1,57 @@
 import React, { useState, useEffect } from 'react';
 import { useMoonSDK } from '@/hooks/useMoonSDK';
 import { getAddressBalance, getChainIdInfo, sendCoin } from '@/utils/moonSDKUtils';
-
+import { MoonSDK } from '@moonup/moon-sdk';
 const ethers = require('ethers');
+
 interface PaymentComponentProps {
+  moon: MoonSDK;
   address: string;
   addressName: string;
   onBack: () => void;
 }
 
-const PaymentComponent: React.FC<PaymentComponentProps> = ({ address, addressName, onBack }) => {
-  const { moon, initialize} = useMoonSDK();
+const PaymentComponent: React.FC<PaymentComponentProps> = ({ moon, address, addressName, onBack }) => {
   const [balance, setBalance] = useState<number | null>(0);
   const [loading, setLoading] = useState<boolean>(true);
-  // Initialize chainIdName and coin with 'Loading...' to indicate they are being fetched.
-  const [chainIdName, setChainIdName] = useState<string>('Loading...');
+  const [chainIdName, setChainIdName] = useState<string>('Ethereum'); // Default to Ethereum
+  const [chainId, setChainId] = useState<string>('1'); // Ethereum's chain ID as default
   const [coin, setCoin] = useState<string>('Loading...');
   const [decimal, setDecimal] = useState<number>(18); // Assuming a default decimal value
   const [amountToSend, setAmountToSend] = useState<string>('');
   const [recipientAddress, setRecipientAddress] = useState<string>('');
+  const [copySuccess, setCopySuccess] = useState('');
 
   useEffect(() => {
     handleRefreshBalance(); // Call handleRefreshBalance when component mounts
-  }, []);
+  }, [chainId]); // Add chainId as a dependency so it refreshes the balance when changed
 
-  const handleSendCoin = async () => {
-    if (!moon) {
-      console.error('Moon SDK is not initialized');
-      return;
-    }
   
-    const chainId = "1891"; // Example chainId, adjust as needed
+  const copyToClipboard = async (text: string) => {
     try {
-      // Convert amountToSend from MATIC to Wei
-      const amountInWei = ethers.utils.parseUnits(amountToSend, 'ether');
-      // Pass the amount in Wei to sendCoin
-      await sendCoin(address, recipientAddress, chainId, amountInWei);
-      alert('Transaction successful!');
-      handleRefreshBalance(); // Refresh balance to reflect the transaction
-    } catch (error) {
-      console.error('Error sending coin:', error);
-      alert('Transaction failed: ' + error.message);
+      await navigator.clipboard.writeText(text);
+      setCopySuccess('Address copied!');
+    } catch (err) {
+      setCopySuccess('Failed to copy!');
     }
   };
-  
-  
 
   const handleGetBalance = async () => {
-    await initialize();
     if (moon) {
       setLoading(true);
       try {
-        const chainId = "1891"; // Example chainId, adjust as needed
         const balanceResponse = await getAddressBalance(moon, address, chainId);
+        console.log(chainId);
         const chainInfo = await getChainIdInfo(chainId);
+        console.log(chainInfo);
         
         if (chainInfo) {
           const [chainName, coinName, decimalValue] = chainInfo;
-          // setChainIdName(chainName);
-          // setCoin(coinName);
-          // setDecimal(decimalValue);
-          // const adjustedBalance = balanceResponse / Math.pow(10, decimalValue);
-          // setBalance(adjustedBalance);
+          setChainIdName(chainName);
+          setCoin(coinName);
+          setDecimal(decimalValue);
+          const adjustedBalance = balanceResponse / Math.pow(10, decimalValue);
+          setBalance(adjustedBalance);
         } else {
           // Update to default or error state if chain info cannot be fetched
           setChainIdName('Chain info not available');
@@ -70,7 +60,6 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({ address, addressNam
       } catch (error) {
         console.error('Error fetching balance:', error);
         // Handle error state for chainIdName and coin
-        setChainIdName('Error fetching chain info');
         setCoin('');
       } finally {
         setLoading(false);
@@ -79,20 +68,46 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({ address, addressNam
       console.log('That\'s no moon');
     }
   };
-
   const handleRefreshBalance = () => {
     handleGetBalance();
   };
 
+  const handleChainChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedChain = e.target.value;
+    console.log(selectedChain);
+    const chainIds = {
+      'Ethereum': '1',
+      'Lightlink': '1891',
+    };
+    setChainId(chainIds[selectedChain]);
+    setChainIdName(selectedChain);
+  };
+  
   return (
     <div>
-      <p><strong>Chain:</strong> {chainIdName} {coin !== 'Loading...' && `(${coin})`}</p>
-      <p><strong>{addressName}:</strong> {address}</p>
+      <div>
+      <strong>Chain:</strong>
+        <select value={chainIdName} onChange={handleChainChange}>
+          <option value="Ethereum">Ethereum Mainnet</option>
+          <option value="Lightlink">Lightlink Pegasus Testnet</option>
+        </select>
+      </div>
+      <p>
+        <strong>
+          {addressName}:
+        </strong>        
+        <span 
+          style={{ cursor: 'pointer', textDecoration: 'underline' }}
+          onClick={() => copyToClipboard(address)}
+        >
+            {address}
+        </span>
+      </p>
 
       {loading ? (
         <p><strong>Balance:</strong> loading...</p>
       ) : (
-        <p><strong>Balance:</strong> {balance ? balance.toFixed(4) : '0'} {coin}</p>
+        <p><strong>Balance:</strong> {balance ? balance.toFixed(4) : '0'} ETH </p>
       )}
       <div>
         <label>
@@ -100,14 +115,14 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({ address, addressNam
           <input type="text" value={recipientAddress} onChange={(e) => setRecipientAddress(e.target.value)} />
         </label>
       </div>
-        <div>
-          <label>
-            Amount to Send ({coin}):
-            <input type="number" value={amountToSend} onChange={(e) => setAmountToSend(e.target.value)} />
-          </label>
-        </div>
-        <button onClick={handleRefreshBalance}>Refresh</button>
-        <button onClick={() => handleSendCoin()}>Send</button>
+      <div>
+        <label>
+          Amount to Send in ETH:
+          <input type="number" value={amountToSend} onChange={(e) => setAmountToSend(e.target.value)} />
+        </label>
+      </div>
+      <p>At the moment, this Moon Wallet UI only supports Ethereum transactions</p>
+      <button onClick={handleRefreshBalance}>Refresh</button>
       <button onClick={onBack}>Back</button>
     </div>
   );

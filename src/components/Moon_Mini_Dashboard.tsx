@@ -98,7 +98,7 @@ const MoonMiniDashboard: React.FC<MoonMiniDashboardProps> = ({ email, onDisconne
             <p>Signed in with: {email}</p>
 
             {currentAddress ? (
-                <PaymentComponent address={currentAddress[0]} addressName={currentAddress[1]} onBack={handleBack} />
+                <PaymentComponent moon={moon} address={currentAddress[0]} addressName={currentAddress[1]} onBack={handleBack} />
             ) : loading ? (
                 <p>Loading addresses...</p>
             ) : (
@@ -115,18 +115,18 @@ const MoonMiniDashboard: React.FC<MoonMiniDashboardProps> = ({ email, onDisconne
                     ) : (
                         <p>No addresses made by this account!</p>
                     )}
+                    {isAddingAddress && (
+                        <div>
+                            <AddAddressComponent onBack={toggleNewAccountCreation} onAddressAdded={handleAddressAdded} moon={moon} email={email}/>
+                        </div>
+                    )}
+                    {!isAddingAddress && (
+                        <button type="button" onClick={toggleNewAccountCreation} style={{ marginRight: '10px' }}>Add an address!</button>
+                    )}
                 </>
             )}
 
             <div className="flex-row">
-                {isAddingAddress && (
-                    <div>
-                        <AddAddressComponent onBack={toggleNewAccountCreation} onAddressAdded={handleAddressAdded} moon={moon} email={email}/>
-                    </div>
-                )}
-                {!isAddingAddress && (
-                    <button type="button" onClick={toggleNewAccountCreation} style={{ marginRight: '10px' }}>Add an address!</button>
-                )}
                 <button
                     type="button"
                     className="bg-red-500 text-white p-2 rounded"

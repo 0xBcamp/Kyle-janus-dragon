@@ -66,6 +66,7 @@ export const getAddressBalance = async (moonInstance: MoonSDK, address: string, 
     const query = { chainId: chainId };
     const response = await moonInstance.getAccountsSDK().getBalance(address, query);
     const data = response.data;
+    console.log(data);
     const balanceRaw = data.data.balance; // Raw balance in smallest unit
     return balanceRaw;
   } catch (error) {
@@ -76,9 +77,13 @@ export const getAddressBalance = async (moonInstance: MoonSDK, address: string, 
 
 // Function to get chain ID info
 export const getChainIdInfo = async (chainId: string) => {
-  if (chainId === '1891') {
-    return ["LightLink", "Ethereum", 18];
-  } else {
+  if (chainId == '1') {
+    return ["Ethereum", "Ethereum", 18];
+  }
+  else if (chainId == '1891') {
+    return ["Lightlink", "Ethereum", 18];
+  }
+  else{
     return [null, null, null];
   }
 };

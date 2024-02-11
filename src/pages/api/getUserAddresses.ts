@@ -29,7 +29,7 @@ export default async function getUserAddresses(req: NextApiRequest, res: NextApi
         });
 
         // Prepare the SQL statement to select the required columns
-        const sql = 'SELECT moon_address, address_name FROM moon_addresses';
+        const sql = 'SELECT moon_address, address_name FROM moon_addresses WHERE email = ?';
         const values = [email];
 
         // Execute the query

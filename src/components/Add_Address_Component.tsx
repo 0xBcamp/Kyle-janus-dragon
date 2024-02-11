@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { addUserAddress } from '@/hooks/addUserAddress';
 import { useMoonSDK } from '@/hooks/useMoonSDK';
 import { MoonSDK} from '@moonup/moon-sdk';
-import { deleteAccount } from '@/utils/moonSDKUtils';
+import { checkIfAddressNameExists } from '@/hooks/checkIfAddressNameExists';
 interface AddAddressComponentProps {
   userAddresses: string[];
   onAddressAdded: () => void;
@@ -24,34 +24,30 @@ const AddAddressComponent: React.FC<AddAddressComponentProps> = ({ userAddresses
       if (!moon) {
         throw new Error('Moon SDK is not initialized');
       }
-  
-      // Attempt to create a new account
-      const newAccount = await moon.getAccountsSDK().createAccount({});
-      console.log(newAccount);
-      newAddress = newAccount.data.data.address; // Correctly update the outer newAddress variable
-  
-      // Attempt to add the user address, this might throw if it fails
-      await addUserAddress(newAddress, newAddressName, email);
       
-      // If addUserAddress succeeds, invoke the callback
-      onAddressAdded();
+      const addressNameExists = await checkIfAddressNameExists(email, newAddressName);
+      console.log(addressNameExists);
+      if (!addressNameExists){
+              // Attempt to create a new account
+        const newAccount = await moon.getAccountsSDK().createAccount({});
+        const newAddress = newAccount.data.data.address; 
+        
+        // Attempt to add the user address, this might throw if it fails
+        await addUserAddress(newAddress, newAddressName, email);
+        onAddressAdded();
+      }
+      else{
+        setError("Address name already used! Use a different name!");
+      }
+      //If addUserAddress succeeds, invoke the callback
+
     } catch (err) {
       console.error(err);
       setError(String(err));
-  
-      // If adding the user address fails and a new address was created, attempt to delete it
-      if (newAddress) {
-        try {
-          await deleteAccount(moon, newAddress);
-        } catch (deleteErr) {
-          console.error('Failed to delete account after addUserAddress failed:', deleteErr);
-        }
-      }
     } finally {
       setLoading(false);
     }
   };  
-
 
   return (
     <div>
