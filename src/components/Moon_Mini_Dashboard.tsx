@@ -20,7 +20,7 @@ const MoonMiniDashboard: React.FC<MoonMiniDashboardProps> = ({ email, onDisconne
     const [isAddingAddress, setIsAddingAddress] = useState<boolean>(false);
     const [currentAddress, setCurrentAddress] = useState<string[] | null>(null);
 
-    const { disconnect, deleteAccount } = useMoonSDK();
+    const { disconnect} = useMoonSDK();
 
     const loadAddresses = async () => {
         setLoading(true);
@@ -121,11 +121,10 @@ const MoonMiniDashboard: React.FC<MoonMiniDashboardProps> = ({ email, onDisconne
             <div className="flex-row">
                 {isAddingAddress && (
                     <div>
-                        <AddAddressComponent onBack={toggleNewAccountCreation} onAddressAdded={handleAddressAdded} moon={moon}/>
+                        <AddAddressComponent onBack={toggleNewAccountCreation} onAddressAdded={handleAddressAdded} moon={moon} email={email}/>
                     </div>
                 )}
                 {!isAddingAddress && (
-                    
                     <button type="button" onClick={toggleNewAccountCreation} style={{ marginRight: '10px' }}>Add an address!</button>
                 )}
                 <button

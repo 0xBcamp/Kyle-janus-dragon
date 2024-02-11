@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useMoonSDK } from '@/hooks/useMoonSDK';
-
+import { getAddressBalance, getChainIdInfo, sendCoin } from '@/utils/moonSDKUtils';
 
 const ethers = require('ethers');
 interface PaymentComponentProps {
@@ -10,7 +10,7 @@ interface PaymentComponentProps {
 }
 
 const PaymentComponent: React.FC<PaymentComponentProps> = ({ address, addressName, onBack }) => {
-  const { moon, getAddressBalance, initialize, getChainIdInfo, sendCoin } = useMoonSDK();
+  const { moon, initialize} = useMoonSDK();
   const [balance, setBalance] = useState<number | null>(0);
   const [loading, setLoading] = useState<boolean>(true);
   // Initialize chainIdName and coin with 'Loading...' to indicate they are being fetched.
@@ -52,16 +52,16 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({ address, addressNam
       setLoading(true);
       try {
         const chainId = "1891"; // Example chainId, adjust as needed
-        const balanceResponse = await getAddressBalance(address, chainId);
+        const balanceResponse = await getAddressBalance(moon, address, chainId);
         const chainInfo = await getChainIdInfo(chainId);
         
         if (chainInfo) {
           const [chainName, coinName, decimalValue] = chainInfo;
-          setChainIdName(chainName);
-          setCoin(coinName);
-          setDecimal(decimalValue);
-          const adjustedBalance = balanceResponse / Math.pow(10, decimalValue);
-          setBalance(adjustedBalance);
+          // setChainIdName(chainName);
+          // setCoin(coinName);
+          // setDecimal(decimalValue);
+          // const adjustedBalance = balanceResponse / Math.pow(10, decimalValue);
+          // setBalance(adjustedBalance);
         } else {
           // Update to default or error state if chain info cannot be fetched
           setChainIdName('Chain info not available');

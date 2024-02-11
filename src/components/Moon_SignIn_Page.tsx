@@ -7,6 +7,7 @@ import {
 	EmailSignupInput,
 } from '@moonup/moon-api';
 import { addUser } from '@/hooks/addUser';
+import { getUserAddressesFromMoon, createAccount } from '@/utils/moonSDKUtils';
 
 
 // Define an interface for the component's props
@@ -30,7 +31,8 @@ const SignUpPage: React.FC<SignupPageProps> = ({ setIsConnected, setSignInSucces
 	const [signupSuccess, setSignupSuccess] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-  const { moon, connect, createAccount, disconnect, updateToken, initialize, getUserAddresses } = useMoonSDK();
+  const { moon, connect, disconnect, updateToken, initialize} = useMoonSDK();
+
   const [isSigningUp, setIsSigningUp] = useState(true);
 
   
@@ -70,7 +72,7 @@ const SignUpPage: React.FC<SignupPageProps> = ({ setIsConnected, setSignInSucces
       const auth = moon.getAuthSDK();
       const signupRequest: EmailSignupInput = { email, password };
       const signupResponse: any = await auth.emailSignup(signupRequest);
-      const newAccount = createAccount();
+      const newAccount = createAccount(moon);
       setSignupSuccess(true);
     } catch (error) {
       setError('Error signing up. Please try again.');
@@ -88,7 +90,7 @@ const SignUpPage: React.FC<SignupPageProps> = ({ setIsConnected, setSignInSucces
       const loginRequest: EmailLoginInput = { email, password };
       const loginResponse: any = await auth.emailLogin(loginRequest);
       await updateToken(loginResponse.data.token, loginResponse.data.refreshToken);
-      const userAddresses = await getUserAddresses();
+      const userAddresses = await getUserAddressesFromMoon(moon);
       console.log('getting addies');
       console.log(userAddresses);
       await addUser(email, userAddresses)
@@ -100,7 +102,7 @@ const SignUpPage: React.FC<SignupPageProps> = ({ setIsConnected, setSignInSucces
     } finally {
       setLoading(false);
     }
-  }, [moon, updateToken, getUserAddresses]);
+  }, [moon, updateToken, getUserAddressesFromMoon]);
 
   const handleDisconnect = useCallback(async () => {
     setLoading(true);

@@ -7,9 +7,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(405).end(`Method ${req.method} Not Allowed`);
     }
 
-    const { moon_address, newAddressName, email } = req.body;
-    console.log(moon_address);
-    console.log(newAddressName);
+    const { moon_address, email } = req.body;
+
     let connection;
     try {
         connection = await mysql.createConnection({
@@ -18,23 +17,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             password: process.env.DB_PASSWORD,
             database: process.env.DB_DATABASE,
         });
-
-        // Check if the newAddressName is empty or has been used before
-        if (!newAddressName || newAddressName.trim() === '') {
-            return res.status(400).json({ message: 'Address name cannot be empty' });
-        }
-
-        // Check if the newAddressName is already in use
-        const checkAddressSql = 'SELECT COUNT(*) as count FROM moon_addresses WHERE address_name = ?';
-        const [countResult] = await connection.execute(checkAddressSql, [newAddressName]);
-
-        // Type narrowing to check if countResult is of type RowDataPacket[]
-        if (Array.isArray(countResult) && countResult.length > 0) {
-            const count = countResult[0].count as number;
-            if (count > 0) {
-                return res.status(400).json({ message: 'Address name is already in use' });
-            }
-        }
 
         const addAddressSql = 'INSERT INTO moon_addresses (email, moon_address, address_name) VALUES (?, ?, ?)';
         const addedAddress = await connection.execute(addAddressSql, [email, moon_address, newAddressName]);
