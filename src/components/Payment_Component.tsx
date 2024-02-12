@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useMoonSDK } from '@/hooks/useMoonSDK';
 import { getAddressBalance, getChainIdInfo, sendCoin } from '@/utils/moonSDKUtils';
 import { MoonSDK } from '@moonup/moon-sdk';
+import { renameAddress } from '@/services/renameAddress';
+import { checkIfAddressNameExists } from '@/services/checkIfAddressNameExists';
 const ethers = require('ethers');
 
 interface PaymentComponentProps {
@@ -9,9 +11,11 @@ interface PaymentComponentProps {
   address: string;
   addressName: string;
   onBack: () => void;
+  email: string;
+  onRenameResult: (success: boolean, newAddressName: string) => void; // Add this prop
 }
 
-const PaymentComponent: React.FC<PaymentComponentProps> = ({ moon, address, addressName, onBack }) => {
+const PaymentComponent: React.FC<PaymentComponentProps> = ({ email, moon, address, addressName, onBack, onRenameResult }) => {
   const [balance, setBalance] = useState<number | null>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [chainIdName, setChainIdName] = useState<string>('Ethereum'); // Default to Ethereum
@@ -22,8 +26,10 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({ moon, address, addr
   const [recipientAddress, setRecipientAddress] = useState<string>('');
   const [copySuccess, setCopySuccess] = useState('');
   const [sendStatus, setSendStatus] = useState<'idle' | 'success' | 'error'>('idle');
-  const [statusMessage, setStatusMessage] = useState<string>('');
-
+  const [sendStatusMessage, setSendStatusMessage] = useState<string>('');
+  const [renameStatusMessage, setRenameStatusMessage] = useState<'idle' | string>('idle');
+  const [renaming, setRenaming] = useState<boolean>(false);
+  const [newAddressName, setNewAddressName] = useState<string>('');
 
   useEffect(() => {
     handleRefreshBalance(); // Call handleRefreshBalance when component mounts
@@ -38,6 +44,36 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({ moon, address, addr
       setCopySuccess('Failed to copy!');
     }
   };
+
+  const toggleAddressRename = async () => {
+    setRenaming(!renaming);
+    setNewAddressName('');
+    setRenameStatusMessage('idle');
+  };
+
+
+  const handleRenameAddress = async () => {
+    if (newAddressName == addressName){
+      toggleAddressRename();
+      setNewAddressName('');
+    }
+    const addressNameExists = await checkIfAddressNameExists(email, newAddressName)
+    //if the address name doesn't exists, rename the address!
+    if (!addressNameExists){
+      const renameAddressSuccess = await renameAddress(address, newAddressName)
+      if (renameAddressSuccess){
+        onRenameResult(true, newAddressName); 
+        toggleAddressRename();
+        setNewAddressName('');
+      }
+      onRenameResult(false, '');
+    }
+    else {
+      onRenameResult(false, '');
+      setRenameStatusMessage('Name already exists, please name it something else!');
+    }
+  };
+
 
   const handleGetBalance = async () => {
     if (moon) {
@@ -84,12 +120,13 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({ moon, address, addr
     };
     setChainId(chainIds[selectedChain]);
     setChainIdName(selectedChain);
+    handleGetBalance();
   };
 
   const handleSendCoins = async () => {
     if (!moon || !recipientAddress || amountToSend === '' || isNaN(Number(amountToSend))) {
       console.error('Invalid input');
-      setStatusMessage('Invalid input');
+      setSendStatusMessage('Invalid input');
       setSendStatus('error');
       return;
     }
@@ -99,7 +136,7 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({ moon, address, addr
       const [transactionHash, amountEthSent ]= await sendCoin(moon, address, recipientAddress, chainId, amountToSend);
       console.log('Coins sent successfully');
       console.log(transactionHash);
-      setStatusMessage(`Transaction successful: Hash=${transactionHash}, Amount=${amountEthSent} ETH`);
+      setSendStatusMessage(`Transaction successful: Hash=${transactionHash}, Amount=${amountEthSent} ETH`);
       setSendStatus('success');
       setAmountToSend('');
       setRecipientAddress('');
@@ -107,7 +144,7 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({ moon, address, addr
     } catch (error) {
       console.error('Error sending coins:', error);
       const errorMessage = error.error.message;
-      setStatusMessage(errorMessage);
+      setSendStatusMessage(errorMessage);
       setSendStatus('error');
     } finally {
       setLoading(false);
@@ -125,15 +162,28 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({ moon, address, addr
         </select>
       </div>
       <p>
-        <strong>
-          {addressName}:
-        </strong>        
-        <span 
-          style={{ cursor: 'pointer', textDecoration: 'underline' }}
-          onClick={() => copyToClipboard(address)}
-        >
-            {address}
-        </span>
+        <div className="flex-row">
+          {renaming ? (
+            <div>
+              <input type="text" value={newAddressName} onChange={(e) => setNewAddressName(e.target.value)} />
+              <button onClick={handleRenameAddress}>Rename</button>
+              <button onClick={toggleAddressRename}>x</button>
+              {renameStatusMessage !== 'idle' && (
+                <p>{renameStatusMessage}</p>
+              )}
+            </div>
+          ) : (
+            <strong>
+              {addressName}:
+            </strong>     
+          )}  
+          <span 
+            style={{ cursor: 'pointer', textDecoration: 'underline' }}
+            onClick={() => copyToClipboard(address)}
+          >
+              {address}
+          </span>
+        </div>
       </p>
 
       {loading ? (
@@ -154,10 +204,13 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({ moon, address, addr
         </label>
       </div>
       {sendStatus !== 'idle' && (
-        <p style={{ color: sendStatus === 'success' ? 'green' : 'red' }}>{statusMessage}</p>
+        <p style={{ color: sendStatus === 'success' ? 'green' : 'red' }}>{sendStatusMessage}</p>
       )}
       <button onClick={handleSendCoins}>Send</button>
       <p>At the moment, this Moon Wallet UI only supports Ethereum transactions</p>
+      {!renaming && (
+        <button onClick={toggleAddressRename}>Rename this address</button>
+      )}
       <button onClick={handleRefreshBalance}>Refresh</button>
       <button onClick={onBack}>Back</button>
     </div>

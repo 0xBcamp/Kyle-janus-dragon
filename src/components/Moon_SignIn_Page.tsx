@@ -6,7 +6,7 @@ import {
 	EmailLoginInput,
 	EmailSignupInput,
 } from '@moonup/moon-api';
-import { addUser } from '@/hooks/addUser';
+import { addUser } from '@/services/addUser';
 import { getUserAddressesFromMoon, createAccount } from '@/utils/moonSDKUtils';
 
 

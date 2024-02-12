@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useMoonSDK } from './useMoonSDK'; // Adjust the import path as necessary
 import { EmailLoginInput, EmailSignupInput } from '@moonup/moon-api';
-import { addUser } from '@/hooks/addUser';
+import { addUser } from '@/services/addUser';
 
 // Renamed from signInLogic to useSignInLogic
 export const useSignInLogic = () => {

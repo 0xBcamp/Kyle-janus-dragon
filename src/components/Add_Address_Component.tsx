@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { addUserAddress } from '@/hooks/addUserAddress';
+import { addUserAddress } from '@/services/addUserAddress';
 import { useMoonSDK } from '@/hooks/useMoonSDK';
 import { MoonSDK} from '@moonup/moon-sdk';
-import { checkIfAddressNameExists } from '@/hooks/checkIfAddressNameExists';
+import { checkIfAddressNameExists } from '@/services/checkIfAddressNameExists';
 interface AddAddressComponentProps {
   userAddresses: string[];
   onAddressAdded: () => void;
