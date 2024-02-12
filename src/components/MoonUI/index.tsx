@@ -1,15 +1,20 @@
-// MoonPage
+/**
+ * File: index.tsx
+ * Description: A component that is shown on the homepage that handles signing into Moon and interacting with your Moon account!
+ * 
+ * Author: Team Kyle
+ * Last Modified: 2/12/23
+ */
 import React, { useState } from 'react';
-import SignUpPage from './Moon_SignIn_Page';
-import MoonMiniDashboard from './Moon_Mini_Dashboard';
+import MoonSignInComponent from './MoonSignInComponent';
+import MoonUserDashboard from './MoonUserDashboard';
 import { useMoonSDK } from '@/hooks/useMoonSDK';
 import { MoonSDK } from '@moonup/moon-sdk'; // Ensure this import is correct
 
-const MoonPage: React.FC = () => {
+const MoonUI: React.FC = () => {
     const [isConnected, setIsConnected] = useState(false);
     const [signInSuccess, setSignInSuccess] = useState(false);
     const [email, setEmail] = useState<string>('');
-    const [token, setToken] = useState<string | undefined>();
     const [moon, setMoon] = useState<MoonSDK | null>(null);
 
     // Add this callback function
@@ -22,20 +27,16 @@ const MoonPage: React.FC = () => {
         setSignInSuccess(false); // Also reset signInSuccess when disconnecting
     };
 
-    const handleTokenReceived = (token) => {
-        setToken(token);
-      };
 
     return (
         <div className='absolute inset-x-0 bottom-0 mx-auto mb-4 cursor-pointer'>
             {signInSuccess && isConnected ? (
-                <MoonMiniDashboard email={email} onDisconnect={handleDisconnectFromParent} moon={moon}/>
+                <MoonUserDashboard email={email} onDisconnect={handleDisconnectFromParent} moon={moon}/>
             ) : (
-                <SignUpPage
+                <MoonSignInComponent
                     setIsConnected={setIsConnected}
                     setSignInSuccess={setSignInSuccess}
                     setEmail={setEmail}
-                    onTokenReceived={handleTokenReceived} // Define this function as needed
                     onMoonInstanceReceived={handleMoonInstanceReceived} // Define this function as needed
                     isConnected={isConnected}
                     signInSuccess={signInSuccess}
@@ -45,4 +46,4 @@ const MoonPage: React.FC = () => {
     );
 };
 
-export default MoonPage;
+export default MoonUI;

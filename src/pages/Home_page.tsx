@@ -1,6 +1,6 @@
 import { Inter } from 'next/font/google'
 import Image from 'next/image'
-import MoonPage from '@/components/Moon_Page';
+import MoonUI from '@/components/MoonUI';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -35,7 +35,7 @@ export default function Home_Page() {
         />
     </section>
     <section id="try_me">
-        <MoonPage/>
+        <MoonUI/>
         <Image
                 src="/images/arrow.png"
                 alt="Arrow icon"

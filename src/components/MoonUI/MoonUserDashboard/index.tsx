@@ -1,18 +1,28 @@
+/**
+ * File: Moon_Mini_Dashboard.tsx
+ * Description: A component that is shown on the homepage that handles signing into Moon and interacting with your Moon account!
+ * 
+ * Author: Team Kyle
+ * Last Modified: 2/12/23
+ */
+
 import React, { useState, useEffect } from 'react';
 import { useMoonSDK } from '@/hooks/useMoonSDK';
 import { getUserAddresses } from '@/services/getUserAddresses';
-import AddAddressComponent from './Add_Address_Component'; // Assuming AddAddressComponent is in the same directory
-import PaymentComponent from './Payment_Component';
+import AddAddressComponent from './AddAddressComponent'; 
+import PaymentComponent from './PaymentComponent';
 import { MoonAccount } from '@moonup/types';
 
-interface MoonMiniDashboardProps {
+
+
+interface MoonUserDashboardProps {
     email: string;
     onDisconnect: () => void;
     token: string;
     moon: MoonAccount;
 }
 
-const MoonMiniDashboard: React.FC<MoonMiniDashboardProps> = ({ email, onDisconnect, moon }) => {
+const MoonUserDashboard: React.FC<MoonUserDashboardProps> = ({ email, onDisconnect, moon }) => {
     const [allAddresses, setAllAddresses] = useState<string[][]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -191,4 +201,4 @@ const MoonMiniDashboard: React.FC<MoonMiniDashboardProps> = ({ email, onDisconne
     );
 };
 
-export default MoonMiniDashboard;
+export default MoonUserDashboard;
