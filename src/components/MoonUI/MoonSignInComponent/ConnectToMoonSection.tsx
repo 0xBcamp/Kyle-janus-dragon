@@ -1,13 +1,46 @@
+/**
+ * ConnectToMoonSection Component
+ * 
+ * Usage: This component renders a UI section that allows users to initiate a connection to the Moon service.
+ * It displays a button that users can click to connect.
+ * 
+ * Props:
+ *  - onConnect: A callback function that is called when the user clicks the "Connect to Moon" button.
+ *    This function should contain or trigger the logic to initialize the connection to the Moon service.
+ * 
+ *  - loading: A boolean value that indicates whether the connection process is currently ongoing.
+ *    When `true`, the button text changes to "Connecting..." to inform the user that the connection
+ *    process is in progress. Otherwise, the button shows "Initialize & Connect to Moon".
+ * 
+ *  - error: A string or null value that contains the error message if an error occurs during the 
+ *    connection process. If an error is present (i.e., `error` is not null), it is displayed below
+ *    the button to inform the user of the issue.
+ * 
+ * Example usage:
+ * ```tsx
+ * <ConnectToMoonSection 
+ *   onConnect={handleConnectToMoon} 
+ *   loading={isConnecting} 
+ *   error={connectionError} 
+ * />
+ * ```
+ * 
+ * Where `handleConnectToMoon` is a function that initiates the connection process,
+ * `isConnecting` is a boolean state indicating if the connection is in progress,
+ * and `connectionError` is the current error message or null.
+ * 
+ * Author: Team Kyle
+ * Last Modified: 2/12/23
+ */
+
 import React from 'react';
 
-// Define the props interface
 interface ConnectToMoonSectionProps {
-  onConnect: () => void; // Assuming onConnect is a function that takes no arguments and returns void
+  onConnect: () => void;
   loading: boolean;
-  error: string | null; // Assuming error could be a string or null
+  error: string | null;
 }
 
-// Correctly define the component with TypeScript
 const ConnectToMoonSection: React.FC<ConnectToMoonSectionProps> = ({ onConnect, loading, error }) => {
     return(
         <div>
