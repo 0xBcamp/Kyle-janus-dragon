@@ -6,14 +6,11 @@ Team Kyle Jan 2024
 
 ## Chatbot Query Capabilities:
 
-Since the free tier for the DuneAPI does not allow the use of CRUD operations (Create, Read, Update, Delete), our chatbot will be restricted to allowing users to query existing,
-**compatible queries**.
+Since the free tier for the DuneAPI does not allow the use of CRUD operations (Create, Read, Update, Delete), our chatbot will be restricted to allowing users to query existing queries. 
 <br/>
+While our chatbot currently only queries with our built-in compatible queries (premade on Dune.com and called within our application), we want to eventually encourage our users to create their own compatible queries on [Dune](https://dune.com/browse/queries) to use with our bot.
 <br/>
-**Compatible queries** are queries that are able to be used by users. Since our chatbot's main functionality is to allow users to create custom notifications from data pulled from existing Dune queries, there are a few things which make a query incapable of producing notifications. <br/>
-
-1. Query results in too many results.
-   > This occurs when a query's parameters on Dune's website are not capable of being interacted with
+**Compatible queries** are queries which have parameters that can result in a query with one result<br/>
 
 ### **Here are some examples:** <br/>
 
