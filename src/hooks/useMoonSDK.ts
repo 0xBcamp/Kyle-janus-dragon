@@ -20,6 +20,7 @@ export const useMoonSDK = () => {
 		});
 		setMoon(moonInstance);
 		await moonInstance.connect();
+		return moonInstance;
 	};
 
 	const connect = async () => {

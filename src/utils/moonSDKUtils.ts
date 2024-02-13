@@ -77,6 +77,7 @@ export const sendCoin = async (moonInstance: MoonSDK, account: string, toAddress
     throw error;
   }
 };
+
 export const getAddressBalance = async (moonInstance: MoonSDK, address: string, chainId: string) => {
   try {
     const query = { chainId: chainId };

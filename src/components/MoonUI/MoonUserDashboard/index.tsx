@@ -15,15 +15,14 @@ import { getUserAddresses } from '@/services/getUserAddresses';
 import AddAddressComponent from './AddAddressComponent'; 
 import PaymentComponent from './PaymentComponent';
 import { MoonAccount } from '@moonup/types';
-
-
+import { MoonSDK } from '@moonup/moon-sdk';
 
 /*****PROPS INTERFACE*****/
 interface MoonUserDashboardProps {
     email: string;
     onDisconnect: () => void;
     token: string;
-    moon: MoonAccount;
+    moon: MoonSDK;
 }
 
 /*****MAIN COMPONENT DEFINITION*****/
@@ -38,7 +37,7 @@ const MoonUserDashboard: React.FC<MoonUserDashboardProps> = ({ email, onDisconne
     const [renameSuccessful, setRenameSuccessful] = useState<boolean | null>(null);
 
     // Destructures the disconnect function from the useMoonSDK hook.
-    const { disconnect} = useMoonSDK();
+    const {disconnect} = useMoonSDK();
 
     /***** updateUIAfterRename() *****/
     // handles the UI after an address has been successfully renamed
@@ -69,6 +68,7 @@ const MoonUserDashboard: React.FC<MoonUserDashboardProps> = ({ email, onDisconne
     const loadAddresses = async () => {
         setLoading(true);
         try {
+            console.log(moon);
             const userAddresses = await getUserAddresses(email);
             setAllAddresses(userAddresses);
             let tempNamedAddresses = [];

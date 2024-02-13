@@ -62,25 +62,30 @@ const MoonSignInComponent: React.FC<SignupComponentProps> = ({
 
   // Sync the component state with props to reflect the current connection and sign-in status.
   React.useEffect(() => {
-    setIsConnected(isConnected);
-    setSignInSuccess(signInSuccess);
-  }, [isConnected, signInSuccess, setIsConnected, setSignInSuccess]);
+    if (moon){
+      setIsConnected(isConnected);
+      setSignInSuccess(signInSuccess);
+    }
+    else{
+      console.log('no moon');
+    }
+  }, [moon, isConnected, signInSuccess, setIsConnected, setSignInSuccess]);
 
   /***** handleInitializeAndConnect() *****/
   const handleInitializeAndConnect = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      await initialize();
-      await moon?.connect();
-      console.log(moon);
+      const moonie = await initialize();
+      onMoonInstanceReceived(moonie);
       setIsConnected(true);
+      return moonie;
     } catch (error) {
       setError("Error connecting to Moon. Please try again.");
     } finally {
       setLoading(false);
     }
-  }, [moon, setIsConnected, initialize]);
+  }, [initialize, setIsConnected, initialize]);
 
   /***** handleSignUp() *****/
   const handleSignUp = useCallback(

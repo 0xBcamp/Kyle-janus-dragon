@@ -8,7 +8,6 @@
 import React, { useState } from 'react';
 import MoonSignInComponent from './MoonSignInComponent';
 import MoonUserDashboard from './MoonUserDashboard';
-import { useMoonSDK } from '@/hooks/useMoonSDK';
 import { MoonSDK } from '@moonup/moon-sdk'; // Ensure this import is correct
 
 const MoonUI: React.FC = () => {
@@ -21,6 +20,7 @@ const MoonUI: React.FC = () => {
     const handleMoonInstanceReceived = (moonInstance: MoonSDK) => {
         setMoon(moonInstance);
     };
+
     // Function to handle user disconnection
     const handleDisconnectFromParent = () => {
         setIsConnected(false);
