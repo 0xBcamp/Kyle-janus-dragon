@@ -49,7 +49,7 @@ const MoonSignInComponent: React.FC<SignupComponentProps> = ({
   isConnected,
   signInSuccess,
 }) => {
-  //component state declarations
+  // state hooks
   const [emailInput, setEmailInput] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");

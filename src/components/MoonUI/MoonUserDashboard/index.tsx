@@ -1,11 +1,14 @@
 /**
- * File: Moon_Mini_Dashboard.tsx
- * Description: A component that is shown on the homepage that handles signing into Moon and interacting with your Moon account!
- * 
+ * File: MoonUserDashboard
+ * Description: The MoonUserDashboard component provides an interface for users to manage their Moon Wallet accounts.
+ *              It allows users to view and select addresses associated with their account, make new addreses for their account,
+ *              name them and rename them, and make transactions with them.
+ *
  * Author: Team Kyle
  * Last Modified: 2/12/23
  */
 
+/*****IMPORTS*****/
 import React, { useState, useEffect } from 'react';
 import { useMoonSDK } from '@/hooks/useMoonSDK';
 import { getUserAddresses } from '@/services/getUserAddresses';
@@ -15,6 +18,7 @@ import { MoonAccount } from '@moonup/types';
 
 
 
+/*****PROPS INTERFACE*****/
 interface MoonUserDashboardProps {
     email: string;
     onDisconnect: () => void;
@@ -22,7 +26,9 @@ interface MoonUserDashboardProps {
     moon: MoonAccount;
 }
 
+/*****MAIN COMPONENT DEFINITION*****/
 const MoonUserDashboard: React.FC<MoonUserDashboardProps> = ({ email, onDisconnect, moon }) => {
+      // state hooks
     const [allAddresses, setAllAddresses] = useState<string[][]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -31,13 +37,15 @@ const MoonUserDashboard: React.FC<MoonUserDashboardProps> = ({ email, onDisconne
     const [currentAddress, setCurrentAddress] = useState<string[] | null>(null);
     const [renameSuccessful, setRenameSuccessful] = useState<boolean | null>(null);
 
-    
+    // Destructures the disconnect function from the useMoonSDK hook.
     const { disconnect} = useMoonSDK();
 
-    const handleRenameResult = (success: boolean, newName?: string) => {
+    /***** updateUIAfterRename() *****/
+    // handles the UI after an address has been successfully renamed
+    const updateUIAfterRename = (success: boolean, newName?: string) => {
         setRenameSuccessful(success);
+        
         if (success && newName && currentAddress) {
-            // Update currentAddress with the new name
             setCurrentAddress([currentAddress[0], newName]);
     
             // Find the index of the address in allAddresses that matches the currentAddress
@@ -157,7 +165,7 @@ const MoonUserDashboard: React.FC<MoonUserDashboardProps> = ({ email, onDisconne
             <p>Signed in with: {email}</p>
 
             {currentAddress ? (
-                <PaymentComponent onRenameResult={handleRenameResult} email={email} moon={moon} address={currentAddress[0]} addressName={currentAddress[1]} onBack={handleBack} />
+                <PaymentComponent onRenameResult={updateUIAfterRename} email={email} moon={moon} address={currentAddress[0]} addressName={currentAddress[1]} onBack={handleBack} />
             ) : loading ? (
                 <p>Loading addresses...</p>
             ) : (
