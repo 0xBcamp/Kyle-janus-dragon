@@ -4,13 +4,12 @@
  *              Allows users to send cryptocurrency, check their balance, and rename addresses.
  *
  * Props:
- *     -email: 
- *     -onDisconnect: 
- *     -token: 
- *     -moon: 
+ *     -email: variable that keeps track of the user's email to perform data retrieval functions
+ *     -onDisconnect: prop that will call setCurrentAddress(null) in this component's parent to exit this component
+ *     -moon: variable that keeps track of MoonSDK to interact with Moon
  * 
  * Author: Team Kyle
- * Last Modified: 2/12/23
+ * Last Modified: 2/13/23
  */
 
 import React, { useState, useEffect } from 'react';
@@ -49,7 +48,8 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({ email, moon, addres
     handleRefreshBalance(); // Call handleRefreshBalance when component mounts
   }, []); // Add chainId as a dependency so it refreshes the balance when changed
 
-  
+  /*****copyToClipboard()*****/
+  //function that copies an address to a user's clipboard upon clicking
   const copyToClipboard = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
@@ -59,20 +59,26 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({ email, moon, addres
     }
   };
 
+  /*****toggleAddressRename()*****/
+  //function that toggles whether or not an address is being renamed!
   const toggleAddressRename = async () => {
     setRenaming(!renaming);
     setNewAddressName('');
     setRenameStatusMessage('idle');
   };
 
-
+  /*****handleRenameAddress()*****/
+  //function that handles the logic of renaming an address
   const handleRenameAddress = async () => {
+
+    //if the name is the same as its current name, do nothing
     if (newAddressName == addressName){
       toggleAddressRename();
       setNewAddressName('');
     }
+
+    //if the address name is unique to the user, rename the address to that!
     const addressNameExists = await checkIfAddressNameExists(email, newAddressName)
-    //if the address name doesn't exists, rename the address!
     if (!addressNameExists){
       const renameAddressSuccess = await renameAddress(address, newAddressName)
       if (renameAddressSuccess){

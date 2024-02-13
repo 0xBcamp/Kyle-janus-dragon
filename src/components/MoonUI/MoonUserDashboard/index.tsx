@@ -44,6 +44,10 @@ const MoonUserDashboard: React.FC<MoonUserDashboardProps> = ({ email, onDisconne
     // Destructures the disconnect function from the useMoonSDK hook.
     const {disconnect} = useMoonSDK();
 
+    //load the addresses upon loading the page!
+    useEffect(() => {
+        loadAddresses();
+    }, []);
     /***** updateUIAfterRename() *****/
     // handles the UI after an address has been successfully renamed
     const updateUIAfterRename = (success: boolean, newName?: string) => {
@@ -69,29 +73,15 @@ const MoonUserDashboard: React.FC<MoonUserDashboardProps> = ({ email, onDisconne
         }
     };
     
-
+    /***** loadAddresses() *****/
+    // loads addresses from Moon 
     const loadAddresses = async () => {
         setLoading(true);
         try {
             console.log(moon);
             const userAddresses = await getUserAddresses(email);
+            // Update state with addresses
             setAllAddresses(userAddresses);
-            let tempNamedAddresses = [];
-            let tempUnnamedAddresses = [];    
-                    // Iterate through userAddresses
-            for (let address of userAddresses) {
-                // Check if the second element of the address array is null
-                if (address[1] === null) {
-                    // If it's null, consider it as an unnamed address
-                    // Since unnamedAddresses is a string[] based on your useState, use the first element of the address
-                    tempUnnamedAddresses.push(address);
-                } else {
-                    // If it's not null, consider it as a named address
-                    tempNamedAddresses.push(address);
-                }
-            }
-            // Update state with the new categorized addresses
-            setError(null);
             setError(null);
         } catch (err) {
             setError('Failed to fetch addresses');
@@ -101,10 +91,8 @@ const MoonUserDashboard: React.FC<MoonUserDashboardProps> = ({ email, onDisconne
         }
     };
 
-    useEffect(() => {
-        loadAddresses();
-    }, []);
-
+    /******handleDisconnect()*****/
+    // once the user has signed in, allow them to disconnect from Moon!
     const handleDisconnect = async () => {
         setDisconnecting(true);
         try {
@@ -119,25 +107,33 @@ const MoonUserDashboard: React.FC<MoonUserDashboardProps> = ({ email, onDisconne
         }
     };
 
+    /******handleAddressAdded()*****/
+    // once an address has been successfully added, update state variables and refresh the addresses
     const handleAddressAdded = () => {
         setIsAddingAddress(false);
         loadAddresses();
     };
 
-    const handleBack = () => {
-        setIsAddingAddress(false);
+    /******handleExitPayment()*****/
+    // when the back button is pressed in the payment component, set the current address being looked state variable to none which will exit the payment component!
+    const handleExitPayment = () => {
         setCurrentAddress(null);
     };
 
+    /******handleAddressSelection()*****/
+    // when an address is selected, set the current address state variable to that address which should open the payment component
     const handleAddressSelection = (address: string, addressName: string) => {
         setCurrentAddress([address, addressName]);
     };
 
+    /******toggleNewAccountCreation()*****/
+    // function that toggles whether or not an account is being created 
     const toggleNewAccountCreation = () => {
         setIsAddingAddress(!isAddingAddress);
-        console.log(isAddingAddress);
     };
 
+    /*****sortedAddresses()*****/
+    //function that sorts addresses alphabetically
     const sortedAddresses = [...allAddresses].sort(([addressA, nameA], [addressB, nameB]) => {
         // Fallback for null names
         nameA = nameA || 'Unnamed Address';
@@ -163,15 +159,13 @@ const MoonUserDashboard: React.FC<MoonUserDashboardProps> = ({ email, onDisconne
     // const handleAccountDeletion = async (account) => {
     //     deleteAccount(account);
     // };
-
     
-
     return (
         <div className="mt-4 text-center">
             <p>Signed in with: {email}</p>
 
             {currentAddress ? (
-                <PaymentComponent onRenameResult={updateUIAfterRename} email={email} moon={moon} address={currentAddress[0]} addressName={currentAddress[1]} onBack={handleBack} />
+                <PaymentComponent onRenameResult={updateUIAfterRename} email={email} moon={moon} address={currentAddress[0]} addressName={currentAddress[1]} onBack={handleExitPayment} />
             ) : loading ? (
                 <p>Loading addresses...</p>
             ) : (
