@@ -4,6 +4,12 @@
  *              It allows users to view and select addresses associated with their account, make new addreses for their account,
  *              name them and rename them, and make transactions with them.
  *
+ *  Props:
+ *      -email: 
+ *      -onDisconnect: 
+ *      -token: 
+ *      -moon: 
+ *
  * Author: Team Kyle
  * Last Modified: 2/12/23
  */
@@ -14,7 +20,6 @@ import { useMoonSDK } from '@/hooks/useMoonSDK';
 import { getUserAddresses } from '@/services/getUserAddresses';
 import AddAddressComponent from './AddAddressComponent'; 
 import PaymentComponent from './PaymentComponent';
-import { MoonAccount } from '@moonup/types';
 import { MoonSDK } from '@moonup/moon-sdk';
 
 /*****PROPS INTERFACE*****/
@@ -122,16 +127,11 @@ const MoonUserDashboard: React.FC<MoonUserDashboardProps> = ({ email, onDisconne
     const handleBack = () => {
         setIsAddingAddress(false);
         setCurrentAddress(null);
-
     };
 
     const handleAddressSelection = (address: string, addressName: string) => {
         setCurrentAddress([address, addressName]);
     };
-
-    // const handleAccountDeletion = async (account) => {
-    //     deleteAccount(account);
-    // };
 
     const toggleNewAccountCreation = () => {
         setIsAddingAddress(!isAddingAddress);
@@ -158,6 +158,12 @@ const MoonUserDashboard: React.FC<MoonUserDashboardProps> = ({ email, onDisconne
     
         return numA - numB;
     });
+
+    // AT THE MOMENT DELETING ACCOUNTS IS NOT SUPPORTED BY MOONSDK
+    // const handleAccountDeletion = async (account) => {
+    //     deleteAccount(account);
+    // };
+
     
 
     return (

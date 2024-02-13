@@ -1,53 +1,67 @@
+/**
+ * Component File: AddAddressComponent
+ * Description: This component provides a user interface for adding new addresses associated with a user's account.
+ * It allows users to enter a name for a new address and handles the creation and association of this address with
+ * the user's account via the MoonSDK.
+ *
+ * Props:
+ *   - onAddressAdded: Callback function to be called upon successful addition of an address.
+ *   - onBack: Callback function to handle the user's request to go back or cancel the operation.
+ *   - moon: An instance of MoonSDK to interact with blockchain accounts.
+ *   - email: The email of the user, used for associating the new address.
+ *
+ * Author: Team Kyle
+ * Last Modified: 2/12/23
+ */
+
 import React, { useState, useEffect } from 'react';
-import { addUserAddress } from '@/services/addUserAddress';
-import { useMoonSDK } from '@/hooks/useMoonSDK';
-import { MoonSDK} from '@moonup/moon-sdk';
-import { checkIfAddressNameExists } from '@/services/checkIfAddressNameExists';
+import { addUserAddress } from '@/services/addUserAddress'; // Import service to add user address to backend/database
+import { MoonSDK} from '@moonup/moon-sdk'; // Import MoonSDK for blockchain interactions
+import { checkIfAddressNameExists } from '@/services/checkIfAddressNameExists'; // Service to check for address name uniqueness
+
 interface AddAddressComponentProps {
-  userAddresses: string[];
   onAddressAdded: () => void;
   onBack: () => void;
   moon: MoonSDK;
   email: string;
 }
 
-const AddAddressComponent: React.FC<AddAddressComponentProps> = ({ userAddresses, onAddressAdded, onBack, moon, email }) => {
-  const [newAddressName, setNewAddressName] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+const AddAddressComponent: React.FC<AddAddressComponentProps> = ({ onAddressAdded, onBack, moon, email }) => {
+  const [newAddressName, setNewAddressName] = useState(''); // State for storing the input value of the new address name
+  const [loading, setLoading] = useState(false); // State to manage loading indicator/behavior
+  const [error, setError] = useState<string | null>(null); // State to capture and display any error messages
 
+  /*** handleSubmit() ***/
+  // Function to handle the submission of the new address name
   const handleSubmit = async () => {
     setLoading(true);
-    let newAddress: string | null = null; // Keep track of the new address to potentially delete it
-  
+
     try {
       if (!moon) {
-        throw new Error('Moon SDK is not initialized');
+        // Ensure MoonSDK instance is available
+        throw new Error('Moon SDK is not initialized'); 
       }
       
+      // Check if the address name already exists to avoid duplicates
       const addressNameExists = await checkIfAddressNameExists(email, newAddressName);
-      console.log(addressNameExists);
-      if (!addressNameExists){
-              // Attempt to create a new account
+      if (!addressNameExists) {
+        // If unique, create a new account/address with MoonSDK
         const newAccount = await moon.getAccountsSDK().createAccount({});
-        const newAddress = newAccount.data.data.address; 
+        const newAddress = newAccount.data.data.address;
         
-        // Attempt to add the user address, this might throw if it fails
+        // Add the new address to the user's account
         await addUserAddress(newAddress, newAddressName, email);
-        onAddressAdded();
-      }
-      else{
+        onAddressAdded(); // Call the callback 
+      } else {
         setError("Address name already used! Use a different name!");
       }
-      //If addUserAddress succeeds, invoke the callback
-
     } catch (err) {
-      console.error(err);
-      setError(String(err));
+      console.error(err); 
+      setError(String(err)); 
     } finally {
       setLoading(false);
     }
-  };  
+  };
 
   return (
     <div>
@@ -55,8 +69,8 @@ const AddAddressComponent: React.FC<AddAddressComponentProps> = ({ userAddresses
         type="text"
         placeholder="Name of the new address"
         value={newAddressName}
-        onChange={(e) => setNewAddressName(e.target.value)}
-        disabled={loading}
+        onChange={(e) => setNewAddressName(e.target.value)} 
+        disabled={loading} // Disable input during loading
       />
       <button onClick={handleSubmit} disabled={loading}>
         Add Address
@@ -64,7 +78,7 @@ const AddAddressComponent: React.FC<AddAddressComponentProps> = ({ userAddresses
       <button onClick={onBack} disabled={loading}>
         x
       </button>
-      {error && <p className="text-red-500">{error}</p>}
+      {error && <p className="text-red-500">{error}</p>} 
     </div>
   );
 };

@@ -1,5 +1,19 @@
+/**
+ * File: PaymentComponent
+ * Description: Component for managing payments and address operations in a blockchain context.
+ *              Allows users to send cryptocurrency, check their balance, and rename addresses.
+ *
+ * Props:
+ *     -email: 
+ *     -onDisconnect: 
+ *     -token: 
+ *     -moon: 
+ * 
+ * Author: Team Kyle
+ * Last Modified: 2/12/23
+ */
+
 import React, { useState, useEffect } from 'react';
-import { useMoonSDK } from '@/hooks/useMoonSDK';
 import { getAddressBalance, getChainIdInfo, sendCoin } from '@/utils/moonSDKUtils';
 import { MoonSDK } from '@moonup/moon-sdk';
 import { renameAddress } from '@/services/renameAddress';
@@ -33,7 +47,7 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({ email, moon, addres
 
   useEffect(() => {
     handleRefreshBalance(); // Call handleRefreshBalance when component mounts
-  }, [chainId]); // Add chainId as a dependency so it refreshes the balance when changed
+  }, []); // Add chainId as a dependency so it refreshes the balance when changed
 
   
   const copyToClipboard = async (text: string) => {
@@ -107,6 +121,7 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({ email, moon, addres
       console.log('That\'s no moon');
     }
   };
+  
   const handleRefreshBalance = () => {
     handleGetBalance();
   };
