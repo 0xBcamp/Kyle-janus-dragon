@@ -89,7 +89,7 @@ const AddAddressComponent: React.FC<AddAddressComponentProps> = ({
             onClick={handleSubmit}
             disabled={loading}
           >
-            Add Address
+            {loading ? "Adding..." : "Add Address"}
           </button>
           <button className="moon-btn5" onClick={onBack} disabled={loading}>
             <IoCloseOutline size={32} />
