@@ -36,7 +36,8 @@ def extract_notif_name(message):
     msg_text = message.text
     
     # Splitting the message text by smart quotes to extract the notification name
-    parts = msg_text.split('“')
+    parts = msg_text.split('"')
+    print(parts)
     if len(parts) < 2:
         print("Error: Notification name not found.")
         return None, None
@@ -58,12 +59,13 @@ def extract_notif_name(message):
 def extract_and_format_query_parameters(msg_array):
     parameters = []
     # Loop through everything except for the last bit of message
-    parameters_in_msg_array = msg_array[:len(msg_array) - 1]
-    for parameter in parameters_in_msg_array:
-        parameter_info = parameter.split('=', 1)
-        parameters.append(tuple(parameter_info))  # Convert to tuple
-    if len(parameters) >= 1:
-        return parameters
+    if msg_array:
+        parameters_in_msg_array = msg_array[:len(msg_array) - 1]
+        for parameter in parameters_in_msg_array:
+            parameter_info = parameter.split('=', 1)
+            parameters.append(tuple(parameter_info))  # Convert to tuple
+        if len(parameters) >= 1:
+            return parameters
     else:
         return False
 

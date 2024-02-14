@@ -7,7 +7,7 @@ import asyncio
 from .check_notif_functions.connect_to_db import connect_to_db
 from .check_notif import check_notif
 # Constants:
-INTERVAL = 5 * 60  # Interval in seconds
+INTERVAL = 30  # Interval in seconds
 
 ###### CHECK_NOTIFS_LOOP() #########
 
