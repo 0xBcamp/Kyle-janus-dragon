@@ -112,7 +112,7 @@ const MoonSignInComponent: React.FC<SignupComponentProps> = ({
 
       //create a moon wallet using  using email and password!
       try {
-        signUpUser(moon, email, password);
+        await signUpUser(moon, email, password);
         setSignUpSuccess(true);
         setIsSigningUp(false);
       } catch (error) {

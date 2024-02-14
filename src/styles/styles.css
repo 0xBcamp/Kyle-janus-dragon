@@ -338,7 +338,7 @@ section {
 }
 
 .payment {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 .tab {
@@ -559,6 +559,16 @@ section {
   transition: all 300ms ease;
 }
 
+.inputty {
+  font-family: "Poppins", sans-serif;
+  margin-bottom: 8px;
+  border: 1px solid #5b22ff;
+  border-radius: 9999px;
+  padding: 4px 8px;
+  outline: none;
+  transition: all 300ms ease;
+}
+
 .input:focus {
   border: 3px solid #5b22ff;
 }
@@ -568,7 +578,7 @@ section {
   background-color: #5b22ff;
   border: 2px solid #5b22ff;
   transition: all 300ms ease;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-weight: 500;
 }
 

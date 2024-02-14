@@ -112,13 +112,13 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({
     }
   };
 
-  const handleGetBalance = async () => {
+  const handleGetBalance = async (currentChainId) => {
     if (moon) {
       setLoading(true);
       try {
-        const balanceResponse = await getAddressBalance(moon, address, chainId);
-        console.log(chainId);
-        const chainInfo = await getChainIdInfo(chainId);
+        const balanceResponse = await getAddressBalance(moon, address, currentChainId);
+        console.log(currentChainId);
+        const chainInfo = await getChainIdInfo(currentChainId);
         console.log(chainInfo);
 
         if (chainInfo) {
@@ -146,7 +146,7 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({
   };
 
   const handleRefreshBalance = () => {
-    handleGetBalance();
+    handleGetBalance(chainId);
   };
 
   const handleChainChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -158,7 +158,7 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({
     };
     setChainId(chainIds[selectedChain]);
     setChainIdName(selectedChain);
-    handleGetBalance();
+    await handleGetBalance(chainIds[selectedChain]);
   };
 
   const handleSendCoins = async () => {
@@ -186,7 +186,7 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({
       console.log("Coins sent successfully");
       console.log(transactionHash);
       setSendStatusMessage(
-        `Transaction successful: Hash=${transactionHash}, Amount=${amountEthSent} ETH`
+        `Transaction successful: \n Amount=${amountEthSent} ETH \n Hash = \n ${transactionHash}` 
       );
       setSendStatus("success");
       setAmountToSend("");
@@ -208,7 +208,6 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({
         <strong className="tab">Chain:</strong>
         <select
           className="payment"
-          value={chainIdName}
           onChange={handleChainChange}
         >
           <option value="Ethereum">Ethereum Mainnet</option>
@@ -220,13 +219,14 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({
           {renaming ? (
             <div>
               <input
+                className="inputty"
                 type="text"
                 value={newAddressName}
                 onChange={(e) => setNewAddressName(e.target.value)}
               />
-              <button onClick={handleRenameAddress}>Rename</button>
-              <button onClick={toggleAddressRename}>x</button>
-              {renameStatusMessage !== "idle" && <p>{renameStatusMessage}</p>}
+              <button className="moon-btn4" onClick={handleRenameAddress}>Rename</button>
+              <button className="moon-btn4" onClick={toggleAddressRename}>x</button>
+              {renameStatusMessage !== "idle" && <p className="text-xs">{renameStatusMessage}</p>}
             </div>
           ) : (
             <strong className="tab">{addressName}:</strong>
@@ -274,9 +274,9 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({
         </label>
       </div>
       {sendStatus !== "idle" && (
-        <p style={{ color: sendStatus === "success" ? "green" : "red" }}>
+        <pre className="text-xs" style={{ color: sendStatus === "success" ? "green" : "red" }}>
           {sendStatusMessage}
-        </p>
+        </pre>
       )}
       <button className="moon-btn4" onClick={handleSendCoins}>
         Send
