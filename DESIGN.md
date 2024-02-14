@@ -13,7 +13,7 @@ While our chatbot currently only queries with our built-in compatible queries (p
 <br/>
 **Compatible queries** are queries which have parameters that can result in a query with a result that is time-based. An example of such would be this:
 <br/>
-1. Time based: [**Today's Average Gas Price**](https://dune.com/queries/3429830) A query that returns average gas price by day.
+1. Time based: [**Today's Average Gas Price**](https://dune.com/queries/3429830) A query that returns today's average gas price.
 2. Non-time based:[**All Known CEX Addresses**](https://dune.com/queries/3237025) a query that returns all the known addresses of CEX's.
 <br/>
 Since our bot notifies users of current movements in the market, queries must return results that return the most recent metrics that change with time. 
