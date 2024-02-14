@@ -19,7 +19,6 @@ While our chatbot currently only queries with our built-in compatible queries (p
 Since our bot notifies users of current movements in the market, queries must return results that return the most recent metrics that change with time. 
 <br/>
 Compatible queries also must be able to be fully specified with parameters that are written in the Dune query creator like so:
-<br/>
 
 ```
 amount_usd >= {{Total USD}}
