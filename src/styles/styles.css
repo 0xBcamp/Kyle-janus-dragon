@@ -305,6 +305,7 @@ section {
   transition: all 300ms ease;
   font-family: "Poppins", sans-serif;
   margin-bottom: 2px;
+  margin-right: 4px;
 }
 
 .moon-btn4:hover {
@@ -334,6 +335,14 @@ section {
   background-color: white;
   border: 2px solid black;
   color: black;
+}
+
+.payment {
+  font-family: 'Poppins', sans-serif;
+}
+
+.tab {
+  margin-right: 8px;
 }
 
 .section__text {
