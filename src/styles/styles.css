@@ -56,17 +56,27 @@ a {
   color: black;
   text-decoration: none;
   text-decoration-color: white;
+  transition: all 300ms ease;
 }
 
 a:hover {
-  color: gray;
+  filter: brightness(80%);
   text-decoration: underline;
   text-underline-offset: 0.8rem;
   text-decoration-color: color rgb(181, 181, 181);
 }
 
+.logo-cont {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .logo {
+  display: block;
   font-size: 2rem;
+  margin-right: 8px;
+  font-weight: 500;
 }
 
 .logo:hover {
@@ -157,7 +167,6 @@ a:hover {
 
 section {
   padding-top: 4vh;
-  height: 96vh;
   margin: 0 10rem;
   box-sizing: border-box;
   min-height: fit-content;
@@ -173,7 +182,6 @@ section {
   display: flex;
   justify-content: center;
   gap: 5rem;
-  height: 80vh;
 }
 
 .section__pic-container {
@@ -181,6 +189,99 @@ section {
   height: 400px;
   width: 400px;
   margin: auto 0;
+}
+
+.moon-cont {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.moon-title {
+  font-size: 36px;
+}
+
+.moon-btn {
+  font-size: 24px;
+  background-color: #5b22ff;
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  padding: 12px 18px;
+  cursor: pointer;
+  transition: all 300ms ease-in-out;
+  border: 2px solid #5b22ff;
+  margin-top: 16px;
+}
+
+.moon-btn2 {
+  font-size: 12px;
+  background-color: #5b22ff;
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 300ms ease-in-out;
+  border: 2px solid #5b22ff;
+  margin-top: 2px;
+  transition: all 300ms ease;
+  font-family: "Poppins", sans-serif;
+}
+
+.moon-btn2:hover {
+  background-color: white;
+  border: 2px solid black;
+  color: black;
+}
+
+.moon-btn3 {
+  font-size: 12px;
+  background-color: #5b22ff;
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 300ms ease-in-out;
+  border: 2px solid #5b22ff;
+  margin-top: 2px;
+  margin-right: 8px;
+  transition: all 300ms ease;
+}
+
+.moon-btn3:hover {
+  background-color: white;
+  border: 2px solid black;
+  color: black;
+}
+
+.moon-btn:hover {
+  background-color: white;
+  color: black;
+  border: 2px solid black;
+}
+
+.moon-btn4 {
+  font-size: 12px;
+  background-color: #5b22ff;
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  padding: 8px 24px;
+  cursor: pointer;
+  transition: all 300ms ease-in-out;
+  border: 2px solid #5b22ff;
+  margin-top: 2px;
+  transition: all 300ms ease;
+  font-family: "Poppins", sans-serif;
+}
+
+.moon-btn4:hover {
+  background-color: white;
+  border: 2px solid black;
+  color: black;
 }
 
 .section__text {
@@ -202,7 +303,7 @@ section {
 }
 
 .title {
-  font-size: 3rem;
+  font-size: 4rem;
   text-align: center;
 }
 
@@ -242,26 +343,47 @@ section {
 
 .repo-btn {
   width: 15rem;
+  background-color: #5b22ff;
+  border: none;
+  font-weight: 400;
+  border: 2px solid #5b22ff;
+  border-radius: 9999px;
+  padding: 12px 24px;
+  color: white;
+  transition: all 300ms ease-in-out;
+}
+
+.repo-btn:hover {
+  cursor: pointer;
+  background-color: white;
+  color: black;
+  border: 2px solid black;
 }
 
 .btn-color-1,
 .btn-color-2 {
-  border: rgb(53, 53, 53) 0.1rem solid;
+  border: #5b22ff 0.1rem solid;
 }
 
 .btn-color-1:hover,
 .btn-color-2:hover {
   cursor: pointer;
+  background-color: white;
+  color: black;
+  border: 2px solid black;
 }
 
-.btn-color-1,
-.btn-color-2:hover {
-  background: rgb(53, 53, 53);
+.btn-color-1 {
   color: white;
+}
+.btn-color-2:hover {
+  background: white;
+  color: black;
 }
 
 .btn-color-1:hover {
-  background: rgb(0, 0, 0);
+  background: white;
+  color: black;
 }
 
 .btn-color-2 {
@@ -357,6 +479,7 @@ section {
   border-radius: 2rem;
   width: 90%;
   height: 90%;
+  cursor: pointer;
 }
 
 .team-title {
@@ -364,9 +487,34 @@ section {
   color: black;
 }
 
+.input {
+  font-family: "Poppins", sans-serif;
+  width: 75%;
+  margin-bottom: 8px;
+  border: 1px solid #5b22ff;
+  border-radius: 9999px;
+  padding: 4px 8px;
+  outline: none;
+  transition: all 300ms ease;
+}
+
+.input:focus {
+  border: 3px solid #5b22ff;
+}
+
 .team-btn {
+  color: white;
+  background-color: #5b22ff;
+  border: 2px solid #5b22ff;
+  transition: all 300ms ease;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+}
+
+.team-btn:hover {
   color: black;
-  border-color: rgb(163, 163, 163);
+  background-color: white;
+  border: 2px solid black;
 }
 
 .team-member-name {
@@ -391,11 +539,11 @@ section {
   display: flex;
   justify-content: center;
   border-radius: 2rem;
-  border: rgb(53, 53, 53) 0.1rem solid;
-  border-color: rgb(163, 163, 163);
-  background: rgb(250, 250, 250);
+  border: 2px solid #5b22ff;
+  background-color: #5b22ff;
   margin: 2rem auto;
   padding: 0.5rem;
+  color: white;
 }
 
 .contact-info-container {
@@ -408,6 +556,11 @@ section {
 
 .contact-info-container {
   font-size: larger;
+  color: white;
+}
+
+.lastbtn {
+  color: white;
 }
 
 .contact-icon {

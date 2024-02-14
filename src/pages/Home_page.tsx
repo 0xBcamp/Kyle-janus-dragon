@@ -1,13 +1,20 @@
 import { Inter } from 'next/font/google'
 import Image from 'next/image'
 import MoonUI from '@/components/MoonUI';
+import { Poppins } from 'next/font/google';
+import { cn } from '@/utils/utils';
 
 const inter = Inter({ subsets: ['latin'] })
+
+const font = Poppins({
+    weight: "500",
+    subsets: ['latin'],
+})
 
 export default function Home_Page() {
   return (
     <main>
-    <section id="profile">
+    <section id="profile" className="max-h-300">
         <div className="section-container">
             <div className="section__text">
                 <p className="section__text__p1">We Are</p>
@@ -16,8 +23,8 @@ export default function Home_Page() {
                 <div className="btn-container">
                     
                 <button
-                    className="btn btn-color-1 repo-btn"
-                    onClick={() => window.location.href = 'https://github.com/0xBcamp/Kyle-janus-dragon'}
+                    className={cn("repo-btn", font.className)}
+                    onClick={() => window.open('https://github.com/0xBcamp/Kyle-janus-dragon')}
                 >
                     Github Repo
                 </button>
@@ -25,25 +32,11 @@ export default function Home_Page() {
             </div>
         </div>
         
-        <Image
-            src="/images/arrow.png"
-            alt="Arrow icon"
-            width={20}
-            height={20}
-            className="icon arrow"
-            onClick={() => window.location.href = './#try_me'}
-        />
+        
     </section>
     <section id="try_me">
         <MoonUI/>
-        <Image
-                src="/images/arrow.png"
-                alt="Arrow icon"
-                className="icon arrow"
-                width={20}
-                height={20}
-                onClick={() => window.location.href = './#about'}
-            />
+        
 
     </section>
 
@@ -81,14 +74,7 @@ export default function Home_Page() {
                 </div>
             </div>
         </div>
-        <Image
-            src="/images/arrow.png"
-            alt="Arrow icon"
-            width={20}
-            height={20}
-            className="icon arrow"
-            onClick={() => window.location.href = './#team'}
-        />
+        
     </section>
     <section id="team">
         <p className="section__text__p1">Meet The</p>
@@ -140,6 +126,7 @@ export default function Home_Page() {
                 <div className="details-container color-container">
                     <div className="article-container">
                         <Image 
+                            onClick={() => window.open("https://adamgill.io")}
                             src="/images/adamgill-pic.png" 
                             alt="Adam Gill pic" 
                             className="team-img"
@@ -181,21 +168,14 @@ export default function Home_Page() {
                 </div>
             </div>
         </div>
-        <Image
-            src="/images/arrow.png"
-            alt="Arrow icon"
-            width={20}
-            height={20}
-            className="icon arrow"
-            onClick={() => window.location.href = './#contact'}
-        />
+        
     </section>
     <section id="contact">
         <p className="section__text__p1">Get in Touch</p>
         <h1 className="title">Contact Us</h1>
         <div className="contact-info-upper-container">
             <div className="contact-info-container">
-                <p><a href="mailto:DuneAlerts@gmail.com">DuneAlerts@gmail.com</a></p>
+                <p className='lastbtn'><a className='lastbtn' href="mailto:DuneAlerts@gmail.com">DuneAlerts@gmail.com</a></p>
             </div>
         </div>
     </section>

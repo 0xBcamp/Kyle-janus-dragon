@@ -27,6 +27,9 @@
 
 import React, { Dispatch, SetStateAction, useState, useCallback } from "react";
 
+import { cn } from "@/utils/utils";
+import { Poppins } from "next/font/google";
+
 interface AuthFormProps {
   isSigningUp: boolean;
   emailInput: string;
@@ -48,6 +51,11 @@ interface AuthFormProps {
   signUpSuccess: boolean;
 }
 
+const font = Poppins({
+  weight: "400",
+  subsets: ["latin"],
+});
+
 const AuthForm: React.FC<AuthFormProps> = ({
   isSigningUp,
   emailInput,
@@ -65,87 +73,88 @@ const AuthForm: React.FC<AuthFormProps> = ({
   signUpSuccess,
 }) => {
   return (
-    <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-96">
-      {signUpSuccess && (
-        <div className="mb-4 text-center">
-          <p>Congratulations! Your Moon account is created.</p>
-          <p>Now that you have created an account, sign in.</p>
+    <React.Fragment>
+      <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-96">
+        {signUpSuccess && (
+          <div className="mb-4 text-center">
+            <p>Congratulations! Your Moon account is created.</p>
+            <p>Now that you have created an account, sign in.</p>
+          </div>
+        )}
+        <div className="moon-cont">
+            <h2 className="text-2xl font-bold mb-4">
+              {isSigningUp ? "Sign up for a Moon Account" : "Sign In"}
+            </h2>
+            {/** email input **/}
+            <input
+              type="email"
+              placeholder="Email"
+              className="input"
+              value={emailInput}
+              onChange={onEmailChange}
+            />
+    
+            {/** password input **/}
+            <input
+              type="password"
+              placeholder="Password"
+              className="input"
+              value={password}
+              onChange={onPasswordChange}
+            />
+          
+
+          {/** confirm password input **/}
+          {isSigningUp && (
+            
+              <input
+                type="password"
+                placeholder="Confirm Password"
+                className="input"
+                value={confirmPassword}
+                onChange={onConfirmPasswordChange}
+              />
+            
+          )}
+          {/* Button to submit the form, toggling between 'Sign Up' and 'Sign In' */}
         </div>
-      )}
-      <div className="mb-4 text-center">
-        <h2 className="text-2xl font-bold mb-4">
-          {isSigningUp ? "Sign up for a Moon Account" : "Sign In"}
-        </h2>
-        {/** email input **/}
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full border p-2 rounded mb-2"
-          value={emailInput}
-          onChange={onEmailChange}
-        />
-      </div>
-      <div className="mb-4">
-        {/** password input **/}
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full border p-2 rounded mb-2"
-          value={password}
-          onChange={onPasswordChange}
-        />
-      </div>
-      {/** confirm password input **/}
-      {isSigningUp && (
-        <div className="mb-4">
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            className={`w-full border p-2 rounded mb-2 ${
-              passwordError ? "border-red-500" : ""
-            }`}
-            value={confirmPassword}
-            onChange={onConfirmPasswordChange}
-          />
+        <div className="flex flex-col items-center">
+          <button
+            type="button"
+            className={cn("moon-btn3", font.className)}
+            onClick={() =>
+              isSigningUp
+                ? onSignUpClick(emailInput, password, confirmPassword)
+                : onSignInClick(emailInput, password)
+            }
+          >
+            {loading
+              ? isSigningUp
+                ? "Signing up..."
+                : "Signing in..."
+              : isSigningUp
+              ? "Sign up for a Moon Account"
+              : "Sign In"}
+          </button>
+          {/* Button to toggle between signing in and signing up */}
+          <button
+            type="button"
+            className={cn("moon-btn2", font.className)}
+            onClick={onToggleSignInUp}
+          >
+            {isSigningUp
+              ? "Already have an account? Sign in"
+              : "Need an account? Sign up"}
+          </button>
+          {/** Error message **/}
+          {!isSigningUp
+            ? error && <p className="text-red-500 ml-2">{error}</p>
+            : passwordError && (
+                <p className="text-red-500 ml-2">{passwordError}</p>
+              )}
         </div>
-      )}
-      {/* Button to submit the form, toggling between 'Sign Up' and 'Sign In' */}
-      <div className="flex flex-col items-center">
-        <button
-          type="button"
-          className="bg-blue-500 text-white p-2 rounded mb-2"
-          onClick={() =>
-            isSigningUp
-              ? onSignUpClick(emailInput, password, confirmPassword)
-              : onSignInClick(emailInput, password)
-          }
-        >
-          {loading
-            ? isSigningUp
-              ? "Signing up..."
-              : "Signing in..."
-            : isSigningUp
-            ? "Sign up for a Moon Account"
-            : "Sign In"}
-        </button>
-        {/* Button to toggle between signing in and signing up */}
-        <button
-          type="button"
-          className="text-blue-500 underline"
-          onClick={onToggleSignInUp}
-        >
-          {isSigningUp
-            ? "Already have an account? Sign in"
-            : "Need an account? Sign up"}
-        </button>
-        {/** Error message **/}
-        {!isSigningUp
-          ? error && <p className="text-red-500 ml-2">{error}</p>
-          : passwordError && (
-              <p className="text-red-500 ml-2">{passwordError}</p>
-            )}
-      </div>
-    </form>
+      </form>
+    </React.Fragment>
   );
 };
 
