@@ -8,6 +8,7 @@ Team Kyle Jan 2024
 
 Since the free tier for the DuneAPI does not allow the use of CRUD operations (Create, Read, Update, Delete), our chatbot will be restricted to allowing users to query existing queries. 
 <br/>
+<br/>
 While our chatbot currently only queries with our built-in compatible queries (premade on Dune.com and called within our application), we want to eventually encourage our users to create their own compatible queries on [Dune](https://dune.com/browse/queries) to use with our bot.
 <br/>
 <br/>
