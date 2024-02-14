@@ -23,6 +23,4 @@ Compatible queries also must be able to be fully specified with parameters that 
 ```
 amount_usd >= {{Total USD}}
 ```
-
-<br/>
 When specifying a variable in your query, if you want to be able dynamically specify that variable value, you must surround the variable name with two pairs of curly braces!
