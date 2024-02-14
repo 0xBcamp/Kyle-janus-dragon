@@ -20,8 +20,10 @@ Since our bot notifies users of current movements in the market, queries must re
 <br/>
 Compatible queries also must be able to be fully specified with parameters that are written in the Dune query creator like so:
 <br/>
+
 ```
-/query-identifier parameter1=1 parameter2=2 condition>=threshold "notification name"
+amount_usd >= {{Total USD}}
 ```
+
 <br/>
 When specifying a variable in your query, if you want to be able dynamically specify that variable value, you must surround the variable name with two pairs of curly braces!
