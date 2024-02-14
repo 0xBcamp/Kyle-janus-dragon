@@ -76,7 +76,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
     <React.Fragment>
       <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-96">
         {signUpSuccess && (
-          <div className="mb-4 text-center">
+          <div className="moon-cont">
             <p>Congratulations! Your Moon account is created.</p>
             <p>Now that you have created an account, sign in.</p>
           </div>
@@ -118,7 +118,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
           )}
           {/* Button to submit the form, toggling between 'Sign Up' and 'Sign In' */}
         </div>
-        <div className="flex flex-col items-center">
+        <div className="moon-cont">
           <button
             type="button"
             className={cn("moon-btn3", font.className)}

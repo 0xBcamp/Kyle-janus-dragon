@@ -161,7 +161,7 @@ const MoonUserDashboard: React.FC<MoonUserDashboardProps> = ({ email, onDisconne
     // };
     
     return (
-        <div className="mt-4 text-center">
+        <div className="moon-cont extra-width">
             <p>Signed in with: {email}</p>
 
             {currentAddress ? (
@@ -174,7 +174,7 @@ const MoonUserDashboard: React.FC<MoonUserDashboardProps> = ({ email, onDisconne
                     {sortedAddresses.length > 0 ? (
                     sortedAddresses.map(([address, addressName], index) => (
                         <div key={index} style={{ margin: '5px 0' }}>
-                            <button className="marked" style={{ display: 'block' }} onClick={() => handleAddressSelection(address, addressName)}>
+                            <button className="moon-btn4" style={{ display: 'block' }} onClick={() => handleAddressSelection(address, addressName)}>
                                 <strong>{addressName || 'Unnamed Address'}</strong>: {address}
                             </button>
                         </div>
@@ -188,7 +188,7 @@ const MoonUserDashboard: React.FC<MoonUserDashboardProps> = ({ email, onDisconne
                         </div>
                     )}
                     {!isAddingAddress && (
-                        <button type="button" onClick={toggleNewAccountCreation} style={{ marginRight: '10px' }}>Add an address!</button>
+                        <button className='moon-btn4' type="button" onClick={toggleNewAccountCreation} style={{ marginRight: '10px' }}>Add an address!</button>
                     )}
                 </>
             )}
@@ -196,7 +196,7 @@ const MoonUserDashboard: React.FC<MoonUserDashboardProps> = ({ email, onDisconne
             <div className="flex-row">
                 <button
                     type="button"
-                    className="bg-red-500 text-white p-2 rounded"
+                    className="moon-btn4"
                     onClick={handleDisconnect}
                     style={{ marginRight: '10px' }}
                 >

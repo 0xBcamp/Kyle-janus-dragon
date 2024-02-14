@@ -29,7 +29,7 @@ const MoonUI: React.FC = () => {
 
 
     return (
-        <div className='absolute inset-x-0 bottom-0 mx-auto mb-4 cursor-pointer'>
+        <div className='extra-width'>
             {signInSuccess && isConnected ? (
                 <MoonUserDashboard email={email} onDisconnect={handleDisconnectFromParent} moon={moon}/>
             ) : (
