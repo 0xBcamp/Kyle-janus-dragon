@@ -14,11 +14,12 @@ The basic rules for formatting as as follows:
 > correct order: ```/query_identifier -> parameters -> condition -> name```
 
 **Example of setting a notification:** <br/>
-``` /large_ethereum_holders large_amount=10000000 total_large_holders>=10 "notification 1" ```<br/>
-In this example, we are utilizing a query on Dune that retrieves the total number of large holders of Ethereum (total_large_holders). The message specifies the following:
-1. ```large_amount=10000000``` From this parameter, we specify that a large holder should have $10,000,000 in Ethereum
-2. ```total_large_holders>=10``` From this condition, we specify that the want to be notified when the total number of large holders (a column in the result of the queue) exceeds 10
-3. 
+``` /large_erc20_holders large_amount=10000000 token=LINK total_large_holders>=10 "notification 1" ```<br/>
+In this example, we are utilizing a query on Dune that retrieves the total number of large holders of LINK (total_large_holders). The message specifies the following:
+1. ```large_amount=10000000``` From this parameter, we specify that a large holder should have $10,000,000 in the token
+2. ```token=LINK``` From this parameter, we specify that we want our large holders to be holders of LINK.
+3. ```total_large_holders>=10``` From this condition, we specify that the want to be notified when the total number of large holders (a column in the result of the queue) exceeds 10
+4. ```"notification 1"``` This last part of our command specifies the notification name.
 
 ## Chatbot Limitations:
 Since the free tier for the DuneAPI does not allow the use of CRUD operations (Create, Read, Update, Delete), our chatbot will be restricted to allowing users to query existing queries. 
