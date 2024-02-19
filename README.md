@@ -61,7 +61,7 @@ DUNE_API_KEY=
 5. Our bot will be available to message. To see what commands are available type /help.
 
 **Example command:** <br/>
-```/median_gas_price median_gas<=20 “My Notification” ```
+```/median_gas_price median_gas<=20 “My Notification” ``` <br/>
 This will set up a notification that will let you know when the median gas price of the last 24 hours is less than 20 gwei.
 
 # how to reset the database!
