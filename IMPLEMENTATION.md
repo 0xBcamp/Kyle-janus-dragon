@@ -30,7 +30,7 @@ To use this command, a user would start their message with: ```/median_gas_price
 <br/>
 
 ### handle_notification_creation.py
-This file in the bot module holds **handle_notification_creation()** which takes as input a raw user message which intends to create a notification and extracts that information to store in the database. It utilizes a variety of functions which are located in the **notification_creation_helpers** folder.
+This file in the bot module holds **handle_notification_creation()** which takes as input a raw user message which intends to create a notification and extracts necessary information from it to store in the database. It utilizes a variety of functions which are located in the **notification_creation_helpers** folder.
 <br/>
 
 ## Check notifications module:
