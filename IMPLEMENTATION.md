@@ -5,7 +5,7 @@ Team Kyle Jan 2024
 Our project is entirely run in **main.py**. 
 
 ## main.py
-Our project is run centrall from **main.py**. **main()** does the following:
+Our project is run centrally from **main.py** which does the following:
 1. intializes the chatbot
 2. begins a loop which periodically checks all notifications and loads a **queue** with the notifications that have triggered.
 3. asynchronously runs through the **queue** and notifies the notifications' users with the corresponding information. 
