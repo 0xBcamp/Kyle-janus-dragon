@@ -6,7 +6,7 @@ Team Kyle Jan 2024
 
 ## Notifications
 Notifications at their core consist of a **query** and a **condition**. Notifications "trigger" when the query associated with the notification returns a value that meets the user-specified condition. <br/>
-**Example notification:**
+**Example notification:** <br/>
 ``` /large_ethereum_holders large_amount=10000000 total_large_holders>=10 "notification 1 ```<br/>
 In this example, 
 
