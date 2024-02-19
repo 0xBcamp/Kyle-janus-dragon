@@ -26,7 +26,7 @@ Our project is run centrally from **main.py** which does the following:
         handle_notification_creation(
             bot, message, 407234, "median gas price of Ethereum in the last 24 hours")
 ```
-An example command to use this message handler function would start with ```/median_gas_price ...```
+To use this command, a user would start their message with: ```/median_gas_price ...```
 <br/>
 
 ### handle_notification_creation.py
