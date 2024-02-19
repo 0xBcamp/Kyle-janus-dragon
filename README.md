@@ -39,6 +39,7 @@ Utilizing built-in functionality from the [Telegram Bot API](https://core.telegr
 
 ## Basic Chatbot Functionality:
 Our chatbot's main functionality is to allow users to create custom notifications from data pulled from existing Dune queries. These notifications will be _threshold-based_, meaning users will be notified if a metric (specified by the user) passes a user specified threshhold. <br/><br/>
+
 **To get started:** <br/>
 1. Clone our github repository using this command: 
 ``` git clone https://github.com/0xBcamp/Kyle-janus-dragon.git ```
@@ -59,7 +60,9 @@ DUNE_API_KEY=
 ``` ./main.py ```
 5. Our bot will be available to message. To see what commands are available type /help. <br/>
 Example command:
-```/daily_median_gas_price median_gas>=9 “My Notification” ```
+```/median_gas_price median_gas<=20 “My Notification” ```
+This will set up a notification that will let you know when the median gas price of the last 24 hours is less than 20 gwei.
+
 # how to reset the database!
 ```
 -- Disable foreign key checks
