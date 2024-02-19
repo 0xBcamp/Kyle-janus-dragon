@@ -18,7 +18,7 @@ Our project is run centrally from **main.py** which does the following:
 
 ## Bot module:
 ### bot.py:
-**bot.py** holds key functions such as **create_bot()** which initializes the Telegram bot, and the **message_handlers** which specify an input and handle the message accordingly.
+**bot.py** holds key functions such as **create_bot()** which initializes the Telegram bot and defines the **message_handlers** which specify an input and handle the user messages using the associated command.
 > **Example of message_handler declaration:** <br/>
 ```
     @bot.message_handler(commands=['median_gas_price'])
