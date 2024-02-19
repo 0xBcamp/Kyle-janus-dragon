@@ -3,13 +3,24 @@
 Team Kyle Jan 2024
 
 ## Project Architecture Diagram:
+Our project is organized into two main modules, the **bot module** which is responsible for handling user interactions including user inputs and outgoing messages to the user, and the **check notifications module** which is responsible for determining when to notify the user. <br/>
+
 > **Figure 1:** Full Architecture of project 
 
 ![project_architecture_v3](https://github.com/0xBcamp/Kyle-janus-dragon/assets/81604772/ab408832-f094-40cd-8fa5-77d87e6e802c)
 
-## Front-end:
-### Telegram Bot UI:
 
+## Bot module:
+### bot.py:
+**bot.py** holds key functions such as **create_bot()** which initializes the Telegram bot, and the **message_handlers** which specify an input and handle the message accordingly.
+> **Example of message_handler declaration:** <br/>
+```
+    @bot.message_handler(commands=['median_gas_price'])
+    def daily_median_gas_price(message):
+        handle_notification_creation(
+            bot, message, 407234, "median gas price of Ethereum in the last 24 hours")
+```
+An example command to use this message handler function would start with ```/median_gas_price ...```
 ## Back-end:
 
 ### Main.py:
