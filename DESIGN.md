@@ -5,10 +5,20 @@
 Team Kyle Jan 2024
 
 ## Notifications
-Notifications at their core consist of a **query** and a **condition**. Notifications "trigger" when the query associated with the notification returns a value that meets the user-specified condition. <br/>
-**Example notification:** <br/>
-``` /large_ethereum_holders large_amount=10000000 total_large_holders>=10 "notification 1 ```<br/>
-In this example, 
+Notifications at their core consist of a **query** and a **condition**. Notifications "trigger" when the query associated with the notification returns a value that meets the user-specified condition. The main format of a command that sets a notification is as follows: 
+> ```/query_identifier parameter1=1 parameter2=2 parameter3=3 ... condition<=threshold "notification name"```.<br/>
+The basic rules for formatting as as follows:
+1. There are no spaces between each variable, operator, and value declaration.
+> ```parameter1=1``` instead of ```parameter1 = 1```
+3. the command must be formatted in the correct order and with spaces between each variable, operator, and value declaration
+> correct order: ```/query_identifier -> parameters -> condition -> name```
+
+**Example of setting a notification:** <br/>
+``` /large_ethereum_holders large_amount=10000000 total_large_holders>=10 "notification 1" ```<br/>
+In this example, we are utilizing a query on Dune that retrieves the total number of large holders of Ethereum (total_large_holders). The message specifies the following:
+1. ```large_amount=10000000``` From this parameter, we specify that a large holder should have $10,000,000 in Ethereum
+2. ```total_large_holders>=10``` From this condition, we specify that the want to be notified when the total number of large holders (a column in the result of the queue) exceeds 10
+3. 
 
 ## Chatbot Limitations:
 Since the free tier for the DuneAPI does not allow the use of CRUD operations (Create, Read, Update, Delete), our chatbot will be restricted to allowing users to query existing queries. 
