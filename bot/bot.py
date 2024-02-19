@@ -34,6 +34,7 @@ def create_bot():
         /help --> send this same message to see available commands\n
 Preset Notifications:\n
         /median_gas_price --> condition: median_gas
+        /large_LAKE_sells --> parameter: hour_interval=int condition: large_sells=int
         """)
 
     ###### Simple greetings #######
@@ -68,10 +69,10 @@ Preset Notifications:\n
         handle_notification_creation(
             bot, message, 407234, "median gas price of Ethereum in the last 24 hours")
 
-    @bot.message_handler(commands=['large_erc20_holders'])
-    def large_erc20_holders(message):
+    @bot.message_handler(commands=['large_LAKE_sells'])
+    def large_LAKE_sells(message):
         handle_notification_creation(
-            bot, message, 3430277, "number of large erc20 holders")
+            bot, message, 3448239, "number of large $LAKE sells")
 
     ####### Get the user's existing notifications ###########
     @bot.message_handler(commands=['my_notifs'])
