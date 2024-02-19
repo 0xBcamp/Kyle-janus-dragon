@@ -35,12 +35,12 @@ This file in the bot module holds **handle_notification_creation()** which takes
 
 ## Check notifications module:
 ### check_notifs_loop.py:
-A file which holds **check_notifs_loop()** which grabs all notifications stored in the database, then creates tasks to check each notification using **check_notif(notification)**.
+A file which holds **check_notifs_loop()** which runs until the program is stopped. It periodically grabs all notifications stored in the database, then runs **check_notif()** on each notification.
 <br/>
 
 ### check_notif.py
-The file that holds **check_notif()**. The function takes as a parameter notification and:
-1. Runs the associated queue
+The file that holds **check_notif()**. The function takes as a parameter a notification and:
+1. Runs the notification's associated queue
 2. Checks the queue's result against the user-set condition
 3. Adding the notification to the queue if the condition was met
 It utilizes a variety of functions located in the **check_notif_helpers** folder.
@@ -51,6 +51,7 @@ It utilizes a variety of functions located in the **check_notif_helpers** folder
 
 ![project_architecture_v3](https://github.com/0xBcamp/Kyle-janus-dragon/assets/81604772/ab408832-f094-40cd-8fa5-77d87e6e802c)
 
+## Database
 
 # how to reset the database!
 ```
