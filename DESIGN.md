@@ -4,8 +4,13 @@
 
 Team Kyle Jan 2024
 
-## Chatbot Query Capabilities:
+## Notifications
+Notifications at their core consist of a **query** and a **condition**. Notifications "trigger" when the query associated with the notification returns a value that meets the user-specified condition. <br/>
+**Example notification:**
+``` /large_ethereum_holders large_amount=10000000 total_large_holders>=10 "notification 1 ```<br/>
+In this example, 
 
+## Chatbot Limitations:
 Since the free tier for the DuneAPI does not allow the use of CRUD operations (Create, Read, Update, Delete), our chatbot will be restricted to allowing users to query existing queries. 
 <br/>
 <br/>
