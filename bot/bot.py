@@ -18,7 +18,6 @@ url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
 ###### CREATE_BOT() ########
 # function to initialize bot!
 
-
 def create_bot():
     bot = telebot.TeleBot(TG_API_KEY)
 
@@ -34,8 +33,7 @@ def create_bot():
         /my_notifs --> See a list of your notifications! \n
         /help --> send this same message to see available commands\n
 Preset Notifications:\n
-        /daily_median_gas_price --> condition: median_gas
-        /large_erc20_holders --> parameters: min_token_balance=int token_address=address condition: total_holders
+        /median_gas_price --> condition: median_gas
         """)
 
     ###### Simple greetings #######
@@ -65,7 +63,7 @@ Preset Notifications:\n
         bot.reply_to(message, btc_price)
 
     ###### Preset Notifications (1 for now) #######
-    @bot.message_handler(commands=['daily_median_gas_price'])
+    @bot.message_handler(commands=['median_gas_price'])
     def daily_median_gas_price(message):
         handle_notification_creation(
             bot, message, 407234, "median gas price of Ethereum in the last 24 hours")
