@@ -63,20 +63,3 @@ DUNE_API_KEY=
 **Example command:** <br/>
 ```/median_gas_price median_gas<=20 “My Notification” ``` <br/>
 This will set up a notification that will let you know when the median gas price of the last 24 hours is less than 20 gwei.
-
-# how to reset the database!
-```
--- Disable foreign key checks
-SET FOREIGN_KEY_CHECKS = 0;
-
--- Delete data from tables
--- Replace 'table1', 'table2', etc., with your actual table names
-DELETE FROM conditions;
-DELETE FROM notifs;
-DELETE FROM parameter_names;
-DELETE FROM parameter_values;
-DELETE FROM users;
-
--- Re-enable foreign key checks
-SET FOREIGN_KEY_CHECKS = 1;
-```
