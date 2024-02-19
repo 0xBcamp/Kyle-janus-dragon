@@ -4,7 +4,7 @@ Usage:
     Function called by main.py to continuously check each notification to see if it has been "activated"
 """
 import asyncio
-from .check_notif_functions.connect_to_db import connect_to_db
+from .check_notif_helpers.connect_to_db import connect_to_db
 from .check_notif import check_notif
 # Constants:
 INTERVAL = 30  # Interval in seconds
@@ -16,13 +16,14 @@ notify_queue = asyncio.Queue()
 
 # function that loops to constantly check notifications to see if they need to "notify"
 
+
 async def check_notifs_loop():
     pool = await connect_to_db()
 
     while True:
         # STEP 1: Get the list of all notifications stored in the database
         notifs = await get_notifs(pool)
-        print(f"got notifs: {notifs}")
+        print(f"Got notifs: {notifs}")
 
         # STEP 2: Concurrently check all notifications
         tasks = [check_notif(pool, notif_id, notify_queue)

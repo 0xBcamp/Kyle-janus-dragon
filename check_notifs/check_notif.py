@@ -4,8 +4,8 @@ Usage:
     Function called by check_notifs_loop() to 1. run the query notification and 2. check if the result passed the threshold
 """
 
-from .check_notif_functions.query import query
-from .check_notif_functions.check_condition import check_condition
+from .check_notif_helpers.query import query
+from .check_notif_helpers.check_condition import check_condition
 
 ###### CHECK_NOTIF() ##############
 # function that runs a notification's query and checks if the result needs to be shared with the notification's owner
