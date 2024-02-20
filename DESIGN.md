@@ -20,6 +20,7 @@ In this example, we are utilizing a query on Dune that retrieves the total numbe
 2. ```token=LINK``` From this parameter, we specify that we want our large holders to be holders of LINK.
 3. ```total_large_holders>=10``` From this condition, we specify that the want to be notified when the total number of large holders (a column in the result of the queue) exceeds 10
 4. ```"notification 1"``` This last part of our command specifies the notification name.
+So this notification will notify us when the total number of wallets who have more than $10 million in LINK exceeds 10.
 
 ## Chatbot Limitations:
 Since the free tier for the DuneAPI does not allow the use of CRUD operations (Create, Read, Update, Delete), our chatbot will be restricted to allowing users to query existing queries. 
@@ -33,11 +34,12 @@ While our chatbot currently only queries with our built-in compatible queries (p
 1. Time based: [**Today's Average Gas Price**](https://dune.com/queries/3429830) A query that returns today's average gas price.
 2. Non-time based: [**All Known CEX Addresses**](https://dune.com/queries/3237025) a query that returns all the known addresses of CEX's.
 <br/>
-Since our bot notifies users of current movements in the market, queries must return results that return the most recent metrics that change with time. 
+Since our bot notifies users of current movements in the market, queries must return results that return the most recent metrics that change with time, otherwise our notifications will not be useful or make sense.
 <br/>
 Compatible queries also must be able to be fully specified with parameters that are written in the Dune query creator like so:
 
 ```
-amount_usd >= {{Total USD}}
+amount_usd >= {{total_USD}}
 ```
-When specifying a variable in your query, if you want to be able dynamically specify that variable value, you must surround the variable name with two pairs of curly braces!
+When specifying a variable in your query, if you want to be able dynamically specify that variable value via commands to our bot, you must surround the variable name with two pairs of curly braces! Once you've done this, you can use the variable as a parameter when specifying a notification like so:<br/>
+```/ethereum_transaction_occurs total_USD=100000000 number_transactions>1 "whale activity!"```
