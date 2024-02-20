@@ -51,21 +51,8 @@ It utilizes a variety of functions located in the **check_notif_helpers** folder
 
 ![project_architecture_v3](https://github.com/0xBcamp/Kyle-janus-dragon/assets/81604772/ab408832-f094-40cd-8fa5-77d87e6e802c)
 
-## Database
-
-# how to reset the database!
-```
--- Disable foreign key checks
-SET FOREIGN_KEY_CHECKS = 0;
-
--- Delete data from tables
--- Replace 'table1', 'table2', etc., with your actual table names
-DELETE FROM conditions;
-DELETE FROM notifs;
-DELETE FROM parameter_names;
-DELETE FROM parameter_values;
-DELETE FROM users;
-
--- Re-enable foreign key checks
-SET FOREIGN_KEY_CHECKS = 1;
-```
+## Database Architecture Diagrams:
+> **Figure 2:** Architecture of database
+![Database_architecture_v1 0](https://github.com/0xBcamp/Kyle-janus-dragon/assets/81604772/95809c0d-d35b-46ee-9a73-81faade8c084)
+> **Figure 3:** Database example usage
+![Database_example](https://github.com/0xBcamp/Kyle-janus-dragon/assets/81604772/248aa0c8-9148-4dfe-8c13-cc9f60c04db9)
