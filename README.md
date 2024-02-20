@@ -45,7 +45,7 @@ Our chatbot's main functionality is to allow users to create custom notification
 ``` git clone https://github.com/0xBcamp/Kyle-janus-dragon.git ```
 2. Navigate to it in Terminal, and start the virtual environment using this command:
 ``` source .venv/bin/activate ```
-3. Create a .env file and use these variables--if you want to use this without contacting us, you will need to create and use a Coin Market Cap API Key, a MySQL database, a Telegram Bot API key, and a Dune API key. 
+3. Create a .env file and use these variables! At the moment you will need to create and use a Coin Market Cap API Key, a MySQL database, a Telegram Bot API key, and a Dune API key, however, we plan on eventually running this on a server and having users utilize their own DuneAPI key (since it can be really, really expensive to use just one Dune API key for every user).
 ```
 CMC_API_KEY=
 DB_USER=
