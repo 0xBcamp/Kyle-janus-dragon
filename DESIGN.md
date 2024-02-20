@@ -42,4 +42,4 @@ Compatible queries also must be able to be fully specified with parameters that 
 amount_usd >= {{total_USD}}
 ```
 When specifying a variable in your query, if you want to be able dynamically specify that variable value via commands to our bot, you must surround the variable name with two pairs of curly braces! Once you've done this, you can use the variable as a parameter when specifying a notification like so:<br/>
-```/ethereum_transaction_occurs total_USD=100000000 number_transactions>1 "whale activity!"```
+```/num_large_ethereum_transactions total_USD=100000000 number_transactions>1 "whale activity!"```
